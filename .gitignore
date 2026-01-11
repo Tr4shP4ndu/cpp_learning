@@ -1,0 +1,7 @@
+# Ignore centralized build artifacts
+build/
+
+# macOS metadata (harmless extra)
+.DS_Store
+
+.vscode/
