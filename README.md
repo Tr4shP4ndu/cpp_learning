@@ -2,8 +2,8 @@
 
 A tiny, vendor-free C++ workspace that stays out of your way.
 
-- Single top-level `Makefile` to generate new apps and to build/run them cross‑platform.
-- Each app has its own `Makefile` and `src/` with simple `main.cpp`.
+- Single top-level `Makefile` to scaffold apps and build/run them.
+- Each app lives under `apps/<name>` with its own `Makefile` and `src/main.cpp`.
 - No submodules, no external build systems required.
 
 See Makefile usage details in `Makefile.md`.
@@ -16,41 +16,50 @@ See Makefile usage details in `Makefile.md`.
 
 ## Quick start
 
-List apps:
+- List apps
 
-```sh
-make list
-```
+	```sh
+	make list
+	```
 
-Create a new app scaffold:
+- Scaffold a new app (uses templates in `templates/app/`)
 
-```sh
-make app NAME=hello
-```
+	```sh
+	make app app=my-new-app
+	```
 
-Build an app:
+- Build an app
 
-```sh
-make build APP=hello
-```
+	```sh
+	make build app=my-new-app
+	```
 
-Run an app:
+- Run an app
 
-```sh
-make run APP=hello
-```
+	```sh
+	make run app=my-new-app
+	```
 
-Interactive mode (when APP is omitted):
+- Clean build artifacts (keeps the `build/` directory)
 
-```sh
-make build
-make run
-```
+	```sh
+	make clean
+	```
 
-The generated app uses C++20 by default; adjust `CXXFLAGS` in the app's `Makefile` as you like.
+- Delete an app and its build output
+
+	```sh
+	make delete-app app=my-new-app
+	```
+
+Tips:
+- `make help` prints available targets and brief usage.
+- App names should use letters, digits, `-` or `_` (no spaces/shell specials).
+- Generated apps target C++20; tweak `CXXFLAGS` in the app `Makefile` if needed.
 
 ## Notes
 
-- Binaries live under `app/<name>/build/bin/<name>`.
-- You can use either `clang++` or `g++`. Set `CXX=g++` (or `clang++`) when invoking make if you want to override.
-- This setup is intentionally minimal to focus on learning C++ rather than toolchains.
+- Source lives in `apps/<name>/src/`.
+- Binaries are placed centrally under `build/<name>/bin/<name>`.
+- Use either `clang++` or `g++`; override with `CXX=g++` or `CXX=clang++` on the make command line.
+- Minimal by design—focus on C++ concepts, not tooling.
