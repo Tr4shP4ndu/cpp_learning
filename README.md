@@ -125,8 +125,10 @@ undefined-behavior mistakes are caught while you learn. Use
 |---|--------|---|
 | 52 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
 
-See also `references/` for a debugging & tooling guide and pointers to real GPU
-programming.
+Each row above is a folder under `apps/` (e.g. `apps/01-hello-world/`) with its
+own README. See also the reference guides:
+- [`references/debugging-and-tooling.md`](references/debugging-and-tooling.md) — debuggers, sanitizers, valgrind, Compiler Explorer, clang-tidy.
+- [`references/going-further-gpu.md`](references/going-further-gpu.md) — how the capstone maps to real GPUs, and where to learn shaders/CUDA/Vulkan.
 
 ## Quick start
 

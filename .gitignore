@@ -1,6 +1,10 @@
 # Ignore centralized build artifacts
 build/
 
+# Rendered output from the capstone (52-mini-renderer)
+*.ppm
+*.png
+
 # macOS metadata (harmless extra)
 .DS_Store
 
