@@ -150,6 +150,8 @@ See `Guide-to-Install-C-CPP.md` for detailed setup.
 ## Notes
 
 - Source lives in `apps/NN-name/src/`; multi-file lessons add `apps/NN-name/include/`.
-- Binaries land centrally under `build/NN-name/bin/`.
+- Binaries land centrally under `build/NN-name/<config>/bin/`, where `<config>`
+  encodes the build type and standard (e.g. `Debug-c++23-c17`) so different
+  standards never collide.
 - Override the compiler with `CXX=clang++` / `CC=clang` on the make command line.
 - Minimal by design — focus on C/C++ concepts, not tooling.

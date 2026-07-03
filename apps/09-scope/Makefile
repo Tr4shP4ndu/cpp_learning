@@ -3,10 +3,6 @@ APP_NAME := 09-scope
 SRC_DIR  := src
 INC_DIR  := include
 
-BUILD_ROOT ?= $(abspath $(CURDIR)/../../build)
-BUILD_DIR  := $(BUILD_ROOT)/$(APP_NAME)
-BIN_DIR    := $(BUILD_DIR)/bin
-
 # Toolchain (override on the command line, e.g. CXX=clang++)
 CXX ?= g++
 CC  ?= gcc
@@ -17,9 +13,18 @@ STD  ?= c++23
 CSTD ?= c17
 
 BUILD_TYPE ?= Debug
-WARN       := -Wall -Wextra -Wpedantic
-INC        := $(addprefix -I,$(wildcard $(INC_DIR))) -I$(SRC_DIR)
-DEPFLAGS   := -MMD -MP
+
+# Each flag combination gets its OWN build directory (keyed by a signature), so
+# `make run STD=c++98` never reuses objects compiled at a different standard —
+# switching is always correct, and each standard stays incrementally cached.
+SIG        := $(BUILD_TYPE)-$(STD)-$(CSTD)
+BUILD_ROOT ?= $(abspath $(CURDIR)/../../build)
+BUILD_DIR  := $(BUILD_ROOT)/$(APP_NAME)/$(SIG)
+BIN_DIR    := $(BUILD_DIR)/bin
+
+WARN     := -Wall -Wextra -Wpedantic
+INC      := $(addprefix -I,$(wildcard $(INC_DIR))) -I$(SRC_DIR)
+DEPFLAGS := -MMD -MP
 
 ifeq ($(BUILD_TYPE),Release)
   OPT := -O2
@@ -68,7 +73,8 @@ run: build
 run-c: build
 	@if [ -x "$(BIN_C)" ]; then "$(BIN_C)"; else echo "No C version for $(APP_NAME)"; fi
 
+# Remove every build variant for this lesson.
 clean:
-	@rm -rf "$(BUILD_DIR)"
+	@rm -rf "$(BUILD_ROOT)/$(APP_NAME)"
 
 -include $(CXX_OBJS:.o=.d) $(C_OBJS:.o=.d)

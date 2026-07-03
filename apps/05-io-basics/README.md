@@ -42,7 +42,7 @@ make run app=05-io-basics
 ```
 To feed input non-interactively (e.g. for a quick test), pipe it in:
 ```sh
-printf 'Ada\n36\n' | build/05-io-basics/bin/05-io-basics
+printf 'Ada\n36\n' | make run app=05-io-basics
 ```
 
 ## Try it yourself
