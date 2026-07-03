@@ -42,6 +42,15 @@ types.
   default-constructed first, then reassigned — wasteful, sometimes impossible
   (references, `const` members).
 
+## Build it step by step
+1. **Skeleton.** In `buffer.hpp` declare `Buffer` with a constructor, a
+   destructor, and the `size_`/`data_` members; `= delete` the copy operations.
+2. **Acquire & release.** In `buffer.cpp`, make the constructor allocate and
+   print "acquired", the destructor `delete[]` and print "released". In `main`,
+   create a `Buffer` inside a `{ }` block and watch *when* each message prints.
+3. **Use it.** Add `set`/`get` (with bounds checks) and read/write a few
+   elements before the block ends.
+
 ## Build & run
 ```sh
 make run app=41-constructors-destructors

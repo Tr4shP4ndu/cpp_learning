@@ -41,6 +41,14 @@ See `src/main.cpp`.
   don't use them for ordinary control flow.
 - `std::expected` is **C++23** (this repo defaults to C++23).
 
+## Build it step by step
+1. **optional.** Write `firstDigit` returning `std::optional<int>`; in `main`
+   handle both the "found" and "nothing" cases.
+2. **expected.** Add `safeDivide` returning `std::expected<double, std::string>`;
+   handle the value and the `.error()` separately.
+3. **exceptions.** Add `parsePositive` that `throw`s, and wrap the call in
+   `try { ... } catch (const std::exception& e) { ... }`.
+
 ## Build & run
 ```sh
 make run app=51-error-handling

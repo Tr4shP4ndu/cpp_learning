@@ -34,6 +34,14 @@ no runtime cost. Templates are the foundation of the entire standard library
 - Each distinct type instantiates its own copy — heavy template use grows binary
   size and compile time.
 
+## Build it step by step
+1. **One template.** Write `template <typename T> T maximum(const T&, const T&)`
+   in `generic.hpp` and call `maximum(3, 4)` from `main`.
+2. **Reuse it.** Call the *same* `maximum` with `1.5, 0.5` and with two
+   `std::string`s — no new code; the compiler generates each version.
+3. **Class template.** Add `template <typename T> class Box` and create a
+   `Box<int>` and a `Box<std::string>`.
+
 ## Build & run
 ```sh
 make run app=46-templates

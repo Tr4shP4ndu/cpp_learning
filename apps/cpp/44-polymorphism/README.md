@@ -39,6 +39,16 @@ object's type via a vtable lookup — a tiny runtime cost for huge flexibility.
 - Marking overrides — always use `override`; it turns silent mistakes into
   compile errors.
 
+## Build it step by step
+1. **Abstract base.** In `shapes.hpp` write `Shape` with a **virtual destructor**
+   and two **pure-virtual** methods (`= 0`). You can't instantiate it yet — that's
+   the point.
+2. **One concrete shape.** Add `Circle : public Shape`, implement `area()`/`name()`
+   with `override`, and print one circle's area.
+3. **Many, uniformly.** Add `Square`, then put both in a
+   `std::vector<std::unique_ptr<Shape>>` and loop calling `area()`/`name()` — the
+   same call runs the right version per object.
+
 ## Build & run
 ```sh
 make run app=44-polymorphism

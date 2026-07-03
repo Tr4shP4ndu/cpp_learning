@@ -37,6 +37,15 @@ copy/move **for free** — the rule of *zero*.
 - Using a moved-from object as if it still holds its data.
 - Forgetting `noexcept` on move operations → silent fallback to copying.
 
+## Build it step by step
+1. **A resource-owning type.** Write `Widget` holding a `std::vector<int>` with a
+   normal constructor; create one.
+2. **See a copy.** Add a copy constructor that prints "copy". Do `Widget b = a;`
+   and watch it copy the whole buffer.
+3. **See a move.** Add a move constructor (`Widget(Widget&&) noexcept`) that
+   prints "move" and steals the buffer with `std::move`. Do
+   `Widget c = std::move(a);` and compare the output.
+
 ## Build & run
 ```sh
 make run app=48-move-semantics

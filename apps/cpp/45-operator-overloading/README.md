@@ -38,6 +38,14 @@ naturally.
   `!=` too; C++20 can generate it from `==`).
 - Define `+` in terms of `+=` to avoid duplicated logic (shown here).
 
+## Build it step by step
+1. **Print it.** Define `struct Vec2 { double x, y; };` and `operator<<` so
+   `std::cout << v` works. Verify it prints.
+2. **Add them.** Add the free function `operator+`; use `a + b` and print the
+   result.
+3. **More operators.** Add `operator+=` (member, `return *this;`) and
+   `operator==`, then add `assert`s that check the results.
+
 ## Build & run
 ```sh
 make run app=45-operator-overloading

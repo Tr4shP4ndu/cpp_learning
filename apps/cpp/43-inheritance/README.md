@@ -36,6 +36,14 @@ Inheritance lets a new class (the *derived* class) build on an existing one (the
   pointer's method still calls the base version unless it's `virtual` — that's
   lesson 44.
 
+## Build it step by step
+1. **The base.** Write `Animal` (`name_`, `name()`, `eat()`), define its methods,
+   and use an `Animal` directly in `main`.
+2. **Derive.** Add `class Dog : public Animal` with a constructor that forwards
+   the name to `Animal(...)`. A `Dog` already has `eat()` for free — call it.
+3. **Extend.** Add `Dog::bark()` (it can use the `protected` `name_`) and call
+   both `eat()` and `bark()` on a `Dog`.
+
 ## Build & run
 ```sh
 make run app=43-inheritance

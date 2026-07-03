@@ -43,6 +43,15 @@ public interface.
 - Returning a non-const reference/pointer to a private member leaks control of
   it back out.
 
+## Build it step by step
+1. **Hide the data.** In `account.hpp`, put `balance_` under `private:` and give
+   a constructor plus a `balance()` getter. In `main`, construct and print.
+2. **Guard construction.** In `account.cpp`, clamp a negative initial balance to
+   0 — the first invariant.
+3. **Add operations.** Add `deposit`/`withdraw` that reject invalid amounts and
+   overdrafts, then try an overdraw in `main` and confirm it's refused. Try to
+   write `acct.balance_ = -1;` and watch it fail to compile.
+
 ## Build & run
 ```sh
 make run app=42-encapsulation

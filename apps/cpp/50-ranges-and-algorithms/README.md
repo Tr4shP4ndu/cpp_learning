@@ -33,6 +33,14 @@ See `src/main.cpp`.
   let the container die while a view over it is alive.
 - Some views are single-pass; re-iterating or storing them has caveats.
 
+## Build it step by step
+1. **A ranges algorithm.** Call `std::ranges::sort(nums)` (whole container, no
+   `begin()/end()`) and print the result.
+2. **A predicate.** Add `std::ranges::count_if(nums, ...)` with a lambda.
+3. **A pipeline.** Compose `nums | std::views::filter(...) |
+   std::views::transform(...) | std::views::take(2)` and iterate it — note
+   nothing computes until the loop pulls values.
+
 ## Build & run
 ```sh
 make run app=50-ranges-and-algorithms

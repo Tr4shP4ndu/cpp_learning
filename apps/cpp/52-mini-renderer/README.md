@@ -41,6 +41,33 @@ Each `.cpp` is a separate translation unit; the Makefile compiles and links them
 7. **Shading** (`shade`) — flat shading: brightness = how much the triangle's
    normal faces the light.
 
+## Build it step by step
+Don't type the whole thing at once. Build it in stages — each one compiles,
+runs, and shows visible progress, so you understand every piece before adding
+the next. Run `make run app=52-mini-renderer` after each stage.
+
+1. **A colored image on disk.** Write only `image.hpp` + `image.cpp` (the
+   `Image` class and `writePPM`) and a `main` that makes a 400×400 image, fills
+   a few pixels with `img.set(...)`, and calls `writePPM("render.ppm")`. Open it.
+   *Goal: "an image is just an array of pixels I can save."*
+2. **Vectors.** Add `vec.hpp` (`Vec3f`, `dot`, `cross`, `normalize`). Nothing
+   visible yet — it's the data the next steps use.
+3. **A line.** Add `drawLine` (get the simple case working, then handle steep
+   lines and direction). Draw one line corner-to-corner. *Goal: first geometry.*
+4. **A wireframe.** Add `toScreen` (projection) in `main`, define three points,
+   and draw the triangle's three edges with `drawLine`. *Goal: 3D → screen.*
+5. **A filled triangle.** Add `drawTriangle` with the bounding-box + barycentric
+   test **but skip the z-buffer for now** — just fill inside-pixels with a color.
+   *Goal: rasterization.*
+6. **The z-buffer.** Add the `zbuffer` vector in `main`, pass it in, and add the
+   `z > zbuffer[idx]` depth test to `drawTriangle`. Draw two overlapping
+   triangles at different `z`. *Goal: the closer one correctly hides the other.*
+7. **Shading.** Add `shade()` (normal · light) and color each triangle by it.
+   *Goal: lighting.*
+
+Each stage is a small, testable change — exactly how the finished files here
+were built.
+
 ## Build & run
 ```sh
 make run app=52-mini-renderer

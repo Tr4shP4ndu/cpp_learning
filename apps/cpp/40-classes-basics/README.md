@@ -36,6 +36,16 @@ its own copy of the members. Two `Rectangle`s have independent `width`/`height`.
 - Here members are `public` for simplicity; lesson 42 (encapsulation) makes them
   `private` and explains why.
 
+## Build it step by step
+1. **Declare the class.** In `rectangle.hpp`, write `class Rectangle` with public
+   `width`/`height` and just the *signatures* `double area() const;` and
+   `void scale(double);`. It compiles but does nothing yet.
+2. **Define `area`.** In `rectangle.cpp`, write `double Rectangle::area() const
+   { return width * height; }`. In `main`, make a `Rectangle`, set the fields,
+   print `area()`.
+3. **Add `scale`.** Define `Rectangle::scale` in the `.cpp`, call it from `main`,
+   and print the area again to see it change.
+
 ## Build & run
 ```sh
 make run app=40-classes-basics
