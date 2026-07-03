@@ -38,8 +38,11 @@ See `src/main.cpp`.
 ## Build & run
 ```sh
 make run app=37-smart-pointers
-make run app=37-smart-pointers STD=c++11   # make_unique is C++14 — this fails
 ```
+`std::make_unique` was standardized in C++14 (`make_shared` in C++11). Some
+standard libraries provide `make_unique` earlier as an extension, so building
+with `STD=c++11` may or may not fail depending on your compiler — either way,
+use C++14+ to be safe.
 
 ## Try it yourself
 Wrap a small `struct Point { int x, y; };` in a `std::unique_ptr` via
