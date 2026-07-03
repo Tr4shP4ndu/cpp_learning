@@ -55,9 +55,10 @@ C++ is a powerful, high-performance programming language widely used for systems
 2. **Verify Installation**:
    - In Terminal, type:
      ```bash
-     g++ --version
+     g++ --version   # C++ compiler
+     cc --version    # C compiler (clang on macOS) — lessons build C too
      ```
-   - The installed version of `g++` should be displayed.
+   - The installed versions should be displayed.
 
 ### Linux
 
