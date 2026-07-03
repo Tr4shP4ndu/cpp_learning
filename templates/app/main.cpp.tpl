@@ -1,6 +1,7 @@
+// __APP_NAME__ — one-line concept goes here.
 #include <iostream>
 
 int main() {
-    std::cout << "Hello from __APP_NAME__" << std::endl;
+    std::cout << "__APP_NAME__\n";
     return 0;
 }

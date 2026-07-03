@@ -1,17 +1,26 @@
 # __APP_NAME__
 
-Minimal C++ app scaffold.
+## Concept
+<!-- Plain-English: what this is and why it exists. -->
 
-## Build and run (from repository root)
+## Minimal example
+See `src/main.cpp`.
 
-Run these from the repository root:
-  - make build app=__APP_NAME__
-  - make run app=__APP_NAME__
+## Line-by-line
+<!-- Annotate the non-obvious lines. -->
 
-Binary path: build/__APP_NAME__/bin/__APP_NAME__
+## Common pitfalls
+<!-- The mistakes beginners actually hit. -->
 
-Alternative (from inside this folder):
-  - cd app/__APP_NAME__
-  - make run
+## C vs C++
+<!-- Only if a C counterpart exists; otherwise delete this section. -->
 
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Build & run
+```sh
+make run app=__APP_NAME__            # C++ (default c++23)
+make run app=__APP_NAME__ STD=c++98  # try an older standard
+make run-c app=__APP_NAME__          # C version, if present
+```
+
+## Try it yourself
+<!-- One small exercise. -->
