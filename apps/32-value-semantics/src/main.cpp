@@ -1,20 +1,21 @@
+// 32-value-semantics — by default, assigning or passing a value makes a COPY.
 #include <iostream>
 
-// Function that modifies the value of its parameter
-void PassByValue(int number) {
-    number = 100;  // This change affects only the local copy of the variable
-    std::cout << "Inside function, number = " << number << std::endl;  // Output: 100
+// The parameter `n` is a fresh copy of whatever was passed in.
+void tryToChange(int n) {
+    n = 100;  // changes only this local copy
+    std::cout << "  inside function, n = " << n << "\n";
 }
 
 int main() {
-    int num = 42;
-    std::cout << "Before function call, num = " << &num << std::endl;
-    std::cout << "Before function call, num = " << num << std::endl;   // Output: 42
+    int a = 42;
+    int b = a;   // b is a COPY of a — an independent value
+    b = 7;       // changing b does not touch a
+    std::cout << "a = " << a << ", b = " << b << "\n";   // a = 42, b = 7
 
-    // Call the function with pass by value
-    PassByValue(num);
+    std::cout << "before call, a = " << a << "\n";
+    tryToChange(a);   // a is copied into the parameter
+    std::cout << "after call,  a = " << a << "\n";        // still 42
 
-    std::cout << "After function call, num = " << &num << std::endl;
-    std::cout << "After function call, num = " << num << std::endl;    // Output: 42
     return 0;
 }

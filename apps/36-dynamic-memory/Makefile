@@ -1,5 +1,5 @@
 # Per-app Makefile — one lesson, one command.
-APP_NAME := 33-references
+APP_NAME := 36-dynamic-memory
 SRC_DIR  := src
 INC_DIR  := include
 

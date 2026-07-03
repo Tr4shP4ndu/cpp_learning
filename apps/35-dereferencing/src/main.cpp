@@ -1,17 +1,18 @@
+// 35-dereferencing — the * operator follows a pointer to the value it points at.
 #include <iostream>
 
 int main() {
     int num = 10;
-    int* ptr = &num;  // Pointer to num
+    int* ptr = &num;   // ptr holds the address of num
 
-    std::cout << "Value of num: " << num << std::endl;              // Output: 10
-    std::cout << "Address of num (&num): " << &num << std::endl;    // Prints the address of num
-    std::cout << "Pointer value (ptr): " << ptr << std::endl;       // Prints the same address as &num
-    std::cout << "Dereferenced pointer (*ptr): " << *ptr << std::endl;  // Output: 10
+    // Reading through the pointer:
+    std::cout << "num   = " << num  << "\n";   // 10
+    std::cout << "ptr   = " << ptr  << "\n";   // an address
+    std::cout << "*ptr  = " << *ptr << "\n";   // 10 — dereference: value at that address
 
-    // Modify the value of num using the pointer
+    // Writing through the pointer changes the pointed-to object:
     *ptr = 20;
-    std::cout << "New value of num after dereferencing: " << num << std::endl;  // Output: 20
+    std::cout << "after *ptr = 20, num = " << num << "\n";   // 20 — num changed
 
     return 0;
 }

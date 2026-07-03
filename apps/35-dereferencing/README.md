@@ -1,75 +1,37 @@
-# 25-dereferencing
+# 35-dereferencing
 
-- Dereferencing a pointer reads or writes the object it points to. Use the unary `*` operator (or `->` for member access) to reach the pointed-to object.
+## Concept
+Dereferencing means following a pointer to the object it points at, using the
+`*` operator. It's how you read and write the *value* through a pointer, rather
+than manipulating the address itself.
 
-## Basics
+## Minimal example
+See `src/main.cpp`.
 
-- Address-of: `&x` gives the address of `x` (a pointer).
-- Dereference: `*p` gives the object referred to by `p`.
-- Member access through pointer: `p->m` is `(*p).m`.
-- Array subscripting: `p[i]` is syntactic sugar for `*(p + i)`.
+## Line-by-line
+- `int* ptr = &num;` — `ptr` holds `num`'s address (lesson 34).
+- `ptr` alone → the address. `*ptr` → the value stored there (10).
+- `*ptr = 20;` — write *through* the pointer; because `ptr` points at `num`,
+  `num` becomes 20.
 
-## Examples
+## The two hats of `*`
+- In a **declaration**: `int* ptr` — "ptr is a pointer to int".
+- In an **expression**: `*ptr` — "the value ptr points to".
+Same symbol, different jobs. This trips up every beginner once.
 
-// Integers
-int x = 10; int* p = &x; *p = 20; // x becomes 20
+## Common pitfalls
+- **Dereferencing null/invalid pointers** is undefined behavior. Always ensure
+  the pointer points at a live object first (AddressSanitizer, on in Debug,
+  catches many of these).
+- `*ptr + 1` vs `*(ptr + 1)`: the first adds 1 to the value; the second does
+  *pointer arithmetic* (move to the next int) then dereferences. Parenthesize.
+- Confusing `ptr` (address) with `*ptr` (value) in output.
 
-// Struct member access
-struct S { int a; } s{1}; S* sp = &s;
-(*sp).a = 2; // explicit deref
-sp->a = 3;   // equivalent and idiomatic
+## Build & run
+```sh
+make run app=35-dereferencing
+```
 
-// Arrays and pointer arithmetic
-int arr[3] = {1,2,3}; int* pa = arr; // decay to pointer to first element
-int second = *(pa + 1);   // 2
-int third  = pa[2];       // 3
-
-// Smart pointers (preferred for ownership)
-auto up = std::make_unique<int>(42);
-int v = *up;              // dereference unique_ptr
-
-// Iterators use * too
-std::vector<int> vec{1,2,3};
-int first = *vec.begin(); // 1
-
-## Const correctness with pointers
-
-- `const T*` (pointer to const): you cannot modify `*p` through this pointer.
-- `T* const` (const pointer): you cannot reseat `p`, but you can modify `*p`.
-- `const T* const`: neither reseat nor modify through `p`.
-
-// Example
-int y = 5; const int* pc = &y; // pointer to const int
-//*pc = 7; // error: cannot modify through pointer-to-const
-int* const cp = &y; *cp = 7;   // ok: const pointer to non-const int
-
-## Operator precedence tips
-
-- `*p.member` is parsed as `*(p.member)`; use `(*p).member` or `p->member`.
-- `*p++` dereferences the original pointer, then increments the pointer.
-- `(*p)++` increments the referred-to value.
-- Prefer parentheses to make intent explicit.
-
-## Safety and pitfalls
-
-- Never dereference a null, uninitialized, or dangling pointer.
-  - Initialize pointers upon declaration; set to `nullptr` when empty.
-  - Check `if (p)` before dereferencing when null is possible.
-- Ensure lifetime: the pointed-to object must outlive all dereferences.
-- Avoid pointer arithmetic except within arrays you own; it’s easy to go out of bounds (UB).
-- Prefer smart pointers (`std::unique_ptr`, `std::shared_ptr`) for ownership and automatic deletion.
-- For non-owning references, prefer references (`T&`, `const T&`) or `std::span`/`std::string_view` for ranges/views.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=25-dereferencing
-  - make run app=25-dereferencing
-
-Binary path: build/25-dereferencing/bin/25-dereferencing
-
-Alternative (from inside this folder):
-  - cd app/25-dereferencing
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Point a second pointer at the same `num` and modify through one — observe both
+`*ptr` and the original `num` reflect the change (they're the same object).
