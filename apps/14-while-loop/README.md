@@ -1,69 +1,35 @@
-# 12-while-loop
+# 14-while-loop
 
-A `while` loop repeats a block as long as a condition stays true. Use it when the iteration count isn’t known ahead of time.
+## Concept
+A `while` loop repeats its body as long as a condition is true, testing the
+condition *before* each pass. Reach for it when the number of iterations isn't
+known in advance (read until end-of-file, retry until success, etc.).
 
-## Syntax
+## Minimal example
+See `src/main.cpp`.
 
-```cpp
-while (condition) {
-  // body
-}
+## Line-by-line
+- `while (i < 5)` — check the condition; if true, run the body, then re-check.
+- `++i;` — the body must make progress toward making the condition false, or the
+  loop never ends.
+
+## `for` vs `while`
+A `for` is just a `while` with the counter parts pulled to the top. Use `for`
+when you're counting a known number of times; use `while` when you're looping
+until some event.
+
+## Common pitfalls
+- **Infinite loop:** forgetting to update the variable the condition depends on.
+- **Condition false at entry** → the body runs zero times (that's often
+  correct — it's the difference from `do-while`, lesson 15).
+- `while (n)` loops until `n` becomes 0 — handy, but be sure `n` is what you
+  think.
+
+## Build & run
+```sh
+make run app=14-while-loop
 ```
 
-`do { /* body */ } while (condition);` runs the body at least once.
-
-## Examples
-
-Read until EOF:
-```cpp
-#include <iostream>
-#include <string>
-
-int main() {
-  std::string line;
-  while (std::getline(std::cin, line)) {
-    std::cout << line << "\n";
-  }
-}
-```
-
-Count down:
-```cpp
-int n = 5;
-while (n > 0) {
-  // work with n
-  --n;
-}
-```
-
-`do-while` menu (runs at least once):
-```cpp
-int choice;
-do {
-  // print menu, read choice
-  std::cin >> choice;
-} while (choice != 0);
-```
-
-## Pitfalls
-- Make sure the loop condition eventually becomes false (avoid infinite loops).
-- Update variables in the loop that affect the condition.
-- Validate input; failed extraction (e.g., `std::cin >> x`) sets `failbit`, so check state.
-
-## When to use while vs for
-- Use `while` when the end condition depends on runtime state or input.
-- Use `for` when the iteration count or step is known upfront.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-- `make build app=12-while-loop`
-- `make run app=12-while-loop`
-
-Binary path: `build/12-while-loop/bin/12-while-loop`
-
-Alternative (from inside this folder):
-- `cd app/12-while-loop`
-- `make run`
-
-Outputs go to the centralized top-level `build/` folder.
+## Try it yourself
+Count *down* from 5 to 1: start `int i = 5;` and loop `while (i > 0)` with
+`--i`.

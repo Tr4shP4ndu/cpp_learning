@@ -1,55 +1,34 @@
-# 16-continue-statement
+# 17-continue-statement
 
-The `continue` statement skips the rest of the current loop body and proceeds directly to the next iteration (re-evaluating the loop condition as appropriate).
+## Concept
+`continue` skips the rest of the current loop iteration and jumps to the next
+one. Use it to filter — "for the items I don't care about, skip ahead" — instead
+of wrapping the whole body in an `if`.
 
-## When to use
-- Skip processing for elements that don’t meet a condition (e.g., filter odd/even)
-- Ignore invalid inputs and move on
-- Keep nesting shallow by early-skipping rather than piling up `if` blocks
+## Minimal example
+See `src/main.cpp`.
 
-## Examples
+## Line-by-line
+- `if (i % 2 == 0) continue;` — for even `i`, skip the print and go straight to
+  the loop's step.
+- In a `for` loop, `continue` runs the **step** (`++i`) before re-testing the
+  condition. (In a `while`, it jumps straight back to the condition — so make
+  sure the update still happens, or you can loop forever.)
 
-Skip odd numbers in a classic `for` loop:
-```cpp
-for (int i = 0; i < 10; ++i) {
-  if (i % 2 != 0) continue; // skip odds
-  // only evens reach here
-}
+## `continue` vs `break`
+- `continue` — skip *this* pass, keep looping.
+- `break` — stop the loop entirely (lesson 16).
+
+## Common pitfalls
+- In a `while`/`do-while`, a `continue` that skips the variable update creates an
+  infinite loop. Update before the `continue`, or restructure.
+- Overusing `continue` can hurt readability; sometimes a positive `if` around the
+  body is clearer.
+
+## Build & run
+```sh
+make run app=17-continue-statement
 ```
 
-Process only positive values in a range-based loop:
-```cpp
-for (const auto& x : values) {
-  if (x <= 0) continue;
-  // process positive x
-}
-```
-
-In `while` loops, ensure the state moves forward to avoid infinite loops:
-```cpp
-int i = 0;
-while (i < 10) {
-  ++i;              // advance first to avoid stalling
-  if (i % 3 == 0) continue;
-  // work with i when not divisible by 3
-}
-```
-
-## Pitfalls
-- Overuse can harm readability; consider restructuring logic or using algorithms.
-- In `while`/`do-while`, forgetting to update loop variables before `continue` can create infinite loops.
-- `continue` affects only the nearest loop.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=16-continue-statement
-  - make run app=16-continue-statement
-
-Binary path: build/16-continue-statement/bin/16-continue-statement
-
-Alternative (from inside this folder):
-  - cd app/16-continue-statement
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Flip the condition to `i % 2 != 0` to print the *even* numbers instead.

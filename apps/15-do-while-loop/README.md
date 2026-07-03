@@ -1,65 +1,36 @@
-# 13-do-while-loop
+# 15-do-while-loop
 
-A `do-while` loop executes the body first, then checks the condition. Use it when the loop must run at least once (e.g., menus, input prompts).
+## Concept
+A `do { } while (cond);` loop runs its body first, *then* checks the condition.
+The body therefore always runs **at least once** — the key difference from a
+plain `while`.
 
-## Syntax
+## Minimal example
+See `src/main.cpp`.
 
-```cpp
-do {
-  // body
-} while (condition);
+## Line-by-line
+- `do { ... }` — run the body.
+- `while (i < 5);` — check afterward; if true, loop again. **The trailing
+  semicolon is required.**
+- The second loop shows the defining trait: its condition (`100 < 5`) is false,
+  yet the body still runs once.
+
+## When to use it
+Menus, prompts, and retry logic — anything that must happen once before you can
+even evaluate whether to repeat ("show the menu, then decide whether to show it
+again").
+
+## Common pitfalls
+- **Forgetting the semicolon** after `while (...)` is a compile error unique to
+  this form.
+- Using `do-while` when the body should be skippable — if zero iterations is
+  valid, use a plain `while`.
+
+## Build & run
+```sh
+make run app=15-do-while-loop
 ```
 
-## Examples
-
-Input prompt (runs at least once):
-```cpp
-#include <iostream>
-
-int main() {
-  int choice = -1;
-  do {
-    std::cout << "Enter 0 to quit: ";
-    std::cin >> choice;
-  } while (choice != 0);
-}
-```
-
-Validate input:
-```cpp
-#include <iostream>
-#include <limits>
-
-int value;
-do {
-  std::cout << "Enter a positive number: ";
-  if (!(std::cin >> value)) { // handle bad input
-    std::cin.clear();
-    std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-    value = -1;
-  }
-} while (value <= 0);
-```
-
-## Pitfalls
-- Body runs once even if condition is false initially.
-- Be careful with input stream state (`failbit`) and clearing invalid input.
-- Ensure the condition can become false to avoid infinite loops.
-
-## When to use
-- Use `do-while` for at-least-one execution scenarios (menus, retries).
-- Use `while` when you may skip the body entirely if the condition is false.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-- `make build app=13-do-while-loop`
-- `make run app=13-do-while-loop`
-
-Binary path: `build/13-do-while-loop/bin/13-do-while-loop`
-
-Alternative (from inside this folder):
-- `cd app/13-do-while-loop`
-- `make run`
-
-Outputs go to the centralized top-level `build/` folder.
+## Try it yourself
+Turn it into an input loop: read a number and repeat "until the user enters 0"
+(combine with lesson 05's `std::cin`).

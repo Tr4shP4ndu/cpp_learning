@@ -1,61 +1,40 @@
-# 07-arrays
+# 18-arrays
 
-C-style arrays are fixed-size, contiguous blocks of elements with minimal features. They’re lightweight but less safe than `std::array` or `std::vector`.
+## Concept
+An array is a fixed-size, contiguous run of values of the same type, accessed by
+a zero-based index. This is the raw, C-style array — the low-level building
+block. Lesson 19 shows `std::array`, the safer C++ wrapper around it.
 
-## Basics
+## Minimal example
+See `src/main.cpp` (C++) and `src/main.c` (C).
 
-- Declaration with compile-time size:
-  - `int a[5];`              // uninitialized
-  - `int b[5] = {1,2,3,4,5};` // aggregate initialization
-- Size is not stored: use a constant or `std::size(b)` (C++17) if available.
-
-## Access and iteration
-
-- Indexing:
-  - `int x = b[0];` // unchecked; out-of-bounds is undefined behavior
-- Classic for loop:
-  - `for (int i = 0; i < 5; ++i) { /* b[i] */ }`
-- Range-based for (elements only):
-  - `for (int x : b) { /* use x */ }` (works if array size can be deduced)
+## Line-by-line
+- `int scores[5] = {10, 20, 30, 40, 50};` — five ints laid out back-to-back. The
+  size `5` is part of the type.
+- `scores[i]` — index access; valid indices are `0..4`.
+- `sizeof(scores) / sizeof(scores[0])` — the classic way to compute the length,
+  since a raw array doesn't store its own count.
 
 ## Common pitfalls
+- **Out-of-bounds access** (`scores[5]`, `scores[-1]`) is undefined behavior —
+  no automatic bounds check. AddressSanitizer (on in Debug) will catch it at
+  runtime.
+- **Array-to-pointer decay:** pass an array to a function and it becomes a bare
+  pointer — the size is lost, and the `sizeof` trick breaks. This is *the*
+  reason C++ prefers `std::array`/`std::vector`.
+- Uninitialized array elements hold garbage; `int a[5] = {};` zeroes them all.
 
-- No bounds checking: `b[5]` is UB for `int b[5]`.
-- No `.size()` or member functions.
-- Decays to pointer when passed to functions; size information is lost.
-- Harder to use with STL algorithms; prefer `std::array` or `std::vector`.
+## C vs C++
+Raw arrays are identical in C and C++ — C++ inherited them verbatim. The
+difference is that C++ *adds better options on top* (`std::array`, next lesson).
+In C, the raw array is all you get built in.
 
-## When to use
-
-- Very simple, fixed-size buffers where overhead must be minimal.
-- Prefer `std::array<T, N>` for safety and STL compatibility when size is known.
-
-## Example
-
-```cpp
-#include <iostream>
-
-int main() {
-    int numbers[5] = {10, 20, 30, 40, 50};
-    for (int index = 0; index < 5; ++index) {
-        std::cout << "Element at index " << index << ": " << numbers[index] << "\n";
-    }
-
-    // Unsafe: out of bounds (undefined behavior)
-    // std::cout << numbers[5] << "\n";
-}
+## Build & run
+```sh
+make run app=18-arrays      # C++
+make run-c app=18-arrays    # C
 ```
 
-## Build and run (from repository root)
-
-Run these from the repository root:
-- `make build app=08-arrays`
-- `make run app=08-arrays`
-
-Binary path: `build/08-arrays/bin/08-arrays`
-
-Alternative (from inside this folder):
-- `cd app/08-arrays`
-- `make run`
-
-This uses the per-app Makefile and still outputs to the centralized top-level `build/` folder.
+## Try it yourself
+Uncomment a `scores[5]` read and run the C++ version — watch AddressSanitizer
+report the out-of-bounds access.

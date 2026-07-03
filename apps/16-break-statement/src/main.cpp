@@ -1,13 +1,16 @@
+// 16-break-statement — leave a loop early, before its condition would end it.
 #include <iostream>
 
 int main() {
-    for (int i = 0; i < 10; ++i) {
-        if (i == 5) {
-            std::cout << "Break at i = " << i << std::endl;
-            break; // Exit the loop when i equals 5
+    // Search for the first value >= 30, then stop.
+    int data[] = {10, 20, 30, 40, 50};
+    for (int value : data) {
+        if (value >= 30) {
+            std::cout << "found " << value << ", stopping\n";
+            break;  // jump straight out of the loop
         }
-        std::cout << "Current value of i: " << i << std::endl;
+        std::cout << "skipping " << value << "\n";
     }
-    std::cout << "Loop exited." << std::endl;
+    std::cout << "loop exited\n";
     return 0;
 }

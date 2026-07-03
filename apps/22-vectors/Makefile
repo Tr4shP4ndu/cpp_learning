@@ -1,5 +1,5 @@
 # Per-app Makefile — one lesson, one command.
-APP_NAME := 18-arrays
+APP_NAME := 22-vectors
 SRC_DIR  := src
 INC_DIR  := include
 

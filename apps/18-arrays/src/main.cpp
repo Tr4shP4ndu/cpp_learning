@@ -1,23 +1,20 @@
+// 18-arrays — a fixed-size, contiguous block of same-typed values (C style).
 #include <iostream>
-#include <numeric>
-#include <iterator>
 
 int main() {
-    int rawArray[5] = {10, 20, 30, 40, 50};// Declare and initialize a raw array
+    // A C-style array: the size is part of the type and cannot change.
+    int scores[5] = {10, 20, 30, 40, 50};
 
-    // Accessing elements
+    // Indexing is zero-based: valid indices are 0..4.
     for (int i = 0; i < 5; ++i) {
-        std::cout << "Element at index " << i << ": " << rawArray[i] << std::endl;
+        std::cout << "scores[" << i << "] = " << scores[i] << "\n";
     }
 
-    // Unsafe operation example (out of bounds)
-    // std::cout << rawArray[5]; // Uncommenting this line would lead to undefined behavior
+    // A raw array does NOT know its own length at runtime — you must track it.
+    // sizeof gives the total bytes; divide by one element to get the count.
+    int count = sizeof(scores) / sizeof(scores[0]);
+    std::cout << "element count = " << count << "\n";
 
-    int ids[100];
-    std::iota(std::begin(ids), std::end(ids), 0);
-    for(int i=0; i < 100; i++){
-      std::cout << ids[i] << std::endl;
-    }
-
+    // scores[5] would read past the end -> undefined behavior (ASan will flag).
     return 0;
 }

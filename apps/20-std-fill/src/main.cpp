@@ -1,16 +1,17 @@
+// 20-std-fill — set every element of a range to one value in a single call.
 #include <iostream>
 #include <array>
-#include <algorithm> // for std::fill
+#include <algorithm>  // std::fill
 
 int main() {
-    std::array<int, 5> numbers; // Uninitialized array
+    std::array<int, 5> numbers{};  // value-initialized to zeros
 
-    // Fill array with the value 42
+    // std::fill(first, last, value) assigns `value` to each element in
+    // [first, last). Clearer and less error-prone than a hand-written loop.
     std::fill(numbers.begin(), numbers.end(), 42);
 
-    for (int num : numbers) {
-        std::cout << "Array element: " << num << std::endl;
+    for (int n : numbers) {
+        std::cout << n << "\n";
     }
-
     return 0;
 }
