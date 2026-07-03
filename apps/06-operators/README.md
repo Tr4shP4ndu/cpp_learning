@@ -1,83 +1,46 @@
-# 22-operators
+# 06-operators
 
-- Operators let you perform actions on values and objects. C++ has rich operator sets with specific precedence and associativity rules.
+## Concept
+Operators are the symbols that compute with values: `+ - * /`, comparisons,
+logical `&&`/`||`, bit twiddling, and `++`/`--`. This lesson runs one of each
+and checks the result with `assert`.
 
-## Core categories
+## Minimal example
+See `src/main.cpp`.
 
-- Arithmetic: + - * / % (modulo)
-- Assignment: =, compound: += -= *= /= %=, and with bitwise/logical variants
-- Comparison: == != < <= > >=
-- Logical: && || ! (short-circuit)
-- Bitwise: & | ^ ~ << >>
-- Increment/Decrement: ++ -- (prefix vs postfix)
-- Pointer-related: & (address-of), * (dereference)
-- Member access: . and ->, pointer-to-member: .* and ->*
-- Subscript and call: [] ()
-- Ternary conditional: cond ? a : b
-- Type-related: sizeof, alignof, typeid, static_cast/dynamic_cast/reinterpret_cast/const_cast
-- New/delete: new, delete, new[], delete[]
-- Other: comma operator (,), scope (::), co_yield/co_await (coroutines), etc.
+## Categories
+- **Arithmetic:** `+ - * / %` (`%` is remainder, integers only).
+- **Assignment / compound:** `=`, `+= -= *= /= %=`, `&= |= ^= <<= >>=`.
+- **Comparison:** `== != < <= > >=` → produce a `bool`.
+- **Logical:** `&& || !` — short-circuit, left to right.
+- **Bitwise:** `& | ^ ~ << >>` — operate on individual bits.
+- **Increment/decrement:** `++ --` in prefix and postfix forms.
+- **Special:** `sizeof`, `&` (address-of), `*` (dereference), `?:` (ternary).
 
-## Precedence and associativity (essentials)
+## Line-by-line
+- `a / b` with two `int`s truncates: `7 / 3 == 2`. Cast one side with
+  `static_cast<double>` for real division.
+- `p != nullptr && *p > 0` — because `&&` short-circuits, `*p` is only evaluated
+  when `p` is non-null. This is the idiomatic safe null check.
+- `flags |= 0b0010;` sets a bit; `flags &= ~0b0001u;` clears one.
+- `++x` increments then yields the new value; `x++` yields the old value then
+  increments.
 
-- Higher-precedence operators bind tighter; use parentheses to make intent clear.
-- Most binary operators are left-associative; assignment and conditional are right-associative.
-- Don't memorize the full table; prefer parentheses in complex expressions.
+## Common pitfalls
+- **Integer division truncates.** `1/2 == 0`. Cast to floating point when you
+  want a fraction.
+- **Precedence surprises.** `a + b << 1` means `(a + b) << 1`. When unsure, add
+  parentheses — clarity beats memorizing the table.
+- **`&&` vs `&` and `||` vs `|`** are different: logical vs bitwise. Mixing them
+  up compiles but misbehaves.
+- Signed overflow and shifting negative numbers are undefined behavior (the
+  sanitizer in Debug builds will flag them).
 
-## Short-circuiting
+## Build & run
+```sh
+make run app=06-operators
+```
 
-- Logical && and || evaluate left to right and short-circuit:
-  - a && b: b is evaluated only if a is true.
-  - a || b: b is evaluated only if a is false.
-- Use this to guard operations (e.g., pointer checks) without extra if statements.
-
-## Examples
-
-// Arithmetic and comparison
-int a = 7, b = 3;
-std::cout << a / b << "\n";   // 2 (integer division)
-std::cout << a % b << "\n";   // 1 (remainder)
-std::cout << (a > b) << "\n"; // 1 (true)
-
-// Increment: prefix vs postfix
-int x = 5;
-std::cout << ++x << "\n"; // 6 (x becomes 6, value is 6)
-std::cout << x++ << "\n"; // 6 (value is 6, x becomes 7)
-
-// Logical short-circuit
-int* p = nullptr;
-if (p && *p > 0) { /* safe: *p not evaluated when p==nullptr */ }
-
-// Bitwise
-unsigned flags = 0b0101;     // 5
-flags |= 0b0010;             // set bit 1 -> 0b0111
-flags &= ~0b0001;            // clear bit 0 -> 0b0110
-
-// Address-of and dereference
-int v = 10; int* ptr = &v; *ptr = 20; // v becomes 20
-
-// Conditional operator
-int y = (v > 15) ? 1 : 0;
-
-## Pitfalls and tips
-
-- Integer division truncates; cast to double for floating-point: static_cast<double>(a) / b.
-- Beware of undefined behavior with signed overflow and shifting negatives.
-- Postfix ++/-- returns the old value; prefer prefix when possible for clarity and efficiency.
-- Operator precedence surprises: use parentheses; e.g., a + b << 1 is (a + b) << 1 due to precedence.
-- Don't mix logical and bitwise operators accidentally: && vs & and || vs | have different semantics.
-- For user-defined types, overload operators carefully to preserve expected meaning and avoid surprising side effects.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=22-operators
-  - make run app=22-operators
-
-Binary path: build/22-operators/bin/22-operators
-
-Alternative (from inside this folder):
-  - cd app/22-operators
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Add a compound-assignment line (`a *= 2;`) and an `assert` that checks the new
+value.

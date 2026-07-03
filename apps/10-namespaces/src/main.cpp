@@ -1,4 +1,6 @@
+// 10-namespaces — group names so identical names can coexist without clashing.
 #include <iostream>
+#include <string>
 
 namespace first {
     int x = 1;

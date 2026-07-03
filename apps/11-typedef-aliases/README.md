@@ -1,72 +1,39 @@
-# 07-typedef-aliases
+# 11-typedef-aliases
 
-- Typedefs and type aliases let you give readable names to complex types. Modern C++ prefers `using` over `typedef`, especially for templates.
+## Concept
+A type alias gives a second, readable name to an existing type. It doesn't
+create a new type — just a synonym — but it shortens verbose types and lets you
+change an underlying type in one place.
+
+## Minimal example
+See `src/main.cpp`.
+
+## Line-by-line
+- `typedef std::string text_t;` — the classic C form: `typedef <type> <alias>;`.
+- `using number_t = int;` — the modern C++ form. Reads naturally left-to-right
+  and, unlike `typedef`, works with templates.
+- `using pair_list_t = std::vector<std::pair<std::string, int>>;` — the payoff:
+  a long type becomes one short name.
+- `for (const auto& [subject, score] : scores)` — structured bindings unpack
+  each pair (a preview of ranged loops, lesson 13).
 
 ## `typedef` vs `using`
+They're equivalent for simple cases. Prefer `using` in modern C++:
+- It reads like an assignment: `using Alias = Type;`.
+- It supports *alias templates*: `template<class T> using Vec = std::vector<T>;`.
+- Function-pointer aliases are far more readable with `using`.
 
-- `typedef ExistingType Alias;`
-- `using Alias = ExistingType;` (clearer and works with templates)
+## Common pitfalls
+- An alias is **not** a new distinct type — you can't overload two functions
+  that differ only by alias vs underlying type.
+- Don't alias trivial types just to alias them; a good name earns its keep
+  (`using UserId = int;` documents intent; `using MyInt = int;` doesn't).
 
-Examples:
+## Build & run
+```sh
+make run app=11-typedef-aliases
+```
 
-typedef unsigned long ulong_t; // C-style
-using index_t = std::size_t;   // modern alias
-
-## Pointer, reference, and function pointer aliases
-
-// Pointer and reference
-using IntPtr = int*;     // pointer to int
-using IntRef = int&;     // reference to int
-using CStr  = const char*; // C string
-
-// Function pointer: returns int, takes (double, int)
-using FuncPtr = int(*)(double, int);
-
-// Using the aliases
-int foo(double, int);
-FuncPtr p = &foo;
-int r = p(3.14, 7);
-
-## Template aliases
-
-// Alias a template with fixed parameters
-template <class T>
-using Vec = std::vector<T>;
-
-Vec<int> vi;        // std::vector<int>
-
-// Partial application via alias
-template <class T>
-using HashSet = std::unordered_set<T>;
-
-## Namespace aliases
-
-namespace fs = std::filesystem;
-fs::path p{"/tmp"};
-
-## Benefits
-
-- Readability: shorten verbose types (iterators, function signatures).
-- Maintainability: change the underlying type in one place.
-- Abstraction: expose intent (e.g., UserId, Milliseconds).
-
-## Pitfalls and tips
-
-- Be cautious with pointer/reference aliases: IntPtr a, b; declares two pointers? No—only `a` is a pointer; prefer `using` for clarity and repeat the alias: `IntPtr a; IntPtr b;`.
-- Aliases don’t create new types; they’re synonyms. You can’t overload on alias differences.
-- Prefer `using` with templates; `typedef` can get unreadable with complex function pointers or templates.
-- Don’t over-alias trivial types; meaningful names beat unnecessary indirection.
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=07-typedef-aliases
-  - make run app=07-typedef-aliases
-
-Binary path: build/07-typedef-aliases/bin/07-typedef-aliases
-
-Alternative (from inside this folder):
-  - cd app/07-typedef-aliases
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Add `using Celsius = double;` and a variable of that type. Note it behaves
+exactly like a `double`.

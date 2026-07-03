@@ -1,4 +1,6 @@
+// 03-variables-datatypes — the built-in types and how big each one is.
 #include <iostream>
+#include <string>  // std::string is used below; include it explicitly
 
 int main(){
 

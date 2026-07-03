@@ -1,28 +1,44 @@
+// 06-operators — the symbols that compute with values: arithmetic, comparison,
+// logical, bitwise, and increment. (asserts double as a self-check.)
 #include <iostream>
-
-// Function definition
-void foo() {
-    int x = 72; // Local variable inside the function
-}
+#include <cassert>
 
 int main() {
-    int x = 42;               // Integer variable
-    float y = 72.0;           // Float variable
-    char a = 'a';             // Character variable
-    signed char b = 'b';      // Signed character variable
-    unsigned char c = 'c';    // Unsigned character variable
+    int a = 7, b = 3;
 
-    // Printing the addresses of the variables
-    std::cout << "Address of x: " << &(x) << std::endl;            // Example output: Address of x: 0x7ffd8d4e1234
-    std::cout << "Size of x: " << sizeof(x) << " bytes" << std::endl; // Example output: Size of x: 4 bytes
-    std::cout << "Address of y: " << &(y) << std::endl;            // Example output: Address of y: 0x7ffd8d4e1238
-    std::cout << "Address of a: " << (void*)&(a) << std::endl;     // Example output: Address of a: 0x7ffd8d4e123c
-    std::cout << "Address of b: " << (void*)&(b) << std::endl;     // Example output: Address of b: 0x7ffd8d4e123d
-    std::cout << "Address of c: " << (void*)&(c) << std::endl;     // Example output: Address of c: 0x7ffd8d4e123e
+    // Arithmetic. Note: int / int truncates toward zero.
+    assert(a + b == 10);
+    assert(a - b == 4);
+    assert(a * b == 21);
+    assert(a / b == 2);    // 2, not 2.33 — integer division
+    assert(a % b == 1);    // remainder
 
-    // Printing the addresses of the functions
-    std::cout << "Address of foo function: " << (void*)&foo << std::endl;   // Example output: Address of foo function: 0x55e2b7f10270
-    std::cout << "Address of main function: " << (void*)&main << std::endl; // Example output: Address of main function: 0x55e2b7f10290
+    // Cast one side to double for real division.
+    double real = static_cast<double>(a) / b;
+    std::cout << "7 / 3 as int    = " << a / b  << "\n";
+    std::cout << "7 / 3 as double = " << real   << "\n";
 
+    // Comparison operators produce a bool (prints as 1/0).
+    assert((a > b) == true);
+    assert((a == b) == false);
+
+    // Logical operators short-circuit: the right side is skipped when the
+    // result is already known. This makes null-checks safe.
+    int* p = nullptr;
+    if (p != nullptr && *p > 0) { /* *p is never evaluated when p is null */ }
+
+    // Bitwise operators work on the individual bits of integers.
+    unsigned flags = 0b0101;   // 5
+    flags |= 0b0010;           // set a bit  -> 0b0111 (7)
+    flags &= ~0b0001u;         // clear a bit -> 0b0110 (6)
+    assert(flags == 0b0110);
+
+    // Increment: prefix changes-then-reads, postfix reads-then-changes.
+    int x = 5;
+    assert(++x == 6);   // x is now 6, expression is 6
+    assert(x++ == 6);   // expression is 6, then x becomes 7
+    assert(x == 7);
+
+    std::cout << "all operator checks passed\n";
     return 0;
 }

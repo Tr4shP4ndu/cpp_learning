@@ -1,39 +1,45 @@
-# hello_world
+# 01-hello-world
 
-The first program you should write in any language is "Hello, World!".
+## Concept
+The first program in any language: print a line of text and exit. It proves
+your toolchain works and introduces the three things every C/C++ program has —
+an `#include`, a `main` function, and a return value.
 
 ## Minimal example
+See `src/main.cpp` (C++) and `src/main.c` (C).
 
-// File: src/main.cpp
-#include <iostream>
-
-int main() {
-  std::cout << "Hello, World!\n";
-  return 0; // optional in C++, implicit 0 if omitted
-}
-
-## Notes
-
-- `#include <iostream>` pulls in the standard output stream `std::cout`.
-- `main` is the program entry point; returning 0 signals success to the OS.
-- The `\n` newline flushes in many environments; for immediate flush use `std::endl` (also forces flush) or flush explicitly.
-- Avoid `using namespace std;` in headers and large scopes; qualify with `std::` for clarity.
+## Line-by-line
+- `#include <iostream>` — pulls in the declarations for `std::cout`. Without it
+  the compiler doesn't know what `std::cout` is.
+- `int main()` — the entry point. Execution starts here. It returns an `int`.
+- `std::cout << "Hello, World!\n";` — send text to standard output. `<<` is the
+  "stream insertion" operator; read it as "put this into cout".
+- `return 0;` — hand `0` back to the operating system, meaning success. Any
+  non-zero value conventionally means an error.
 
 ## Common pitfalls
+- Forgetting the `#include` → "`cout` was not declared".
+- Forgetting the `;` at the end of a statement.
+- Missing newline → your shell prompt ends up glued to the output.
 
-- Missing newline leaves the shell prompt on the same line as your output.
-- Non-ASCII output may require setting the locale and a compatible terminal font.
+## C vs C++
+| | C | C++ |
+|---|---|---|
+| Header | `<stdio.h>` | `<iostream>` |
+| Output | `printf("...\n");` | `std::cout << "...\n";` |
+| `main` | `int main(void)` | `int main()` |
 
-## Build and run (from repository root)
+C uses *format-string* functions (`printf`); C++ uses *streams* (`std::cout`).
+In C, `int main(void)` explicitly says "no parameters"; C++ treats empty `()`
+the same way. In both, returning `0` from `main` is success (and in both you may
+even omit the `return` — the standard supplies an implicit `return 0;`).
 
-Run these from the repository root:
-  - make build app=hello_world
-  - make run app=hello_world
+## Build & run
+```sh
+make run app=01-hello-world      # C++
+make run-c app=01-hello-world    # C
+```
 
-Binary path: build/hello_world/bin/hello_world
-
-Alternative (from inside this folder):
-  - cd app/hello_world
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Print a second line with your name. In C++ add another `std::cout <<` line; in C
+add another `printf`.

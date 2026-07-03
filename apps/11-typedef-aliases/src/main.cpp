@@ -1,27 +1,26 @@
+// 11-typedef-aliases — give a readable name to an existing type.
 #include <iostream>
+#include <string>
 #include <vector>
 
-// Using typedef to create aliases for existing data types
-// typedef std::vector<std::pair<std::string, int>> pairlist_t;
+// The old C way: typedef <existing type> <alias>;
 typedef std::string text_t;
-typedef int number_t;
+
+// The modern C++ way: using <alias> = <existing type>;  (reads left-to-right,
+// and works with templates — prefer this).
+using number_t = int;
+using pair_list_t = std::vector<std::pair<std::string, int>>;
 
 int main() {
-    /*
-      Typedef:
-      - Reserved keyword used to create an alias for another data type.
-      - Creates a new identifier for an existing type.
-      - Enhances readability and reduces typos.
-      - Useful when there is a clear benefit, such as long or complex types.
-      - In modern C++, 'using' is preferred over 'typedef', especially with templates.
-    */
-
-    //pairlist_t pairlist;  // Example of a typedef alias for a complex type
-    text_t firstName = "Tr4shP4ndu";
+    text_t   firstName = "Tr4shP4ndu";
     number_t age = 21;
 
-    std::cout << firstName << '\n';
-    std::cout << age << '\n';
+    // The verbose type on the left is now just `pair_list_t`.
+    pair_list_t scores = { {"math", 90}, {"art", 88} };
+
+    std::cout << firstName << " is " << age << "\n";
+    for (const auto& [subject, score] : scores)
+        std::cout << subject << ": " << score << "\n";
 
     return 0;
 }

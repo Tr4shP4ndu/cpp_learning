@@ -1,5 +1,5 @@
 # Per-app Makefile — one lesson, one command.
-APP_NAME := 04-constants
+APP_NAME := 05-io-basics
 SRC_DIR  := src
 INC_DIR  := include
 
