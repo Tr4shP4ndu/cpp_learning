@@ -1,93 +1,41 @@
-# 17-functions
+# 25-functions
 
-- Functions are reusable blocks of code that perform specific tasks. Functions help to structure your program, avoid repetition, and make code more modular and readable.
-- Components of a Function:
-  - Return type: The data type of the value the function returns (e.g., int, double, void).
-  - Function name: A unique identifier to call the function.
-  - Parameters: Optional inputs that the function accepts (also called arguments).
-  - Function body: The block of code that defines what the function does.
-  - Return statement: Specifies the value to return (if applicable).
+## Concept
+A function is a named, reusable piece of logic that takes inputs (parameters),
+does something, and usually returns a value. Functions let you write a
+computation once and call it from many places.
 
-## Declaring vs defining
+## Minimal example
+See `src/main.cpp`.
 
-- Declaration (prototype): tells the compiler the function’s signature.
-- Definition: provides the actual implementation.
+## Line-by-line
+- `int add(int a, int b);` — a **declaration** (prototype): return type, name,
+  parameter types, ending in `;`. It promises the function exists.
+- `add(1, 2)` — a **call**: supply arguments, receive the return value.
+- `int add(int a, int b) { return a + b; }` — the **definition**: same signature,
+  plus a body.
 
-```cpp
-int add(int a, int b);        // declaration
-int add(int a, int b) {       // definition
-  return a + b;
-}
+## Declaration vs definition
+- A **declaration** tells the compiler the function's shape so calls type-check.
+  You can have many.
+- A **definition** provides the body. There must be exactly **one** (the
+  One Definition Rule).
+- Putting the declaration first lets `main` call `add` before its body appears —
+  the basis for splitting declarations into headers (lesson 30).
+
+## Common pitfalls
+- **No return in a non-`void` function** is undefined behavior. Every path must
+  return a value (compilers warn).
+- Declaration and definition must match exactly (types, `const`, etc.), or you
+  get "undefined reference" at link time.
+- Calling with the wrong argument types may silently convert (e.g. `add(1.9,
+  2.9)` truncates to `add(1, 2)`); the sanitizer won't catch logic like this.
+
+## Build & run
+```sh
+make run app=25-functions
 ```
 
-## Passing arguments
-
-- Pass-by-value (copy):
-```cpp
-void foo(int x) { /* x is a copy */ }
-```
-
-- Pass-by-reference (modify caller’s object):
-```cpp
-void inc(int& x) { ++x; }
-```
-
-- Pass-by-const-reference (read-only, no copy):
-```cpp
-int sum(const std::vector<int>& v) {
-  int s = 0; for (auto x : v) s += x; return s;
-}
-```
-
-## Overloading
-
-Same name, different parameter types or counts:
-```cpp
-int print(int x);
-double print(double x);
-```
-
-## Default arguments
-
-```cpp
-int power(int base, int exp = 2) { return /* base^exp */; }
-```
-
-## Inline and headers
-
-- Put declarations in headers (`.hpp` or `.h`), definitions in `.cpp`.
-- Small, frequently-used functions can be marked `inline` (or defined in headers) to allow ODR-safe multiple translation units.
-
-## Return values and void
-
-- `void f()` means no return value.
-- Use `return;` to exit early from `void` functions.
-- Prefer returning values over output-parameters where practical.
-
-## Small example
-
-```cpp
-#include <iostream>
-
-int add(int a, int b) { return a + b; }
-void greet(const std::string& name) { std::cout << "Hello, " << name << "\n"; }
-
-int main() {
-  std::cout << add(2, 3) << "\n";   // 5
-  greet("Ada");
-}
-```
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=17-functions
-  - make run app=17-functions
-
-Binary path: build/17-functions/bin/17-functions
-
-Alternative (from inside this folder):
-  - cd app/17-functions
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Add a second function `int square(int n)` (declare it up top, define it below)
+and call it from `main`.

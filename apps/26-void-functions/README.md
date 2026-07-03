@@ -1,80 +1,32 @@
-# 18-void-functions
+# 26-void-functions
 
-`void` functions don’t return a value. They’re used for actions with side effects (printing, logging, mutating state) or when a result isn’t needed.
+## Concept
+A `void` function returns no value. You call it for its *side effect* — printing,
+modifying something, logging — not to get an answer back.
 
-## Basics
+## Minimal example
+See `src/main.cpp`.
 
-```cpp
-void greet(const std::string& name) {
-  std::cout << "Hello, " << name << "\n";
-}
+## Line-by-line
+- `void printBanner()` — the `void` return type means "nothing comes back".
+- `greet(const std::string& name)` — void functions can still take parameters.
+- Inside, a bare `return;` (no value) is optional and can be used to exit early.
+- In `main`, calls like `printBanner();` are complete statements — there's no
+  value to store.
+
+## Common pitfalls
+- Trying to use the result — `int x = printBanner();` — is a compile error;
+  there's no value.
+- A `void` function may use `return;` alone, but **`return someValue;` is an
+  error**.
+- If you find yourself passing something in *only* to read a result back out,
+  you probably want a non-`void` return value instead.
+
+## Build & run
+```sh
+make run app=26-void-functions
 ```
 
-## Early return
-
-You can exit a `void` function early with `return;`:
-```cpp
-void process(int x) {
-  if (x < 0) return; // bail out
-  // ... work ...
-}
-```
-
-## Side effects and parameters
-
-- Prefer `const&` parameters for read-only to avoid copies.
-- Use references (`&`) to modify caller-owned data.
-
-```cpp
-void reset(std::vector<int>& v) {
-  v.clear();
-}
-```
-
-## Const correctness
-
-Mark member functions `const` when they don’t modify the object:
-```cpp
-struct Printer {
-  void print(const std::string& s) const {
-    std::cout << s << "\n";
-  }
-};
-```
-
-## Small example
-
-```cpp
-#include <iostream>
-#include <vector>
-
-void log_values(const std::vector<int>& v) {
-  for (int x : v) std::cout << x << ' ';
-  std::cout << '\n';
-}
-
-void multiply_by_two(std::vector<int>& v) {
-  for (int& x : v) x *= 2;
-}
-
-int main() {
-  std::vector<int> nums{1,2,3};
-  log_values(nums);       // 1 2 3
-  multiply_by_two(nums);
-  log_values(nums);       // 2 4 6
-}
-```
-
-## Build and run (from repository root)
-
-Run these from the repository root:
-  - make build app=18-void-functions
-  - make run app=18-void-functions
-
-Binary path: build/18-void-functions/bin/18-void-functions
-
-Alternative (from inside this folder):
-  - cd app/18-void-functions
-  - make run
-
-This uses the per-app Makefile and still outputs to the centralized top-level build/ folder.
+## Try it yourself
+Write `void printSum(int a, int b)` that prints `a + b`, and call it from
+`main`. Note you print inside the function rather than returning.

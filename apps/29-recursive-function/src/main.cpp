@@ -1,25 +1,25 @@
+// 29-recursive-function — a function that calls itself to solve smaller cases.
 #include <iostream>
+#include <cassert>
 
-// Recursive function to calculate factorial
-int factorial(int n) {
-    if (n <= 1) { // Base Case: When n is 0 or 1, the function returns 1.
+// factorial(n) = n * (n-1) * ... * 1
+long long factorial(int n) {
+    // BASE CASE: the smallest input that stops the recursion.
+    if (n <= 1) {
         return 1;
-    } else {
-        return n * factorial(n - 1); // Recursive call - Recursive Case: The function calls itself with n - 1, reducing the problem size by one in each step.
-
-        /*
-        For example, to calculate factorial(5), the recursive calls look like this:
-        5 * factorial(4)
-        4 * factorial(3)
-        3 * factorial(2)
-        2 * factorial(1)
-        The base case is reached at factorial(1), which returns 1.
-        */
     }
+    // RECURSIVE CASE: solve a smaller problem, then combine.
+    // factorial(5) -> 5 * factorial(4) -> 5 * 4 * factorial(3) -> ...
+    return n * factorial(n - 1);
 }
 
 int main() {
-    int number = 5;
-    std::cout << "Factorial of " << number << " is: " << factorial(number) << std::endl;
+    // Self-check: verify a couple of known values.
+    assert(factorial(0) == 1);
+    assert(factorial(5) == 120);
+
+    for (int n = 0; n <= 6; ++n) {
+        std::cout << n << "! = " << factorial(n) << "\n";
+    }
     return 0;
 }

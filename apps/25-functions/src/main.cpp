@@ -1,26 +1,19 @@
+// 25-functions — package reusable logic behind a name; call it as needed.
 #include <iostream>
 
-// Function declaration
-int add(int num1, int num2) {
-    return num1 + num2; // Return the sum of num1 and num2
-}
-int main() {
-    std::cout << "The sum of 1 and 2 is: " << add(1, 2) << std::endl;
-    return 0;
-}
-
-/* Forward Declaration
-#include <iostream>
-// Foward Declared
-// Function declaration
+// A forward DECLARATION (prototype): the name, parameters, and return type.
+// It lets main() call add() before the DEFINITION appears below.
 int add(int a, int b);
 
 int main() {
-    std::cout << "The sum of " << num1 << " and " << num2 << " is: " << add(1, 2) << std::endl;
+    // A function call: pass arguments, get a return value back.
+    std::cout << "add(1, 2)  = " << add(1, 2) << "\n";
+    std::cout << "add(10, 5) = " << add(10, 5) << "\n";
     return 0;
 }
 
-int add(int num1, int num2) {
-    return num1 + num2; // Return the sum of num1 and num2
+// The DEFINITION supplies the body. A function has exactly one definition
+// but may be declared many times (the "one definition rule").
+int add(int a, int b) {
+    return a + b;
 }
-    */
