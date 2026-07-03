@@ -37,6 +37,24 @@ Debug builds (the default) run with AddressSanitizer + UBSan on, so memory and
 undefined-behavior mistakes are caught while you learn. Use
 `BUILD_TYPE=Release` for optimized, sanitizer-free builds.
 
+## Practice — follow along in your own copy
+
+Don't edit the reference lessons. To *type along* with a tutorial, make a
+personal scratch copy and build it with `PRACTICE=1`:
+
+```sh
+make practice app=01-hello-world          # -> practice/cpp/01-hello-world/ (a starter file)
+make run      app=01-hello-world PRACTICE=1   # build & run YOUR copy
+
+make practice app=05-io-basics lang=c     # -> practice/c/05-io-basics/
+make run-c    app=05-io-basics PRACTICE=1
+```
+
+Your copies live under `practice/` (git-ignored, so they never clutter the
+repo), and `make practice` never overwrites a file you've already started. Read
+the reference lesson's README, write your own version in your practice copy, and
+run it to check. The reference solution stays put for when you want to compare.
+
 ## Learning path
 
 > Legend: **C** = also has a C version under `apps/c/NN-name/` · **H** = multi-file (`include/` + `src/`).

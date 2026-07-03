@@ -1,6 +1,9 @@
 # Ignore centralized build artifacts
 build/
 
+# Learners' personal scratch copies (make practice ...)
+practice/
+
 # Rendered output from the capstone (52-mini-renderer)
 *.ppm
 *.png
