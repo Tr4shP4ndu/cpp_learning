@@ -6,7 +6,7 @@ are statically typed: every variable's type is fixed at compile time, and the
 type decides how many bytes it uses and what values it can hold.
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/03-variables-datatypes`](../../c/03-variables-datatypes/) (run it with `make run-c app=03-variables-datatypes`).
 
 ## Line-by-line
 - `int signedIntVar = -10;` — declare a variable, give it a type, initialize it.

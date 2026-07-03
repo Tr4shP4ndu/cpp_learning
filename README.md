@@ -4,21 +4,22 @@ A tiny, vendor-free C and C++ workspace for learning the languages from your
 very first program to advanced modern C++ — one small, runnable lesson at a
 time.
 
-- Single top-level `Makefile` to scaffold apps and build/run them.
-- Each lesson lives under `apps/NN-name/` with its own `Makefile` and `src/`.
+- A single top-level `Makefile` builds and runs every lesson — no per-lesson Makefiles.
+- C++ lessons live under `apps/cpp/NN-name/`; C lessons under `apps/c/NN-name/`.
 - No submodules, no external build systems, no dependencies.
 
 ## How to use this repo
 
-Each numbered folder under `apps/` is one self-contained lesson. Read its
-`README.md`, then build and run it:
+Each numbered folder under `apps/cpp/` is one self-contained C++ lesson. Read
+its `README.md`, then build and run it:
 
 ```sh
 make run app=01-hello-world
 ```
 
 Lessons are ordered so each builds on the last. Where the C-vs-C++ contrast
-teaches something, a lesson ships a C version too — run it with:
+teaches something, there's a parallel C lesson in `apps/c/NN-name/` — run it
+with `run-c` (same name, C tree):
 
 ```sh
 make run-c app=01-hello-world
@@ -38,8 +39,7 @@ undefined-behavior mistakes are caught while you learn. Use
 
 ## Learning path
 
-> Legend: **C** = also has a C version · **H** = multi-file (`include/` + `src/`).
-> Folders with a gap in the numbering are lessons still to be written.
+> Legend: **C** = also has a C version under `apps/c/NN-name/` · **H** = multi-file (`include/` + `src/`).
 
 ### Beginner
 | # | Lesson | |
@@ -125,8 +125,9 @@ undefined-behavior mistakes are caught while you learn. Use
 |---|--------|---|
 | 52 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
 
-Each row above is a folder under `apps/` (e.g. `apps/01-hello-world/`) with its
-own README. See also the reference guides:
+Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
+with its own README; the **C** lessons also have a counterpart under `apps/c/`.
+See also the reference guides:
 - [`references/debugging-and-tooling.md`](references/debugging-and-tooling.md) — debuggers, sanitizers, valgrind, Compiler Explorer, clang-tidy.
 - [`references/going-further-gpu.md`](references/going-further-gpu.md) — how the capstone maps to real GPUs, and where to learn shaders/CUDA/Vulkan.
 
@@ -151,9 +152,10 @@ See `Guide-to-Install-C-CPP.md` for detailed setup.
 
 ## Notes
 
-- Source lives in `apps/NN-name/src/`; multi-file lessons add `apps/NN-name/include/`.
-- Binaries land centrally under `build/NN-name/<config>/bin/`, where `<config>`
-  encodes the build type and standard (e.g. `Debug-c++23-c17`) so different
-  standards never collide.
+- Source lives in `apps/cpp/NN-name/src/` (and `apps/c/NN-name/src/` for C);
+  multi-file lessons add an `include/` folder.
+- Binaries land centrally under `build/<cpp|c>/NN-name/<config>/bin/`, where
+  `<config>` encodes the build type and standard (e.g. `Debug-c++23-c17`) so
+  different standards never collide.
 - Override the compiler with `CXX=clang++` / `CC=clang` on the make command line.
 - Minimal by design — focus on C/C++ concepts, not tooling.

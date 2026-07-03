@@ -6,7 +6,7 @@ a zero-based index. This is the raw, C-style array — the low-level building
 block. Lesson 19 shows `std::array`, the safer C++ wrapper around it.
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/18-arrays`](../../c/18-arrays/) (run it with `make run-c app=18-arrays`).
 
 ## Line-by-line
 - `int scores[5] = {10, 20, 30, 40, 50};` — five ints laid out back-to-back. The

@@ -7,7 +7,7 @@ and data structures. This lesson covers what a pointer *is*; lesson 35 focuses
 on using the `*` operator to read/write through it.
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/34-pointers`](../../c/34-pointers/) (run it with `make run-c app=34-pointers`).
 
 ## Line-by-line
 - `int* ptr = &value;` — `&value` is the **address-of** operator; `int*` is the

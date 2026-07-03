@@ -6,7 +6,7 @@ your toolchain works and introduces the three things every C/C++ program has —
 an `#include`, a `main` function, and a return value.
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/01-hello-world`](../../c/01-hello-world/) (run it with `make run-c app=01-hello-world`).
 
 ## Line-by-line
 - `#include <iostream>` — pulls in the declarations for `std::cout`. Without it

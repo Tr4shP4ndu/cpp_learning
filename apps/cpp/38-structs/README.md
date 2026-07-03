@@ -6,7 +6,7 @@ A `struct` groups related values into one named type — a "point" is an `x` and
 toward objects, and the gateway to classes (lesson 40).
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/38-structs`](../../c/38-structs/) (run it with `make run-c app=38-structs`).
 
 ## Line-by-line
 - `struct Point { double x; double y; };` — declare a type with two fields.

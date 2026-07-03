@@ -6,7 +6,7 @@ output* (the screen). This lesson reads a name and an age, then prints a
 greeting. It's your first *interactive* program.
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/05-io-basics`](../../c/05-io-basics/) (run it with `make run-c app=05-io-basics`).
 
 ## Line-by-line
 - `std::cout << ...` — write to the screen.

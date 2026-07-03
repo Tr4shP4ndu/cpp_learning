@@ -7,7 +7,7 @@ for memory from the **heap**. The catch: you must return it exactly once, or you
 leak (never freed) or crash (freed twice / used after free).
 
 ## Minimal example
-See `src/main.cpp` (C++) and `src/main.c` (C).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/36-dynamic-memory`](../../c/36-dynamic-memory/) (run it with `make run-c app=36-dynamic-memory`).
 
 ## Line-by-line (C++)
 - `int* p = new int(42);` — allocate one int on the heap, initialized to 42.
