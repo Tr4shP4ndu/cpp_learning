@@ -39,6 +39,24 @@ static void selfCheck() {
     const Model cube = Model::cube();
     assert(std::isfinite(cube.uv(0, 0)[0]) && std::isfinite(cube.uv(0, 0)[1]));
     assert(std::isfinite(cube.normal(0, 0)[0]) && std::isfinite(cube.normal(0, 0)[2]));
+
+    // No texture set: diffuse() must fall back to one of the two checkerboard
+    // colors (never something else, e.g. a stale/garbage value).
+    Model bare = Model::cube();
+    const Color checker = bare.diffuse(Vec2f{0.1f, 0.1f});
+    const Color light{200, 200, 200}, dark{60, 60, 60};
+    auto sameColor = [](Color a, Color b) { return a.r == b.r && a.g == b.g && a.b == b.b; };
+    assert(sameColor(checker, light) || sameColor(checker, dark));
+
+    // An all-white texture sampled anywhere must read back as white.
+    Image white(2, 2);
+    white.set(0, 0, Color{255, 255, 255});
+    white.set(1, 0, Color{255, 255, 255});
+    white.set(0, 1, Color{255, 255, 255});
+    white.set(1, 1, Color{255, 255, 255});
+    bare.setDiffuse(white);
+    const Color sampled = bare.diffuse(Vec2f{0.5f, 0.5f});
+    assert(sampled.r == 255 && sampled.g == 255 && sampled.b == 255);
 }
 
 // Rotation matrices about the Y and X axes (right-handed, radians).
@@ -69,14 +87,19 @@ static Vec3f toScreen(const Vec3f& modelPoint, const Matrix& rot, float scale, i
     return Vec3f{sx, static_cast<float>(height - 1) - sy, r[2]};
 }
 
-int main() {
+int main(int argc, char** argv) {
     selfCheck();
     const int W = 400, H = 400;
     Image img(W, H);
     std::vector<float> zbuf(static_cast<std::size_t>(W) * static_cast<std::size_t>(H),
                              -std::numeric_limits<float>::infinity());
 
-    const Model model = Model::cube();
+    Model model = Model::cube();
+    // Pass a PPM path (e.g. `./render some_texture.ppm`) to wrap the cube in
+    // a real texture instead of the default procedural checkerboard.
+    if (argc > 1) {
+        model.setDiffuse(Image::readPPM(argv[1]));
+    }
     // A 3/4 view so three cube faces are visible instead of a flat square.
     const Matrix rot = rotateY(0.6f) * rotateX(0.35f);
     const float scale = 100.0f;
@@ -84,18 +107,19 @@ int main() {
 
     for (int f = 0; f < model.nfaces(); ++f) {
         Vec3f screen[3];
+        Vec2f uv[3];
         Vec3f normalSum{0, 0, 0};
         for (int k = 0; k < 3; ++k) {
             screen[k] = toScreen(model.vert(f, k), rot, scale, W, H);
+            uv[k] = model.uv(f, k);
             normalSum = normalSum + proj3(rot * embed(model.normal(f, k)));
         }
         // Flat shading: rotate the (averaged) face normal along with the
         // mesh, then Lambert-light it. Rotation is orthogonal so it needs no
         // inverse-transpose to keep normals correct.
         const float intensity = std::clamp(dot(normalize(normalSum), lightDir), 0.0f, 1.0f);
-        const auto shade = static_cast<unsigned char>(intensity * 255.0f);
 
-        triangleFlat(screen, img, zbuf, Color{shade, shade, shade});
+        triangleTextured(screen, uv, model, intensity, img, zbuf);
     }
 
     img.writePPM("render.ppm");

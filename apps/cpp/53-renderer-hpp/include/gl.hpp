@@ -1,6 +1,7 @@
 #pragma once
 #include "image.hpp"
 #include "geometry.hpp"
+#include "model.hpp"
 #include <vector>
 
 // Draws a straight line from (x0,y0) to (x1,y1) into img using color c.
@@ -22,3 +23,12 @@ Vec3f barycentric(Vec2f a, Vec2f b, Vec2f c, Vec2f p);
 // the pixel is drawn and the buffer updated only when the new depth is
 // greater (i.e. closer) than what's already stored there.
 void triangleFlat(Vec3f screen[3], Image& img, std::vector<float>& zbuf, Color c);
+
+// Like triangleFlat, but instead of a flat color, interpolates uv[3] (one UV
+// per screen[] vertex, same winding) via the covered pixel's barycentric
+// weights and samples model.diffuse() at that UV. The sampled color is then
+// scaled by intensity (flat per-face lighting) before z-testing and drawing.
+// Temporary: Task 1.9's shader abstraction will subsume both triangleFlat and
+// this into a single per-pixel-programmable rasterizer.
+void triangleTextured(Vec3f screen[3], Vec2f uv[3], const Model& model, float intensity, Image& img,
+                       std::vector<float>& zbuf);

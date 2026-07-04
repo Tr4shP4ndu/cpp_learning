@@ -1,6 +1,8 @@
 #pragma once
 #include "geometry.hpp"
+#include "image.hpp"
 #include <array>
+#include <optional>
 #include <string>
 #include <vector>
 
@@ -23,10 +25,17 @@ public:
     Vec2f uv(int face, int nth) const;
     Vec3f normal(int face, int nth) const;
 
+    void  setDiffuse(const Image& tex);                 // stores a copy of a diffuse texture
+    // Samples the diffuse texture at uv (v=1 is texture-top); with no texture
+    // set, returns a procedural 8x8 checkerboard so lessons render something
+    // meaningful before a real texture file exists.
+    Color diffuse(Vec2f uv) const;
+
 private:
     std::vector<Vec3f> verts_, norms_;
     std::vector<Vec2f> uvs_;
     // One index triple per face corner: faceV_[f][n] indexes verts_ for the
     // n-th corner of face f, and likewise faceUV_/faceN_ index uvs_/norms_.
     std::vector<std::array<int, 3>> faceV_, faceUV_, faceN_;
+    std::optional<Image> diffuse_;
 };

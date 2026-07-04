@@ -179,3 +179,17 @@ Vec3f Model::normal(int face, int nth) const {
     const auto& idx = faceN_[static_cast<std::size_t>(face)];
     return norms_[static_cast<std::size_t>(idx[static_cast<std::size_t>(nth)])];
 }
+
+void Model::setDiffuse(const Image& tex) { diffuse_ = tex; }
+
+Color Model::diffuse(Vec2f uv) const {
+    if (diffuse_) {
+        const float x = uv[0] * static_cast<float>(diffuse_->width() - 1);
+        const float y = (1.0f - uv[1]) * static_cast<float>(diffuse_->height() - 1);
+        return diffuse_->get(static_cast<int>(x), static_cast<int>(y));
+    }
+    // No texture: an 8x8 procedural checkerboard, so UV mapping is visible
+    // even without an external texture asset.
+    const int c = (static_cast<int>(uv[0] * 8) + static_cast<int>(uv[1] * 8)) & 1;
+    return c ? Color{200, 200, 200} : Color{60, 60, 60};
+}
