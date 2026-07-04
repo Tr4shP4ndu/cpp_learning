@@ -23,16 +23,46 @@ static void selfCheck() {
     Image line(10, 10);
     drawLine(0, 0, 9, 0, line, Color{255, 255, 255});
     assert(line.get(9, 0).r == 255);               // last endpoint got drawn
+
+    Vec2f A{0,0}, B{4,0}, C{0,4};
+    Vec3f w = barycentric(A, B, C, Vec2f{1,1});     // inside
+    assert(w[0]>0 && w[1]>0 && w[2]>0);
+    assert(std::abs(w[0]+w[1]+w[2] - 1.0f) < 1e-5f);
+    Vec3f wo = barycentric(A, B, C, Vec2f{5,5});    // outside -> a negative weight
+    assert(wo[0]<0 || wo[1]<0 || wo[2]<0);
 }
 
 int main() {
     selfCheck();
     const int W = 400, H = 400;
     Image img(W, H);
-    const Color white{255, 255, 255};
-    drawLine(20, 20, 380, 50, img, white);
-    drawLine(380, 50, 200, 380, img, white);
-    drawLine(200, 380, 20, 20, img, white);
+
+    // One hardcoded 3D triangle (world space).
+    const Vec3f v0{100, 100, 0}, v1{300, 150, 0}, v2{200, 350, 0};
+
+    // Project to screen space, flipping Y so +y (up in world/model space)
+    // lands correctly on the top-down pixel grid.
+    Vec2f screen[3] = {
+        Vec2f{v0[0], static_cast<float>(H - 1) - v0[1]},
+        Vec2f{v1[0], static_cast<float>(H - 1) - v1[1]},
+        Vec2f{v2[0], static_cast<float>(H - 1) - v2[1]},
+    };
+
+    // Flat shading: one normal for the whole face, lit by a fixed directional light.
+    const Vec3f normal = normalize(cross(v2 - v0, v1 - v0));
+    const Vec3f lightDir = normalize(Vec3f{0, 0, -1});
+    const float intensity = dot(normal, lightDir);
+
+    if (intensity > 0) {
+        const Color base{255, 80, 80};
+        const Color shaded{
+            static_cast<unsigned char>(base.r * intensity),
+            static_cast<unsigned char>(base.g * intensity),
+            static_cast<unsigned char>(base.b * intensity),
+        };
+        triangleFlat(screen, img, shaded);
+    }
+
     img.writePPM("render.ppm");
     return 0;
 }

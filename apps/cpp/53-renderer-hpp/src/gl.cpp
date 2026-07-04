@@ -1,5 +1,6 @@
 #include "gl.hpp"
 #include <algorithm>
+#include <cmath>
 #include <cstdlib>
 
 void drawLine(int x0, int y0, int x1, int y1, Image& img, Color c) {
@@ -31,6 +32,39 @@ void drawLine(int x0, int y0, int x1, int y1, Image& img, Color c) {
         if (error < 0) {
             y += yStep;
             error += dx;
+        }
+    }
+}
+
+Vec3f barycentric(Vec2f a, Vec2f b, Vec2f c, Vec2f p) {
+    // Cross the edge vectors' x- and y-components; u.z is (twice) the signed
+    // triangle area. |u.z| < 1 means the triangle is degenerate on the pixel
+    // grid, so we report "outside" via a negative weight rather than divide
+    // by (near) zero.
+    Vec3f u = cross(Vec3f{c[0] - a[0], b[0] - a[0], a[0] - p[0]},
+                     Vec3f{c[1] - a[1], b[1] - a[1], a[1] - p[1]});
+    if (std::abs(u[2]) < 1) return Vec3f{-1, 1, 1};
+    return Vec3f{1.f - (u[0] + u[1]) / u[2], u[1] / u[2], u[0] / u[2]};
+}
+
+void triangleFlat(Vec2f screen[3], Image& img, Color c) {
+    const float minXf = std::min({screen[0][0], screen[1][0], screen[2][0]});
+    const float maxXf = std::max({screen[0][0], screen[1][0], screen[2][0]});
+    const float minYf = std::min({screen[0][1], screen[1][1], screen[2][1]});
+    const float maxYf = std::max({screen[0][1], screen[1][1], screen[2][1]});
+
+    const int x0 = std::clamp(static_cast<int>(std::floor(minXf)), 0, img.width() - 1);
+    const int x1 = std::clamp(static_cast<int>(std::ceil(maxXf)), 0, img.width() - 1);
+    const int y0 = std::clamp(static_cast<int>(std::floor(minYf)), 0, img.height() - 1);
+    const int y1 = std::clamp(static_cast<int>(std::ceil(maxYf)), 0, img.height() - 1);
+
+    for (int y = y0; y <= y1; ++y) {
+        for (int x = x0; x <= x1; ++x) {
+            const Vec2f p{static_cast<float>(x), static_cast<float>(y)};
+            const Vec3f w = barycentric(screen[0], screen[1], screen[2], p);
+            if (w[0] >= 0 && w[1] >= 0 && w[2] >= 0) {
+                img.set(x, y, c);
+            }
         }
     }
 }
