@@ -1,6 +1,8 @@
 #include "image.hpp"
 #include "geometry.hpp"
 #include "gl.hpp"
+#include "model.hpp"
+#include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <limits>
@@ -32,15 +34,36 @@ static void selfCheck() {
     assert(std::abs(w[0]+w[1]+w[2] - 1.0f) < 1e-5f);
     Vec3f wo = barycentric(A, B, C, Vec2f{5,5});    // outside -> a negative weight
     assert(wo[0]<0 || wo[1]<0 || wo[2]<0);
+
+    assert(Model::cube().nfaces() == 12);           // 6 faces * 2 triangles
 }
 
-// Projects a world-space triangle (x, y, depth) to screen space, flipping Y
-// so +y (up in world/model space) lands correctly on the top-down pixel grid.
-// Depth passes through unchanged.
-static void toScreen(const Vec3f world[3], int height, Vec3f screen[3]) {
-    for (int i = 0; i < 3; ++i) {
-        screen[i] = Vec3f{world[i][0], static_cast<float>(height - 1) - world[i][1], world[i][2]};
-    }
+// Rotation matrices about the Y and X axes (right-handed, radians).
+static Matrix rotateY(float angle) {
+    Matrix r = Matrix::identity();
+    const float c = std::cos(angle), s = std::sin(angle);
+    r.m[0][0] = c;  r.m[0][2] = s;
+    r.m[2][0] = -s; r.m[2][2] = c;
+    return r;
+}
+
+static Matrix rotateX(float angle) {
+    Matrix r = Matrix::identity();
+    const float c = std::cos(angle), s = std::sin(angle);
+    r.m[1][1] = c;  r.m[1][2] = -s;
+    r.m[2][1] = s;  r.m[2][2] = c;
+    return r;
+}
+
+// Rotates a model-space point/direction by `rot`, then maps it to screen
+// space: scale to pixel size, recenter on the image, and flip Y so +y (up in
+// model space) lands correctly on the top-down pixel grid. Depth (z) is left
+// unscaled-but-monotonic: triangleFlat only needs "larger = closer".
+static Vec3f toScreen(const Vec3f& modelPoint, const Matrix& rot, float scale, int width, int height) {
+    const Vec3f r = proj3(rot * embed(modelPoint));
+    const float sx = r[0] * scale + static_cast<float>(width) / 2.0f;
+    const float sy = r[1] * scale + static_cast<float>(height) / 2.0f;
+    return Vec3f{sx, static_cast<float>(height - 1) - sy, r[2]};
 }
 
 int main() {
@@ -50,22 +73,27 @@ int main() {
     std::vector<float> zbuf(static_cast<std::size_t>(W) * static_cast<std::size_t>(H),
                              -std::numeric_limits<float>::infinity());
 
-    // Two overlapping triangles at different depths (z: larger = closer).
-    // Red sits behind; green sits in front and should occlude red where the
-    // two overlap.
-    Vec3f red[3] = {Vec3f{100, 100, 0}, Vec3f{300, 150, 0}, Vec3f{200, 350, 0}};
-    Vec3f green[3] = {Vec3f{180, 60, 0.5f}, Vec3f{380, 110, 0.5f}, Vec3f{280, 310, 0.5f}};
+    const Model model = Model::cube();
+    // A 3/4 view so three cube faces are visible instead of a flat square.
+    const Matrix rot = rotateY(0.6f) * rotateX(0.35f);
+    const float scale = 100.0f;
+    const Vec3f lightDir = normalize(Vec3f{0.3f, 0.5f, 1.0f});
 
-    Vec3f redScreen[3];
-    Vec3f greenScreen[3];
-    toScreen(red, H, redScreen);
-    toScreen(green, H, greenScreen);
+    for (int f = 0; f < model.nfaces(); ++f) {
+        Vec3f screen[3];
+        Vec3f normalSum{0, 0, 0};
+        for (int k = 0; k < 3; ++k) {
+            screen[k] = toScreen(model.vert(f, k), rot, scale, W, H);
+            normalSum = normalSum + proj3(rot * embed(model.normal(f, k)));
+        }
+        // Flat shading: rotate the (averaged) face normal along with the
+        // mesh, then Lambert-light it. Rotation is orthogonal so it needs no
+        // inverse-transpose to keep normals correct.
+        const float intensity = std::clamp(dot(normalize(normalSum), lightDir), 0.0f, 1.0f);
+        const auto shade = static_cast<unsigned char>(intensity * 255.0f);
 
-    // Draw the farther triangle first; the z-test makes draw order irrelevant
-    // to the result, but this order also matches "paint the back layer first"
-    // intuition.
-    triangleFlat(redScreen, img, zbuf, Color{255, 80, 80});
-    triangleFlat(greenScreen, img, zbuf, Color{80, 220, 80});
+        triangleFlat(screen, img, zbuf, Color{shade, shade, shade});
+    }
 
     img.writePPM("render.ppm");
     return 0;
