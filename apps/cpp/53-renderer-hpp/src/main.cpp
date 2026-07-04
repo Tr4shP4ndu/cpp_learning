@@ -36,6 +36,9 @@ static void selfCheck() {
     assert(wo[0]<0 || wo[1]<0 || wo[2]<0);
 
     assert(Model::cube().nfaces() == 12);           // 6 faces * 2 triangles
+    const Model cube = Model::cube();
+    assert(std::isfinite(cube.uv(0, 0)[0]) && std::isfinite(cube.uv(0, 0)[1]));
+    assert(std::isfinite(cube.normal(0, 0)[0]) && std::isfinite(cube.normal(0, 0)[2]));
 }
 
 // Rotation matrices about the Y and X axes (right-handed, radians).

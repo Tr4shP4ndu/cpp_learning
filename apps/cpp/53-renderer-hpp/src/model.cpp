@@ -164,11 +164,18 @@ Vec3f Model::vert(int face, int nth) const {
 }
 
 Vec2f Model::uv(int face, int nth) const {
+    // A minimal OBJ (only v + f lines) leaves uvs_ empty while parseFaceVertex
+    // still defaults the uv index to 0; indexing an empty pool would read out
+    // of bounds, so return a neutral UV instead.
+    if (uvs_.empty()) return Vec2f{0, 0};
     const auto& idx = faceUV_[static_cast<std::size_t>(face)];
     return uvs_[static_cast<std::size_t>(idx[static_cast<std::size_t>(nth)])];
 }
 
 Vec3f Model::normal(int face, int nth) const {
+    // Likewise for a model with no vn lines: fall back to a forward-facing
+    // normal rather than indexing an empty norms_.
+    if (norms_.empty()) return Vec3f{0, 0, 1};
     const auto& idx = faceN_[static_cast<std::size_t>(face)];
     return norms_[static_cast<std::size_t>(idx[static_cast<std::size_t>(nth)])];
 }
