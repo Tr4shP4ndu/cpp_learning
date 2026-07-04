@@ -47,11 +47,15 @@ Vec3f barycentric(Vec2f a, Vec2f b, Vec2f c, Vec2f p) {
     return Vec3f{1.f - (u[0] + u[1]) / u[2], u[1] / u[2], u[0] / u[2]};
 }
 
-void triangleFlat(Vec2f screen[3], Image& img, Color c) {
-    const float minXf = std::min({screen[0][0], screen[1][0], screen[2][0]});
-    const float maxXf = std::max({screen[0][0], screen[1][0], screen[2][0]});
-    const float minYf = std::min({screen[0][1], screen[1][1], screen[2][1]});
-    const float maxYf = std::max({screen[0][1], screen[1][1], screen[2][1]});
+void triangleFlat(Vec3f screen[3], Image& img, std::vector<float>& zbuf, Color c) {
+    const Vec2f a{screen[0][0], screen[0][1]};
+    const Vec2f b{screen[1][0], screen[1][1]};
+    const Vec2f cc{screen[2][0], screen[2][1]};
+
+    const float minXf = std::min({a[0], b[0], cc[0]});
+    const float maxXf = std::max({a[0], b[0], cc[0]});
+    const float minYf = std::min({a[1], b[1], cc[1]});
+    const float maxYf = std::max({a[1], b[1], cc[1]});
 
     const int x0 = std::clamp(static_cast<int>(std::floor(minXf)), 0, img.width() - 1);
     const int x1 = std::clamp(static_cast<int>(std::ceil(maxXf)), 0, img.width() - 1);
@@ -61,9 +65,15 @@ void triangleFlat(Vec2f screen[3], Image& img, Color c) {
     for (int y = y0; y <= y1; ++y) {
         for (int x = x0; x <= x1; ++x) {
             const Vec2f p{static_cast<float>(x), static_cast<float>(y)};
-            const Vec3f w = barycentric(screen[0], screen[1], screen[2], p);
+            const Vec3f w = barycentric(a, b, cc, p);
             if (w[0] >= 0 && w[1] >= 0 && w[2] >= 0) {
-                img.set(x, y, c);
+                const float z = w[0] * screen[0][2] + w[1] * screen[1][2] + w[2] * screen[2][2];
+                const std::size_t idx =
+                    static_cast<std::size_t>(x) + static_cast<std::size_t>(y) * static_cast<std::size_t>(img.width());
+                if (z > zbuf[idx]) {
+                    zbuf[idx] = z;
+                    img.set(x, y, c);
+                }
             }
         }
     }

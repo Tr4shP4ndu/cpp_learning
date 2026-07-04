@@ -3,6 +3,8 @@
 #include "gl.hpp"
 #include <cassert>
 #include <cmath>
+#include <limits>
+#include <vector>
 
 static void selfCheck() {
     Image t(4, 4);
@@ -32,36 +34,38 @@ static void selfCheck() {
     assert(wo[0]<0 || wo[1]<0 || wo[2]<0);
 }
 
+// Projects a world-space triangle (x, y, depth) to screen space, flipping Y
+// so +y (up in world/model space) lands correctly on the top-down pixel grid.
+// Depth passes through unchanged.
+static void toScreen(const Vec3f world[3], int height, Vec3f screen[3]) {
+    for (int i = 0; i < 3; ++i) {
+        screen[i] = Vec3f{world[i][0], static_cast<float>(height - 1) - world[i][1], world[i][2]};
+    }
+}
+
 int main() {
     selfCheck();
     const int W = 400, H = 400;
     Image img(W, H);
+    std::vector<float> zbuf(static_cast<std::size_t>(W) * static_cast<std::size_t>(H),
+                             -std::numeric_limits<float>::infinity());
 
-    // One hardcoded 3D triangle (world space).
-    const Vec3f v0{100, 100, 0}, v1{300, 150, 0}, v2{200, 350, 0};
+    // Two overlapping triangles at different depths (z: larger = closer).
+    // Red sits behind; green sits in front and should occlude red where the
+    // two overlap.
+    Vec3f red[3] = {Vec3f{100, 100, 0}, Vec3f{300, 150, 0}, Vec3f{200, 350, 0}};
+    Vec3f green[3] = {Vec3f{180, 60, 0.5f}, Vec3f{380, 110, 0.5f}, Vec3f{280, 310, 0.5f}};
 
-    // Project to screen space, flipping Y so +y (up in world/model space)
-    // lands correctly on the top-down pixel grid.
-    Vec2f screen[3] = {
-        Vec2f{v0[0], static_cast<float>(H - 1) - v0[1]},
-        Vec2f{v1[0], static_cast<float>(H - 1) - v1[1]},
-        Vec2f{v2[0], static_cast<float>(H - 1) - v2[1]},
-    };
+    Vec3f redScreen[3];
+    Vec3f greenScreen[3];
+    toScreen(red, H, redScreen);
+    toScreen(green, H, greenScreen);
 
-    // Flat shading: one normal for the whole face, lit by a fixed directional light.
-    const Vec3f normal = normalize(cross(v2 - v0, v1 - v0));
-    const Vec3f lightDir = normalize(Vec3f{0, 0, -1});
-    const float intensity = dot(normal, lightDir);
-
-    if (intensity > 0) {
-        const Color base{255, 80, 80};
-        const Color shaded{
-            static_cast<unsigned char>(base.r * intensity),
-            static_cast<unsigned char>(base.g * intensity),
-            static_cast<unsigned char>(base.b * intensity),
-        };
-        triangleFlat(screen, img, shaded);
-    }
+    // Draw the farther triangle first; the z-test makes draw order irrelevant
+    // to the result, but this order also matches "paint the back layer first"
+    // intuition.
+    triangleFlat(redScreen, img, zbuf, Color{255, 80, 80});
+    triangleFlat(greenScreen, img, zbuf, Color{80, 220, 80});
 
     img.writePPM("render.ppm");
     return 0;
