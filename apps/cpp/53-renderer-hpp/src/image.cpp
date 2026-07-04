@@ -36,6 +36,8 @@ Image Image::readPPM(const std::string& path) {
     int w = 0, h = 0, maxval = 0;
     in >> magic >> w >> h >> maxval;
     if (!in || magic != "P6") throw std::runtime_error("Image::readPPM: not a P6 file: " + path);
+    if (w <= 0 || h <= 0) throw std::runtime_error("Image::readPPM: bad dimensions: " + path);
+    if (maxval != 255) throw std::runtime_error("Image::readPPM: only 8-bit (maxval 255) P6 is supported: " + path);
     in.get(); // the single whitespace byte separating the header from pixel data
 
     Image img(w, h);

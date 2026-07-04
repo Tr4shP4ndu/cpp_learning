@@ -6,6 +6,7 @@
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <iostream>
 #include <limits>
 #include <memory>
 #include <string>
@@ -139,6 +140,31 @@ static void selfCheck() {
         const Color base0 = cubeS.diffuse(cubeS.uv(0, 0));
         assert(out.r == base0.r && out.g == base0.g && out.b == base0.b);
     }
+
+    // --- Task 1.10: tangent-space normal mapping ---
+
+    // With no normal map set, normalMap() must return exactly the flat
+    // tangent-space normal (0,0,1) — the "no perturbation" fallback that makes
+    // a NormalMapShader reduce to Phong.
+    {
+        const Model bareNM = Model::cube();
+        const Vec3f n = bareNM.normalMap(Vec2f{0.3f, 0.7f});
+        assert(n[0] == 0.0f && n[1] == 0.0f && n[2] == 1.0f);
+    }
+
+    // A flat map filled with (128,128,255) encodes tangent-space (0,0,1): each
+    // channel decodes as c/255*2-1, so 128 -> ~0.004 and 255 -> +1. The result
+    // must be approximately (0,0,1) within one quantization step (~1/255*2).
+    {
+        Model flatNM = Model::cube();
+        Image flat(2, 2);
+        for (int y = 0; y < 2; ++y)
+            for (int x = 0; x < 2; ++x) flat.set(x, y, Color{128, 128, 255});
+        flatNM.setNormalMap(flat);
+        const Vec3f n = flatNM.normalMap(Vec2f{0.5f, 0.5f});
+        const float tol = 1.0f / 255.0f * 2.0f;  // ~0.0078
+        assert(std::abs(n[0]) < tol && std::abs(n[1]) < tol && std::abs(n[2] - 1.0f) < tol);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -149,15 +175,26 @@ int main(int argc, char** argv) {
                              -std::numeric_limits<float>::infinity());
 
     Model model = Model::cube();
-    // argv[1] (optional): a PPM path (e.g. `./render some_texture.ppm`) to wrap
-    // the cube in a real texture instead of the default procedural checkerboard.
-    // Pass "-" to keep the checkerboard while still selecting a shader via argv[2].
-    if (argc > 1 && std::string(argv[1]) != "-") {
-        model.setDiffuse(Image::readPPM(argv[1]));
+    // Optional textures from the command line (see README for the full arg list):
+    //   argv[1]  P6 PPM diffuse texture ("-" keeps the procedural checkerboard)
+    //   argv[3]  P6 PPM tangent-space normal map (else a flat, no-op map)
+    // A bad path or malformed file throws; catch it so the user gets a clean
+    // message instead of an uncaught-exception std::terminate.
+    try {
+        if (argc > 1 && std::string(argv[1]) != "-") {
+            model.setDiffuse(Image::readPPM(argv[1]));
+        }
+        if (argc > 3 && std::string(argv[3]) != "-") {
+            model.setNormalMap(Image::readPPM(argv[3]));
+        }
+    } catch (const std::exception& e) {
+        std::cerr << "53-renderer-hpp: " << e.what() << '\n';
+        return 1;
     }
-    // argv[2] (optional): shader selection — "flat", "gouraud", or "phong"
-    // (default). Flat shows facet edges; Phong is smooth.
-    const std::string shaderName = (argc > 2) ? argv[2] : "phong";
+    // argv[2] (optional): shader selection — "flat", "gouraud", "phong", or
+    // "normal" (default). Flat shows facet edges; Phong is smooth; normal adds
+    // tangent-space normal-map detail (identical to Phong with a flat/unset map).
+    const std::string shaderName = (argc > 2) ? argv[2] : "normal";
     // Camera: eye offset from the origin (which the cube is centered on) for
     // a 3/4 view with visible perspective foreshortening. Per this lesson's
     // convention, coeff = -1/eye.z (eye placed along +z from a center at the
@@ -197,8 +234,10 @@ int main(int argc, char** argv) {
         shader = std::make_unique<FlatShader>(model, mvp, lightDir);
     } else if (shaderName == "gouraud") {
         shader = std::make_unique<GouraudShader>(model, mvp, lightDir);
+    } else if (shaderName == "phong") {
+        shader = std::make_unique<PhongShader>(model, mvp, lightDir);
     } else {
-        shader = std::make_unique<PhongShader>(model, mvp, lightDir);  // default
+        shader = std::make_unique<NormalMapShader>(model, mvp, lightDir);  // default
     }
 
     for (int f = 0; f < model.nfaces(); ++f) {

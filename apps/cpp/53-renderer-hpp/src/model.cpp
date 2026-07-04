@@ -193,3 +193,20 @@ Color Model::diffuse(Vec2f uv) const {
     const int c = (static_cast<int>(uv[0] * 8) + static_cast<int>(uv[1] * 8)) & 1;
     return c ? Color{200, 200, 200} : Color{60, 60, 60};
 }
+
+void Model::setNormalMap(const Image& nm) { normalMap_ = nm; }
+
+Vec3f Model::normalMap(Vec2f uv) const {
+    // No map set: a flat tangent-space normal (0,0,1) means "no perturbation",
+    // so a NormalMapShader falls back to the smooth interpolated normal.
+    if (!normalMap_) return Vec3f{0, 0, 1};
+    const float x = uv[0] * static_cast<float>(normalMap_->width() - 1);
+    const float y = (1.0f - uv[1]) * static_cast<float>(normalMap_->height() - 1);
+    const Color c = normalMap_->get(static_cast<int>(x), static_cast<int>(y));
+    // Decode each 0..255 channel back to the [-1,1] range it was packed from.
+    return Vec3f{
+        static_cast<float>(c.r) / 255.0f * 2.0f - 1.0f,
+        static_cast<float>(c.g) / 255.0f * 2.0f - 1.0f,
+        static_cast<float>(c.b) / 255.0f * 2.0f - 1.0f,
+    };
+}

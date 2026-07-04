@@ -31,6 +31,13 @@ public:
     // meaningful before a real texture file exists.
     Color diffuse(Vec2f uv) const;
 
+    void  setNormalMap(const Image& nm);                // stores a copy of a tangent-space normal map
+    // Samples the normal map at uv (same convention as diffuse) and decodes each
+    // channel c -> c/255*2 - 1 into a tangent-space normal; with no map set,
+    // returns {0,0,1} (flat: no perturbation). The result is NOT normalized —
+    // the shader transforms it through the TBN basis and lights with it.
+    Vec3f normalMap(Vec2f uv) const;
+
 private:
     std::vector<Vec3f> verts_, norms_;
     std::vector<Vec2f> uvs_;
@@ -38,4 +45,5 @@ private:
     // n-th corner of face f, and likewise faceUV_/faceN_ index uvs_/norms_.
     std::vector<std::array<int, 3>> faceV_, faceUV_, faceN_;
     std::optional<Image> diffuse_;
+    std::optional<Image> normalMap_;
 };

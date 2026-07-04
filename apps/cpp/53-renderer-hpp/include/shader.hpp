@@ -88,3 +88,25 @@ private:
     Vec2f        varyingUV_[3]{};
     Vec3f        varyingNormal_[3]{}; // per-corner normal, interpolated in fragment
 };
+
+// Tangent-space normal mapping: like Phong, but the per-fragment normal is read
+// from a texture (model.normalMap(uv)) that stores a perturbation in *tangent
+// space*. That perturbation is transformed into world space through a per-
+// triangle TBN basis (Tangent, Bitangent, interpolated Normal) built from the
+// triangle's edge vectors and UV gradients, then lit. This adds fine surface
+// detail (bumps, grooves) that varies the lighting independently of geometry.
+// With a flat/unset map, normalMap returns (0,0,1) and the result matches Phong.
+class NormalMapShader : public IShader {
+public:
+    NormalMapShader(const Model& model, const Matrix& mvp, Vec3f light);
+    Vec4f vertex(int face, int nth) override;
+    bool  fragment(Vec3f bary, Color& out) override;
+
+private:
+    const Model& model_;
+    Matrix       mvp_;
+    Vec3f        light_;
+    Vec2f        varyingUV_[3]{};
+    Vec3f        varyingNormal_[3]{};   // per-corner normal
+    Vec3f        varyingPos_[3]{};      // per-corner model==world position (for the TBN edges)
+};
