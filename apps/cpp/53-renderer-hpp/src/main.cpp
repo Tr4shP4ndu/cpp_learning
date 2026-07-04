@@ -57,34 +57,49 @@ static void selfCheck() {
     bare.setDiffuse(white);
     const Color sampled = bare.diffuse(Vec2f{0.5f, 0.5f});
     assert(sampled.r == 255 && sampled.g == 255 && sampled.b == 255);
-}
 
-// Rotation matrices about the Y and X axes (right-handed, radians).
-static Matrix rotateY(float angle) {
-    Matrix r = Matrix::identity();
-    const float c = std::cos(angle), s = std::sin(angle);
-    r.m[0][0] = c;  r.m[0][2] = s;
-    r.m[2][0] = -s; r.m[2][2] = c;
-    return r;
-}
+    // --- Task 1.8: projection / viewport / lookAt ---
 
-static Matrix rotateX(float angle) {
-    Matrix r = Matrix::identity();
-    const float c = std::cos(angle), s = std::sin(angle);
-    r.m[1][1] = c;  r.m[1][2] = -s;
-    r.m[2][1] = s;  r.m[2][2] = c;
-    return r;
-}
+    // projection(0) must be exactly the identity: no perspective divide
+    // distortion when coeff is 0.
+    {
+        const Matrix p0 = projection(0.0f);
+        const Matrix id = Matrix::identity();
+        for (int i = 0; i < 4; ++i)
+            for (int j = 0; j < 4; ++j) assert(std::abs(p0.m[i][j] - id.m[i][j]) < 1e-6f);
+    }
 
-// Rotates a model-space point/direction by `rot`, then maps it to screen
-// space: scale to pixel size, recenter on the image, and flip Y so +y (up in
-// model space) lands correctly on the top-down pixel grid. Depth (z) is left
-// unscaled-but-monotonic: triangleFlat only needs "larger = closer".
-static Vec3f toScreen(const Vec3f& modelPoint, const Matrix& rot, float scale, int width, int height) {
-    const Vec3f r = proj3(rot * embed(modelPoint));
-    const float sx = r[0] * scale + static_cast<float>(width) / 2.0f;
-    const float sy = r[1] * scale + static_cast<float>(height) / 2.0f;
-    return Vec3f{sx, static_cast<float>(height - 1) - sy, r[2]};
+    // viewport(0,0,400,400) maps the NDC cube's two opposite corners to exact
+    // screen/depth values, by hand from the formula in gl.cpp:
+    //   screen_x = w/2 * ndc_x + (x + w/2)
+    //   screen_y = -h/2 * ndc_y + (y + h/2)   (negated to fold in the Y-flip)
+    //   depth    = 255/2 * ndc_z + 255/2
+    // For x=y=0, w=h=400:
+    //   NDC(-1,-1,-1) -> screen (0, 400, 0)     [down/back corner -> bottom row, near plane]
+    //   NDC( 1, 1, 1) -> screen (400, 0, 255)   [up/front corner  -> top row,    far plane]
+    {
+        const Matrix vp = viewport(0, 0, 400, 400);
+        const Vec3f lo = proj3(vp * embed(Vec3f{-1, -1, -1}));
+        const Vec3f hi = proj3(vp * embed(Vec3f{1, 1, 1}));
+        assert(std::abs(lo[0] - 0.0f) < 1e-4f);
+        assert(std::abs(lo[1] - 400.0f) < 1e-4f);
+        assert(std::abs(lo[2] - 0.0f) < 1e-4f);
+        assert(std::abs(hi[0] - 400.0f) < 1e-4f);
+        assert(std::abs(hi[1] - 0.0f) < 1e-4f);
+        assert(std::abs(hi[2] - 255.0f) < 1e-4f);
+    }
+
+    // lookAt's rotation part (rows 0..2, cols 0..2) must be orthonormal: each
+    // row unit length, and every pair of rows mutually perpendicular.
+    {
+        const Matrix view = lookAt(Vec3f{1, 1, 3}, Vec3f{0, 0, 0}, Vec3f{0, 1, 0});
+        Vec3f rows[3];
+        for (int i = 0; i < 3; ++i) rows[i] = Vec3f{view.m[i][0], view.m[i][1], view.m[i][2]};
+        for (int i = 0; i < 3; ++i) assert(std::abs(norm(rows[i]) - 1.0f) < 1e-5f);
+        assert(std::abs(dot(rows[0], rows[1])) < 1e-5f);
+        assert(std::abs(dot(rows[1], rows[2])) < 1e-5f);
+        assert(std::abs(dot(rows[0], rows[2])) < 1e-5f);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -100,9 +115,27 @@ int main(int argc, char** argv) {
     if (argc > 1) {
         model.setDiffuse(Image::readPPM(argv[1]));
     }
-    // A 3/4 view so three cube faces are visible instead of a flat square.
-    const Matrix rot = rotateY(0.6f) * rotateX(0.35f);
-    const float scale = 100.0f;
+    // Camera: eye offset from the origin (which the cube is centered on) for
+    // a 3/4 view with visible perspective foreshortening. Per this lesson's
+    // convention, coeff = -1/eye.z (eye placed along +z from a center at the
+    // origin).
+    const Vec3f eye{1.0f, 1.0f, 3.0f};
+    const Vec3f center{0.0f, 0.0f, 0.0f};
+    const Vec3f up{0.0f, 1.0f, 0.0f};
+    const float coeff = -1.0f / eye[2];
+    // This projection has no separate focal-length term: unlike tinyrenderer's
+    // usual unit-sphere-normalized models, our procedural cube's corners sit
+    // at distance sqrt(3) from its center, which would otherwise project
+    // outside the [-1,1] NDC box (and thus off-screen). Scaling the model
+    // down before the camera transform keeps it framed without touching
+    // Model::cube()'s (unit, ±1) geometry, which other stages rely on.
+    const float modelScale = 0.6f;
+
+    const Matrix view = lookAt(eye, center, up);
+    const Matrix proj = projection(coeff);
+    const Matrix vp = viewport(0, 0, W, H);
+    const Matrix M = vp * proj * view;
+
     const Vec3f lightDir = normalize(Vec3f{0.3f, 0.5f, 1.0f});
 
     for (int f = 0; f < model.nfaces(); ++f) {
@@ -110,13 +143,15 @@ int main(int argc, char** argv) {
         Vec2f uv[3];
         Vec3f normalSum{0, 0, 0};
         for (int k = 0; k < 3; ++k) {
-            screen[k] = toScreen(model.vert(f, k), rot, scale, W, H);
+            screen[k] = proj3(M * embed(model.vert(f, k) * modelScale));
             uv[k] = model.uv(f, k);
-            normalSum = normalSum + proj3(rot * embed(model.normal(f, k)));
+            // Normals are directions, not points: the model itself is never
+            // transformed here (only the camera moves, via `view`), so
+            // model space IS world space and the raw model-space normal is
+            // already correct. Pushing it through M would be wrong now that
+            // M includes lookAt's translation (and the perspective divide).
+            normalSum = normalSum + model.normal(f, k);
         }
-        // Flat shading: rotate the (averaged) face normal along with the
-        // mesh, then Lambert-light it. Rotation is orthogonal so it needs no
-        // inverse-transpose to keep normals correct.
         const float intensity = std::clamp(dot(normalize(normalSum), lightDir), 0.0f, 1.0f);
 
         triangleTextured(screen, uv, model, intensity, img, zbuf);

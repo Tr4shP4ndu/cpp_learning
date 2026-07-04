@@ -3,6 +3,41 @@
 #include <cmath>
 #include <cstdlib>
 
+Matrix viewport(int x, int y, int w, int h) {
+    Matrix r = Matrix::identity();
+    r.m[0][0] = static_cast<float>(w) / 2.0f;
+    r.m[0][3] = static_cast<float>(x) + static_cast<float>(w) / 2.0f;
+    // Negated (vs. the textbook +h/2) to fold in the Y-flip: see the
+    // rationale in gl.hpp's viewport() comment.
+    r.m[1][1] = -static_cast<float>(h) / 2.0f;
+    r.m[1][3] = static_cast<float>(y) + static_cast<float>(h) / 2.0f;
+    r.m[2][2] = 255.0f / 2.0f;
+    r.m[2][3] = 255.0f / 2.0f;
+    return r;
+}
+
+Matrix projection(float coeff) {
+    Matrix r = Matrix::identity();
+    r.m[3][2] = coeff;
+    return r;
+}
+
+Matrix lookAt(Vec3f eye, Vec3f center, Vec3f up) {
+    const Vec3f z = normalize(eye - center);
+    const Vec3f x = normalize(cross(up, z));
+    const Vec3f y = cross(z, x);  // unit: cross of two orthonormal unit vectors
+
+    Matrix minv = Matrix::identity();
+    Matrix tr = Matrix::identity();
+    for (int i = 0; i < 3; ++i) {
+        minv.m[0][i] = x[i];
+        minv.m[1][i] = y[i];
+        minv.m[2][i] = z[i];
+        tr.m[i][3] = -center[i];
+    }
+    return minv * tr;
+}
+
 void drawLine(int x0, int y0, int x1, int y1, Image& img, Color c) {
     // Steep lines (|dy| > |dx|) are transposed so we always step along the
     // major axis; this keeps the error accumulator integer-only and gap-free.
