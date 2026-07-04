@@ -1,5 +1,6 @@
 #include "image.hpp"
 #include "geometry.hpp"
+#include "gl.hpp"
 #include <cassert>
 #include <cmath>
 
@@ -18,15 +19,20 @@ static void selfCheck() {
     Matrix I = Matrix::identity();
     Vec4f v = I * Vec4f{2,3,4,1};
     assert(v[0]==2 && v[1]==3 && v[2]==4 && v[3]==1);
+
+    Image line(10, 10);
+    drawLine(0, 0, 9, 0, line, Color{255, 255, 255});
+    assert(line.get(9, 0).r == 255);               // last endpoint got drawn
 }
 
 int main() {
     selfCheck();
     const int W = 400, H = 400;
     Image img(W, H);
-    for (int x = 50; x < 150; ++x)
-        for (int y = 50; y < 150; ++y)
-            img.set(x, y, Color{255, 128, 0});     // an orange square
+    const Color white{255, 255, 255};
+    drawLine(20, 20, 380, 50, img, white);
+    drawLine(380, 50, 200, 380, img, white);
+    drawLine(200, 380, 20, 20, img, white);
     img.writePPM("render.ppm");
     return 0;
 }
