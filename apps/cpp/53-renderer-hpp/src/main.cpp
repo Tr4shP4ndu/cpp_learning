@@ -2,10 +2,13 @@
 #include "geometry.hpp"
 #include "gl.hpp"
 #include "model.hpp"
+#include "shader.hpp"
 #include <algorithm>
 #include <cassert>
 #include <cmath>
 #include <limits>
+#include <memory>
+#include <string>
 #include <vector>
 
 static void selfCheck() {
@@ -74,9 +77,10 @@ static void selfCheck() {
     //   screen_x = w/2 * ndc_x + (x + w/2)
     //   screen_y = -h/2 * ndc_y + (y + h/2)   (negated to fold in the Y-flip)
     //   depth    = 255/2 * ndc_z + 255/2
-    // For x=y=0, w=h=400:
-    //   NDC(-1,-1,-1) -> screen (0, 400, 0)     [down/back corner -> bottom row, near plane]
-    //   NDC( 1, 1, 1) -> screen (400, 0, 255)   [up/front corner  -> top row,    far plane]
+    // For x=y=0, w=h=400 (recall this renderer is larger-depth-is-nearer, so
+    // depth 0 = farthest from the camera, depth 255 = nearest):
+    //   NDC(-1,-1,-1) -> screen (0, 400, 0)     [down corner -> bottom row, depth 0   (farthest)]
+    //   NDC( 1, 1, 1) -> screen (400, 0, 255)   [up corner   -> top row,    depth 255 (nearest)]
     {
         const Matrix vp = viewport(0, 0, 400, 400);
         const Vec3f lo = proj3(vp * embed(Vec3f{-1, -1, -1}));
@@ -100,6 +104,41 @@ static void selfCheck() {
         assert(std::abs(dot(rows[1], rows[2])) < 1e-5f);
         assert(std::abs(dot(rows[0], rows[2])) < 1e-5f);
     }
+
+    // --- Task 1.9: shader abstraction ---
+
+    // vertex() must apply the shader's MVP to the clip-space position, and
+    // fragment() must (a) never discard for these three shaders and (b) at a
+    // corner where the light exactly matches that corner's normal, produce the
+    // *undimmed* diffuse sample (intensity == 1).
+    {
+        const Model cubeS = Model::cube();
+        // A pure scale-by-2 MVP so the vertex()-applies-MVP check has teeth:
+        // if vertex() forgot the multiply, clip would equal embed(vert), not 2x.
+        Matrix scale2 = Matrix::identity();
+        scale2.m[0][0] = scale2.m[1][1] = scale2.m[2][2] = 2.0f;
+        // Aim the light straight down corner 0's own normal.
+        const Vec3f n0 = normalize(cubeS.normal(0, 0));
+        PhongShader ph(cubeS, scale2, n0);
+
+        const Vec4f clip0 = ph.vertex(0, 0);
+        const Vec3f v0 = cubeS.vert(0, 0);
+        assert(std::abs(clip0[0] - 2.0f * v0[0]) < 1e-5f);
+        assert(std::abs(clip0[1] - 2.0f * v0[1]) < 1e-5f);
+        assert(std::abs(clip0[2] - 2.0f * v0[2]) < 1e-5f);
+        assert(std::abs(clip0[3] - 1.0f) < 1e-5f);
+
+        // Fill the remaining two corners' varyings before shading.
+        ph.vertex(0, 1);
+        ph.vertex(0, 2);
+        Color out{};
+        const bool discard = ph.fragment(Vec3f{1, 0, 0}, out);  // exactly at corner 0
+        assert(!discard);
+        // Interpolated normal at bary (1,0,0) is corner 0's normal, so
+        // intensity = dot(n0, n0) = 1 and the colour is the raw diffuse sample.
+        const Color base0 = cubeS.diffuse(cubeS.uv(0, 0));
+        assert(out.r == base0.r && out.g == base0.g && out.b == base0.b);
+    }
 }
 
 int main(int argc, char** argv) {
@@ -110,11 +149,15 @@ int main(int argc, char** argv) {
                              -std::numeric_limits<float>::infinity());
 
     Model model = Model::cube();
-    // Pass a PPM path (e.g. `./render some_texture.ppm`) to wrap the cube in
-    // a real texture instead of the default procedural checkerboard.
-    if (argc > 1) {
+    // argv[1] (optional): a PPM path (e.g. `./render some_texture.ppm`) to wrap
+    // the cube in a real texture instead of the default procedural checkerboard.
+    // Pass "-" to keep the checkerboard while still selecting a shader via argv[2].
+    if (argc > 1 && std::string(argv[1]) != "-") {
         model.setDiffuse(Image::readPPM(argv[1]));
     }
+    // argv[2] (optional): shader selection — "flat", "gouraud", or "phong"
+    // (default). Flat shows facet edges; Phong is smooth.
+    const std::string shaderName = (argc > 2) ? argv[2] : "phong";
     // Camera: eye offset from the origin (which the cube is centered on) for
     // a 3/4 view with visible perspective foreshortening. Per this lesson's
     // convention, coeff = -1/eye.z (eye placed along +z from a center at the
@@ -133,28 +176,35 @@ int main(int argc, char** argv) {
 
     const Matrix view = lookAt(eye, center, up);
     const Matrix proj = projection(coeff);
-    const Matrix vp = viewport(0, 0, W, H);
-    const Matrix M = vp * proj * view;
+    // The shader's "MVP" is projection * view * (uniform model scale) — and
+    // deliberately EXCLUDES viewport: vertex() returns clip space, and
+    // triangle() applies the perspective divide + viewport itself. Folding the
+    // modelScale framing factor in as the model matrix keeps the shader
+    // oblivious to it (and, being a uniform scale, it never touches normals).
+    Matrix scale = Matrix::identity();
+    scale.m[0][0] = scale.m[1][1] = scale.m[2][2] = modelScale;
+    const Matrix mvp = proj * view * scale;
 
     const Vec3f lightDir = normalize(Vec3f{0.3f, 0.5f, 1.0f});
 
-    for (int f = 0; f < model.nfaces(); ++f) {
-        Vec3f screen[3];
-        Vec2f uv[3];
-        Vec3f normalSum{0, 0, 0};
-        for (int k = 0; k < 3; ++k) {
-            screen[k] = proj3(M * embed(model.vert(f, k) * modelScale));
-            uv[k] = model.uv(f, k);
-            // Normals are directions, not points: the model itself is never
-            // transformed here (only the camera moves, via `view`), so
-            // model space IS world space and the raw model-space normal is
-            // already correct. Pushing it through M would be wrong now that
-            // M includes lookAt's translation (and the perspective divide).
-            normalSum = normalSum + model.normal(f, k);
-        }
-        const float intensity = std::clamp(dot(normalize(normalSum), lightDir), 0.0f, 1.0f);
+    // Normals are directions, not points: the model itself is never transformed
+    // here (only the camera moves, via `view`), so model space IS world space
+    // and the raw model-space normals the shaders read are already correct.
+    // Pushing them through the MVP would be wrong (it carries lookAt's
+    // translation and the perspective term).
+    std::unique_ptr<IShader> shader;
+    if (shaderName == "flat") {
+        shader = std::make_unique<FlatShader>(model, mvp, lightDir);
+    } else if (shaderName == "gouraud") {
+        shader = std::make_unique<GouraudShader>(model, mvp, lightDir);
+    } else {
+        shader = std::make_unique<PhongShader>(model, mvp, lightDir);  // default
+    }
 
-        triangleTextured(screen, uv, model, intensity, img, zbuf);
+    for (int f = 0; f < model.nfaces(); ++f) {
+        Vec4f clip[3];
+        for (int k = 0; k < 3; ++k) clip[k] = shader->vertex(f, k);
+        triangle(clip, *shader, img, zbuf);
     }
 
     img.writePPM("render.ppm");

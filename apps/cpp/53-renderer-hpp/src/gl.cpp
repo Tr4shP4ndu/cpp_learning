@@ -1,4 +1,5 @@
 #include "gl.hpp"
+#include "shader.hpp"
 #include <algorithm>
 #include <cmath>
 #include <cstdlib>
@@ -82,7 +83,13 @@ Vec3f barycentric(Vec2f a, Vec2f b, Vec2f c, Vec2f p) {
     return Vec3f{1.f - (u[0] + u[1]) / u[2], u[1] / u[2], u[0] / u[2]};
 }
 
-void triangleFlat(Vec3f screen[3], Image& img, std::vector<float>& zbuf, Color c) {
+void triangle(const Vec4f clip[3], IShader& shader, Image& img, std::vector<float>& zbuf) {
+    // Finish the pipeline the shader deliberately stopped short of: perspective
+    // divide (clip -> NDC) then viewport (NDC -> screen, with depth in [0,255]).
+    const Matrix vp = viewport(0, 0, img.width(), img.height());
+    Vec3f screen[3];
+    for (int i = 0; i < 3; ++i) screen[i] = proj3(vp * embed(proj3(clip[i])));
+
     const Vec2f a{screen[0][0], screen[0][1]};
     const Vec2f b{screen[1][0], screen[1][1]};
     const Vec2f cc{screen[2][0], screen[2][1]};
@@ -106,48 +113,13 @@ void triangleFlat(Vec3f screen[3], Image& img, std::vector<float>& zbuf, Color c
                 const std::size_t idx =
                     static_cast<std::size_t>(x) + static_cast<std::size_t>(y) * static_cast<std::size_t>(img.width());
                 if (z > zbuf[idx]) {
-                    zbuf[idx] = z;
-                    img.set(x, y, c);
-                }
-            }
-        }
-    }
-}
-
-void triangleTextured(Vec3f screen[3], Vec2f uv[3], const Model& model, float intensity, Image& img,
-                       std::vector<float>& zbuf) {
-    const Vec2f a{screen[0][0], screen[0][1]};
-    const Vec2f b{screen[1][0], screen[1][1]};
-    const Vec2f cc{screen[2][0], screen[2][1]};
-
-    const float minXf = std::min({a[0], b[0], cc[0]});
-    const float maxXf = std::max({a[0], b[0], cc[0]});
-    const float minYf = std::min({a[1], b[1], cc[1]});
-    const float maxYf = std::max({a[1], b[1], cc[1]});
-
-    const int x0 = std::clamp(static_cast<int>(std::floor(minXf)), 0, img.width() - 1);
-    const int x1 = std::clamp(static_cast<int>(std::ceil(maxXf)), 0, img.width() - 1);
-    const int y0 = std::clamp(static_cast<int>(std::floor(minYf)), 0, img.height() - 1);
-    const int y1 = std::clamp(static_cast<int>(std::ceil(maxYf)), 0, img.height() - 1);
-
-    for (int y = y0; y <= y1; ++y) {
-        for (int x = x0; x <= x1; ++x) {
-            const Vec2f p{static_cast<float>(x), static_cast<float>(y)};
-            const Vec3f w = barycentric(a, b, cc, p);
-            if (w[0] >= 0 && w[1] >= 0 && w[2] >= 0) {
-                const float z = w[0] * screen[0][2] + w[1] * screen[1][2] + w[2] * screen[2][2];
-                const std::size_t idx =
-                    static_cast<std::size_t>(x) + static_cast<std::size_t>(y) * static_cast<std::size_t>(img.width());
-                if (z > zbuf[idx]) {
-                    zbuf[idx] = z;
-                    const Vec2f texUV = w[0] * uv[0] + w[1] * uv[1] + w[2] * uv[2];
-                    const Color base = model.diffuse(texUV);
-                    const Color shaded{
-                        static_cast<unsigned char>(static_cast<float>(base.r) * intensity),
-                        static_cast<unsigned char>(static_cast<float>(base.g) * intensity),
-                        static_cast<unsigned char>(static_cast<float>(base.b) * intensity),
-                    };
-                    img.set(x, y, shaded);
+                    Color color;
+                    // Let the shader colour (or discard) the fragment; only a
+                    // kept fragment updates the framebuffer and z-buffer.
+                    if (!shader.fragment(w, color)) {
+                        zbuf[idx] = z;
+                        img.set(x, y, color);
+                    }
                 }
             }
         }

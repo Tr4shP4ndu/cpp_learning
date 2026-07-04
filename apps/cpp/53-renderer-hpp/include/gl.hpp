@@ -1,8 +1,9 @@
 #pragma once
 #include "image.hpp"
 #include "geometry.hpp"
-#include "model.hpp"
 #include <vector>
+
+struct IShader;  // defined in shader.hpp; triangle() drives it per-pixel
 
 // Maps NDC coordinates in [-1,1]^3 to screen space [x, x+w] x [y, y+h] x
 // [0,255] (the last being a depth range suitable for a z-buffer). Because
@@ -45,20 +46,14 @@ void drawLine(int x0, int y0, int x1, int y1, Image& img, Color c);
 // a negative component so callers treat it as "outside".
 Vec3f barycentric(Vec2f a, Vec2f b, Vec2f c, Vec2f p);
 
-// Fills the triangle defined by screen[3] (screen-space, Y-down; screen[i][2]
-// is depth, larger = closer to the camera) with a flat color c, using a
-// clamped bounding-box scan and barycentric inside-tests over the .xy of the
-// three vertices. For each covered pixel the depth is interpolated from the
-// barycentric weights and compared against zbuf (indexed x + y*img.width());
-// the pixel is drawn and the buffer updated only when the new depth is
-// greater (i.e. closer) than what's already stored there.
-void triangleFlat(Vec3f screen[3], Image& img, std::vector<float>& zbuf, Color c);
-
-// Like triangleFlat, but instead of a flat color, interpolates uv[3] (one UV
-// per screen[] vertex, same winding) via the covered pixel's barycentric
-// weights and samples model.diffuse() at that UV. The sampled color is then
-// scaled by intensity (flat per-face lighting) before z-testing and drawing.
-// Temporary: Task 1.9's shader abstraction will subsume both triangleFlat and
-// this into a single per-pixel-programmable rasterizer.
-void triangleTextured(Vec3f screen[3], Vec2f uv[3], const Model& model, float intensity, Image& img,
-                       std::vector<float>& zbuf);
+// Rasterizes one triangle whose three corners are given in CLIP space (the
+// output of IShader::vertex, i.e. after projection*view but before the
+// perspective divide and viewport). triangle() owns those two final steps: it
+// does the w-divide (proj3) on each corner, then maps NDC to screen with a
+// viewport(0,0,img.width(),img.height()) matrix. It then scans the clamped
+// bounding box, and for every pixel inside the triangle (all barycentric
+// weights >= 0) interpolates depth (screen[i][2], larger = closer) and z-tests
+// against zbuf (indexed x + y*img.width()). Only on passing the z-test does it
+// invoke shader.fragment(bary, color); the pixel is drawn and the z-buffer
+// updated iff the shader keeps the fragment (returns false, i.e. no discard).
+void triangle(const Vec4f clip[3], IShader& shader, Image& img, std::vector<float>& zbuf);
