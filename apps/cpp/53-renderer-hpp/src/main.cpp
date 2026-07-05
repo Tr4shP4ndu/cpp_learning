@@ -174,50 +174,66 @@ int main(int argc, char** argv) {
     std::vector<float> zbuf(static_cast<std::size_t>(W) * static_cast<std::size_t>(H),
                              -std::numeric_limits<float>::infinity());
 
-    Model model = Model::cube();
-    // Optional textures from the command line (see README for the full arg list):
-    //   argv[1]  P6 PPM diffuse texture ("-" keeps the procedural checkerboard)
-    //   argv[3]  P6 PPM tangent-space normal map (else a flat, no-op map)
+    // --- Model + optional textures from the command line ---
+    // (full arg list in assets/tinyrenderer/README.md)
+    //   argv[1]  model:  "cube" (default) | "sphere" | path to a .obj
+    //   argv[2]  shader: "flat" | "gouraud" | "phong" | "normal" (default)
+    //   argv[3]  P6 PPM diffuse texture   ("-" keeps the procedural checkerboard)
+    //   argv[4]  P6 PPM tangent-space normal map (else a flat, no-op map)
     // A bad path or malformed file throws; catch it so the user gets a clean
     // message instead of an uncaught-exception std::terminate.
+    Model model = Model::cube();
     try {
-        if (argc > 1 && std::string(argv[1]) != "-") {
-            model.setDiffuse(Image::readPPM(argv[1]));
+        const std::string modelArg = (argc > 1) ? argv[1] : "cube";
+        if (modelArg == "cube") {
+            model = Model::cube();
+        } else if (modelArg == "sphere") {
+            model = Model::sphere(24, 24);
+        } else {
+            model = Model::loadObj(modelArg);
         }
         if (argc > 3 && std::string(argv[3]) != "-") {
-            model.setNormalMap(Image::readPPM(argv[3]));
+            model.setDiffuse(Image::readPPM(argv[3]));
+        }
+        if (argc > 4 && std::string(argv[4]) != "-") {
+            model.setNormalMap(Image::readPPM(argv[4]));
         }
     } catch (const std::exception& e) {
         std::cerr << "53-renderer-hpp: " << e.what() << '\n';
         return 1;
     }
-    // argv[2] (optional): shader selection — "flat", "gouraud", "phong", or
-    // "normal" (default). Flat shows facet edges; Phong is smooth; normal adds
-    // tangent-space normal-map detail (identical to Phong with a flat/unset map).
+    // argv[2]: shader — "flat" (facet edges), "gouraud", "phong" (smooth), or
+    // "normal" (default; adds normal-map detail, == phong with a flat/unset map).
     const std::string shaderName = (argc > 2) ? argv[2] : "normal";
-    // Camera: eye offset from the origin (which the cube is centered on) for
-    // a 3/4 view with visible perspective foreshortening. Per this lesson's
-    // convention, coeff = -1/eye.z (eye placed along +z from a center at the
-    // origin).
+
+    // Camera: eye offset from the origin (models are centered there) for a 3/4
+    // view with visible perspective foreshortening. coeff = -1/eye.z (eye placed
+    // along +z from a center at the origin).
     const Vec3f eye{1.0f, 1.0f, 3.0f};
     const Vec3f center{0.0f, 0.0f, 0.0f};
     const Vec3f up{0.0f, 1.0f, 0.0f};
     const float coeff = -1.0f / eye[2];
-    // This projection has no separate focal-length term: unlike tinyrenderer's
-    // usual unit-sphere-normalized models, our procedural cube's corners sit
-    // at distance sqrt(3) from its center, which would otherwise project
-    // outside the [-1,1] NDC box (and thus off-screen). Scaling the model
-    // down before the camera transform keeps it framed without touching
-    // Model::cube()'s (unit, ±1) geometry, which other stages rely on.
-    const float modelScale = 0.6f;
+
+    // This minimal projection has no focal-length/FOV term, so a model fits the
+    // [-1,1] NDC box only if its own extent is small enough. Rather than hardcode
+    // a factor for one mesh, fit ANY model: find its largest |coordinate| and
+    // scale so that maps to ~0.6 (a unit ±1 cube -> 0.6, exactly as before; a
+    // bigger/smaller .obj scales to match). Uniform scale, so normals are safe.
+    float maxExtent = 1e-6f;  // seed away from 0 to avoid /0 on an empty model
+    for (int f = 0; f < model.nfaces(); ++f)
+        for (int k = 0; k < 3; ++k) {
+            const Vec3f v = model.vert(f, k);
+            maxExtent = std::max({maxExtent, std::abs(v[0]), std::abs(v[1]), std::abs(v[2])});
+        }
+    const float modelScale = 0.6f / maxExtent;
 
     const Matrix view = lookAt(eye, center, up);
     const Matrix proj = projection(coeff);
     // The shader's "MVP" is projection * view * (uniform model scale) — and
     // deliberately EXCLUDES viewport: vertex() returns clip space, and
     // triangle() applies the perspective divide + viewport itself. Folding the
-    // modelScale framing factor in as the model matrix keeps the shader
-    // oblivious to it (and, being a uniform scale, it never touches normals).
+    // framing scale in as the model matrix keeps the shader oblivious to it
+    // (and, being a uniform scale, it never touches normals).
     Matrix scale = Matrix::identity();
     scale.m[0][0] = scale.m[1][1] = scale.m[2][2] = modelScale;
     const Matrix mvp = proj * view * scale;

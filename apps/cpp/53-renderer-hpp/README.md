@@ -104,27 +104,33 @@ Writes `render.ppm` here. View it in a PPM-capable viewer, or convert:
 magick render.ppm render.png        # ImageMagick
 # or: pnmtopng render.ppm > render.png
 ```
-Default: the procedural cube, checkerboard diffuse, `NormalMapShader` (which, with
-no normal map, matches Phong). The cube has one normal per face, so Flat/Gouraud/
-Phong look identical on it — swap in `Model::sphere(...)` to see them differ.
+Default (no args): the procedural cube, checkerboard diffuse, `NormalMapShader`
+(which, with no normal map, matches Phong). The cube has one normal per face, so
+Flat/Gouraud/Phong look identical on it — pass `sphere` or a real `.obj` (see
+below) to see them differ.
 
-### Optional command-line arguments
-```sh
-./53-renderer-hpp [diffuse.ppm] [shader] [normal.ppm]
+### Command-line arguments
 ```
-- **`argv[1]`** — a **P6 PPM** diffuse texture (else the checkerboard). Pass `-`
-  to keep the checkerboard while still choosing a shader.
-- **`argv[2]`** — `flat` | `gouraud` | `phong` | `normal` (default `normal`).
-- **`argv[3]`** — a **P6 PPM** tangent-space normal map (else a flat map).
+53-renderer-hpp [model] [shader] [diffuse.ppm] [normalmap.ppm]
+```
+- **`argv[1]` model** — `cube` (default) | `sphere` | path to a `.obj`.
+- **`argv[2]` shader** — `flat` | `gouraud` | `phong` | `normal` (default `normal`).
+- **`argv[3]` diffuse** — a **P6 PPM** texture (else the checkerboard); `-` keeps
+  the checkerboard while still setting a normal map.
+- **`argv[4]` normalmap** — a **P6 PPM** tangent-space normal map (else a flat map).
 
-Only **PPM (P6)** is read in-tree — no image libraries. To use a downloaded
-`.tga`/`.png` texture, convert it first (not committed to the repo):
+Pass them through the Makefile with `ARGS="…"`. Sample models + textures live in
+[`assets/tinyrenderer/`](../../../assets/tinyrenderer/):
 ```sh
-magick texture.png texture.ppm      # ImageMagick handles the P6 conversion
+# the classic african head, smooth Phong + its diffuse texture
+make run app=53-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj phong assets/tinyrenderer/african_head/african_head_diffuse.ppm"
+
+# same head with tangent-space normal-mapped surface detail
+make run app=53-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```
-Run it through the Makefile-built binary, e.g.
-`make run app=53-renderer-hpp` builds it; the binary lands under
-`build/apps/cpp/53-renderer-hpp/<config>/bin/` and takes the args above.
+The model is auto-scaled to fit the frame, so any reasonably-centered `.obj`
+works. Only **PPM (P6)** is read in-tree (no image libraries); convert a
+downloaded `.tga`/`.png` first with `magick texture.png texture.ppm`.
 
 ## Going further
 - **Perspective-correct texturing** — interpolate `U/w` and `1/w` (see the caveat
