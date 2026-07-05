@@ -143,9 +143,29 @@ run it to check. The reference solution stays put for when you want to compare.
 |---|--------|---|
 | 52 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
 
+### Renderer variants — one renderer, four layouts (53–56)
+The **same** tinyrenderer-style software renderer (framebuffer → line → triangle
+→ z-buffer → OBJ mesh → texture → perspective → camera → Flat/Gouraud/Phong
+shaders → tangent-space normal mapping), written four ways so the **file layout
+itself is the lesson**. The shared theory is in
+[`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md).
+
+| # | Lesson | |
+|---|--------|---|
+| 53 | renderer-hpp — C++, `include/` + `src/` (the reference implementation) | H |
+| 54 | renderer-flat — C++, one file; byte-identical output to 53 | H |
+| 55 | renderer-h — C port, `.h` + `.c` (named funcs, `malloc`/`free`, function-pointer shaders) | C |
+| 56 | renderer-flat — C, one file; byte-identical output to 55 | C |
+
+Run any of them on a real model from [`assets/tinyrenderer/`](assets/tinyrenderer/):
+```sh
+make run app=53-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+```
+
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
 with its own README; the **C** lessons also have a counterpart under `apps/c/`.
 See also the reference guides:
+- [`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md) — the renderer pipeline theory shared by lessons 53–56.
 - [`references/debugging-and-tooling.md`](references/debugging-and-tooling.md) — debuggers, sanitizers, valgrind, Compiler Explorer, clang-tidy.
 - [`references/going-further-gpu.md`](references/going-further-gpu.md) — how the capstone maps to real GPUs, and where to learn shaders/CUDA/Vulkan.
 
