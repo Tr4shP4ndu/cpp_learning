@@ -160,10 +160,10 @@ build:   $(BIN)
 build-c: $(BIN)
 
 run: $(BIN)
-	@"$(BIN)"
+	@"$(BIN)" $(ARGS)
 
 run-c: $(BIN)
-	@"$(BIN)"
+	@"$(BIN)" $(ARGS)
 
 -include $(OBJS:.o=.d)
 else

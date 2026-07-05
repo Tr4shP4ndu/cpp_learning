@@ -4,9 +4,11 @@ build/
 # Learners' personal scratch copies (make practice ...)
 practice/
 
-# Rendered output from the capstone (52-mini-renderer)
+# Rendered output from the capstone (52-mini-renderer) + the renderer lessons
 *.ppm
 *.png
+# ...but the committed test textures under assets/ are the exception
+!assets/**/*.ppm
 
 # macOS metadata (harmless extra)
 .DS_Store
