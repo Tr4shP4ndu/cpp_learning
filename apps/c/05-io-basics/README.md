@@ -10,7 +10,7 @@ name and an age, prints a greeting.
 - `name[strcspn(name, "\n")] = '\0';` — `fgets` keeps the trailing newline;
   this overwrites it with a string terminator.
 - `scanf("%d", &age)` — read an integer. The `&` (address-of) lets `scanf`
-  write back into your variable — a preview of pointers (lesson 34).
+  write back into your variable — a preview of pointers (lesson 39).
 
 ## Common pitfalls
 - Not checking the return values of `fgets`/`scanf` (both can fail).

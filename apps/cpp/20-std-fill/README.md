@@ -22,7 +22,7 @@ See `src/main.cpp`.
 - Related: `std::iota` (increasing values, lesson 19), `std::copy`,
   `std::for_each`, `std::transform`, `std::accumulate`. The half-open
   `[begin, end)` iterator range is the shared vocabulary of all of them
-  (lesson 50 goes deeper with ranges).
+  (lesson 56 goes deeper with ranges).
 
 ## Common pitfalls
 - The range is **half-open**: `end()` points *past* the last element, never at

@@ -42,7 +42,7 @@ See `src/main.cpp`. The C version of this lesson lives in [`apps/c/24-files-and-
 | Paths | raw strings | `std::filesystem::path` |
 
 RAII is the headline: the C++ stream closes itself when it leaves scope, so you
-can't forget. This is the same idea you'll formalize in lesson 41.
+can't forget. This is the same idea you'll formalize in lesson 46.
 
 ## Build & run
 ```sh

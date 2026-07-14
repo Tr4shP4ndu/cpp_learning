@@ -33,7 +33,7 @@ See `src/main.cpp`. The C version of this lesson lives in [`apps/c/05-io-basics`
 | Read a number | `scanf("%d", &age)` | `std::cin >> age` |
 
 C's `scanf` needs the `&` (address-of) so it can write back into your variable —
-a preview of pointers (lesson 30). C++ streams handle that for you.
+a preview of pointers (lesson 39). C++ streams handle that for you.
 
 ## Build & run
 This program is **interactive** — it waits for keyboard input. Run it and type:

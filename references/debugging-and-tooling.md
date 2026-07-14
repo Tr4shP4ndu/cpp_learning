@@ -49,7 +49,7 @@ for understanding what the optimizer does.
   often cascades. Template errors are long; look for the phrase "required from
   here" to find *your* line.
 - **Linker errors** ("undefined reference", "duplicate symbol") mean the code
-  compiled but definitions are missing or doubled — see lesson 31.
+  compiled but definitions are missing or doubled — see lesson 32.
 
 ## This repo's knobs
 ```sh

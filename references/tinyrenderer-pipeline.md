@@ -1,7 +1,7 @@
 # The tinyrenderer pipeline (shared theory)
 
-This is the math and theory behind the four renderer lessons — **53** (C++
-`include/`+`src/`), **54** (single C++ file), **55** (C `.h`/`.c`), and **56**
+This is the math and theory behind the four renderer lessons — **62** (C++
+`include/`+`src/`), **63** (single C++ file), **64** (C `.h`/`.c`), and **65**
 (single C file). All four implement the *same* pipeline; only the file layout
 differs. Read this once; each app's README links back here instead of repeating
 it.

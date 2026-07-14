@@ -9,7 +9,7 @@
 #   make list / make list-c             # list C++ / C lessons
 #
 # Switch standards to compare old vs modern:
-#   make run app=21-strings STD=c++98      make run-c app=34-pointers CSTD=c99
+#   make run app=21-strings STD=c++98      make run-c app=39-pointers CSTD=c99
 #
 # Follow a tutorial in your OWN scratch copy (never touches the reference):
 #   make practice app=01-hello-world          # -> practice/cpp/01-hello-world
@@ -33,7 +33,7 @@ BUILD_TYPE ?= Debug
 
 WARN := -Wall -Wextra -Wpedantic
 ifeq ($(BUILD_TYPE),Release)
-  OPT := -O2
+  OPT := -O2 -DNDEBUG
   SAN :=
 else
   OPT := -O0 -g

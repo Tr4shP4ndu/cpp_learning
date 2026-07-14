@@ -21,11 +21,11 @@ See `src/main.cpp`.
 - **Block scope** — inside `{ }` (including loop and `if` bodies).
 - **Function scope** — parameters, for the whole function body.
 - **Namespace/global scope** — declared at file level (lesson 10).
-- **Class scope** — members of a struct/class (lesson 40).
+- **Class scope** — members of a struct/class (lesson 45).
 
 ## Lifetime vs scope
 Local variables use *automatic storage*: created at their declaration,
-destroyed at the closing `}`. This is the foundation of RAII (lesson 41) —
+destroyed at the closing `}`. This is the foundation of RAII (lesson 46) —
 resources released automatically when their owner leaves scope. A `static`
 local, by contrast, is created once and persists across calls.
 

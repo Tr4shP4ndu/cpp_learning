@@ -1,6 +1,6 @@
 # Going further: real GPU programming
 
-The `52-mini-renderer` capstone runs the graphics pipeline **on the CPU** so you
+The `61-mini-renderer` capstone runs the graphics pipeline **on the CPU** so you
 can learn how it works with zero dependencies. A real GPU runs that exact
 pipeline in massively parallel hardware. Here's how what you built maps to the
 real thing, and where to go next.
