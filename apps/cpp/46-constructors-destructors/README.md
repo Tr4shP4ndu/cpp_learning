@@ -29,7 +29,7 @@ idiom: **RAII** (Resource Acquisition Is Initialization).
 ## Why RAII matters
 Because the destructor runs on *every* exit path — normal return, early return,
 even a thrown exception — resources can't leak. This is why C++ file streams
-(lesson 24) and smart pointers (lesson 42) clean up automatically: they're RAII
+(lesson 23) and smart pointers (lesson 41) clean up automatically: they're RAII
 types.
 
 ## Common pitfalls

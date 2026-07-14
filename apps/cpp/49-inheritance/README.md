@@ -34,7 +34,7 @@ Inheritance lets a new class (the *derived* class) build on an existing one (the
 - Deep inheritance hierarchies get hard to follow — keep them shallow.
 - Inheritance alone doesn't give you runtime polymorphism; calling a base
   pointer's method still calls the base version unless it's `virtual` — that's
-  lesson 49.
+  lesson 50.
 
 ## Build it step by step
 1. **The base.** Write `Animal` (`name_`, `name()`, `eat()`), define its methods,

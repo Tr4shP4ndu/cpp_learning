@@ -4,12 +4,12 @@
 #
 #   make run    app=01-hello-world      # C++  (apps/cpp/01-hello-world)
 #   make run-c  app=01-hello-world      # C    (apps/c/01-hello-world)
-#   make build  app=40-classes-basics   # build one C++ lesson
+#   make build  app=45-classes-basics   # build one C++ lesson
 #   make build                          # build every lesson (both languages)
 #   make list / make list-c             # list C++ / C lessons
 #
 # Switch standards to compare old vs modern:
-#   make run app=21-strings STD=c++98      make run-c app=39-pointers CSTD=c99
+#   make run app=20-strings STD=c++98      make run-c app=39-pointers CSTD=c99
 #
 # Follow a tutorial in your OWN scratch copy (never touches the reference):
 #   make practice app=01-hello-world          # -> practice/cpp/01-hello-world

@@ -38,7 +38,7 @@ runtime.
 | Free | `free(p)` | `delete p` / `delete[] p` |
 
 In modern C++ you almost never write raw `new`/`delete`. Instead you use
-**smart pointers** (lesson 42) and containers (`std::vector`), which free memory
+**smart pointers** (lesson 41) and containers (`std::vector`), which free memory
 automatically via RAII — the ownership is tied to a scope, so it's impossible to
 forget. This lesson shows the manual mechanism so you understand what the smart
 pointers are doing for you.

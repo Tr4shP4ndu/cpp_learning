@@ -29,7 +29,7 @@ You can compile any lesson under an **older** standard to see how the language
 has changed:
 
 ```sh
-make run app=21-strings STD=c++98    # C++98 .. C++23 (default c++23)
+make run app=20-strings STD=c++98    # C++98 .. C++23 (default c++23)
 make run-c app=39-pointers CSTD=c99  # c99 | c11 | c17 (default c17)
 ```
 
@@ -84,13 +84,13 @@ run it to check. The reference solution stays put for when you want to compare.
 | 16 | break-statement | |
 | 17 | continue-statement | |
 | 18 | arrays | C |
-| 19 | std-array | |
-| 20 | std-fill | |
-| 21 | strings | C |
-| 22 | vectors | |
-| 23 | containers-map-set | |
-| 24 | files-and-filesystem | C |
-| 25 | string-view-span | |
+| 19 | std-array (with std::iota / std::fill) | |
+| 20 | strings | C |
+| 21 | vectors | |
+| 22 | containers-map-set | |
+| 23 | files-and-filesystem | C |
+| 24 | string-view-span | |
+| 25 | iterators | |
 
 ### Functions
 | # | Lesson |
@@ -116,10 +116,10 @@ run it to check. The reference solution stays put for when you want to compare.
 |---|--------|---|
 | 37 | value-semantics | |
 | 38 | references | |
-| 39 | pointers | C |
-| 40 | dereferencing | |
-| 41 | dynamic-memory | C |
-| 42 | smart-pointers | |
+| 39 | pointers (address-of, dereferencing) | C |
+| 40 | dynamic-memory | C |
+| 41 | smart-pointers | |
+| 42 | static-storage | |
 
 ### Object-oriented programming
 | # | Lesson | |
@@ -129,52 +129,54 @@ run it to check. The reference solution stays put for when you want to compare.
 | 45 | classes-basics | H |
 | 46 | constructors-destructors | H |
 | 47 | encapsulation | H |
-| 48 | inheritance | H |
-| 49 | polymorphism | H |
-| 50 | operator-overloading | H |
+| 48 | const-correctness | |
+| 49 | inheritance | H |
+| 50 | polymorphism | H |
+| 51 | operator-overloading | H |
 
 ### Advanced — modern C++
 | # | Lesson |
 |---|--------|
-| 51 | casting |
-| 52 | templates |
-| 53 | concepts |
-| 54 | move-semantics |
-| 55 | lambdas |
-| 56 | ranges-and-algorithms |
-| 57 | variant-tuple |
-| 58 | format |
-| 59 | error-handling |
-| 60 | concurrency |
+| 52 | casting |
+| 53 | constexpr |
+| 54 | templates |
+| 55 | concepts |
+| 56 | move-semantics |
+| 57 | lambdas |
+| 58 | ranges-and-algorithms |
+| 59 | variant-tuple |
+| 60 | format |
+| 61 | error-handling |
+| 62 | concurrency |
 
 ### Capstone
 | # | Lesson | |
 |---|--------|---|
-| 61 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
+| 63 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
 
-### Renderer variants — one renderer, four layouts (62–65)
+### Renderer variants — one renderer, four layouts (64–67)
 The **same** tinyrenderer-style software renderer (framebuffer → line → triangle
 → z-buffer → OBJ mesh → texture → perspective → camera → Flat/Gouraud/Phong
 shaders → tangent-space normal mapping), written four ways so the **file layout
-itself is the lesson** (lessons 62–65). The shared theory is in
+itself is the lesson** (lessons 64–67). The shared theory is in
 [`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md).
 
 | # | Lesson | |
 |---|--------|---|
-| 62 | renderer-hpp — C++, `include/` + `src/` (the reference implementation) | H |
-| 63 | renderer-flat — C++, one file; byte-identical output to 62 | H |
-| 64 | renderer-h — C port, `.h` + `.c` (named funcs, `malloc`/`free`, function-pointer shaders) | C |
-| 65 | renderer-flat — C, one file; byte-identical output to 64 | C |
+| 64 | renderer-hpp — C++, `include/` + `src/` (the reference implementation) | H |
+| 65 | renderer-flat — C++, one file; byte-identical output to 64 | H |
+| 66 | renderer-h — C port, `.h` + `.c` (named funcs, `malloc`/`free`, function-pointer shaders) | C |
+| 67 | renderer-flat — C, one file; byte-identical output to 66 | C |
 
 Run any of them on a real model from [`assets/tinyrenderer/`](assets/tinyrenderer/):
 ```sh
-make run app=62-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+make run app=64-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```
 
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
 with its own README; the **C** lessons also have a counterpart under `apps/c/`.
 See also the reference guides:
-- [`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md) — the renderer pipeline theory shared by lessons 62–65.
+- [`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md) — the renderer pipeline theory shared by lessons 64–67.
 - [`references/debugging-and-tooling.md`](references/debugging-and-tooling.md) — debuggers, sanitizers, valgrind, Compiler Explorer, clang-tidy.
 - [`references/going-further-gpu.md`](references/going-further-gpu.md) — how the capstone maps to real GPUs, and where to learn shaders/CUDA/Vulkan.
 

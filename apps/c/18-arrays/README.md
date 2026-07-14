@@ -17,7 +17,7 @@ native C — C++ inherited them unchanged.
   This is exactly why C++ adds `std::array`/`std::vector`.
 
 ## Compared to C++
-C++ offers `std::array` (lesson 19) and `std::vector` (lesson 22) — safer,
+C++ offers `std::array` (lesson 19) and `std::vector` (lesson 21) — safer,
 size-aware wrappers. See the [C++ version](../../cpp/18-arrays/).
 
 ## Build & run

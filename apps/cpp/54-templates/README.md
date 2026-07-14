@@ -29,7 +29,7 @@ no runtime cost. Templates are the foundation of the entire standard library
   time, because no concrete version was generated. Keep them in headers.
 - The requirements on `T` are implicit: `maximum` needs `operator>`. Call it with
   a type that lacks `>` and you get a long error *at the point of use*.
-  **Concepts** (lesson 53) make those requirements explicit and the errors
+  **Concepts** (lesson 55) make those requirements explicit and the errors
   readable.
 - Each distinct type instantiates its own copy — heavy template use grows binary
   size and compile time.

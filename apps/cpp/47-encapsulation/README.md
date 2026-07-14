@@ -26,7 +26,7 @@ that must always be true — here, "balance is never negative").
 ## `public` vs `private`
 - `public` — the interface; callable from anywhere.
 - `private` — internals; accessible only within the class's own methods.
-- (`protected`, for subclasses, appears in lesson 48.)
+- (`protected`, for subclasses, appears in lesson 49.)
 A `class` defaults to `private`; a `struct` defaults to `public` — the only real
 difference between the two keywords.
 

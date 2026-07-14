@@ -24,8 +24,8 @@ See `src/main.cpp`.
 - **Readability:** the pipeline reads top-to-bottom as "odds, times ten, first
   two."
 - **Efficiency:** lazy evaluation means one pass, no intermediate containers.
-- It builds directly on lambdas (lesson 55) and the algorithm/iterator ideas
-  from lesson 20.
+- It builds directly on lambdas (lesson 57) and the algorithm/iterator ideas
+  from lesson 25.
 
 ## Common pitfalls
 - **C++20** required for ranges; the views pipeline needs `<ranges>`.

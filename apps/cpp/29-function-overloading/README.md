@@ -25,7 +25,7 @@ call `f()` gives the compiler no way to choose.
 - Adding overloads that do subtly different things for different types surprises
   readers — keep overloads behaving *consistently*.
 - Overloading interacts with implicit conversions in ways that get tricky;
-  templates (lesson 52) are often the better tool for "same logic, many types".
+  templates (lesson 54) are often the better tool for "same logic, many types".
 
 ## Build & run
 ```sh

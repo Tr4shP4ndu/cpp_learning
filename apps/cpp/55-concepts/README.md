@@ -2,7 +2,7 @@
 
 ## Concept
 Concepts (C++20) put **named, checkable requirements** on template type
-parameters. Where a plain template's requirements are implicit (lesson 52), a
+parameters. Where a plain template's requirements are implicit (lesson 54), a
 concept states them up front — so misuse fails with a short, clear message
 ("constraint not satisfied") instead of pages of template errors, and the
 requirement documents itself.

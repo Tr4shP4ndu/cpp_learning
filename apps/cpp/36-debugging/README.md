@@ -29,7 +29,7 @@ wrong — often faster than reaching for a debugger.
 
 ## Common pitfalls
 - Using `assert` for user input or recoverable errors — it vanishes in release
-  builds and aborts the whole process. Use real error handling (lesson 59) there.
+  builds and aborts the whole process. Use real error handling (lesson 61) there.
 - Side effects inside `assert`: `assert(pop() == x)` stops popping in a release
   build. Keep assert conditions pure.
 - Leaving noisy trace prints in committed code — gate them behind a flag or

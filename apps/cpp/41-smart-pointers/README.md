@@ -3,7 +3,7 @@
 ## Concept
 Smart pointers are objects that own a heap allocation and **free it
 automatically** when they go out of scope. They turn the error-prone
-manual `new`/`delete` of lesson 41 into something you can't forget — this is
+manual `new`/`delete` of lesson 40 into something you can't forget — this is
 RAII (Resource Acquisition Is Initialization) applied to memory. In modern C++,
 prefer them over raw owning pointers.
 

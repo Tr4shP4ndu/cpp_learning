@@ -15,7 +15,7 @@ The C version of [`apps/cpp/41-dynamic-memory`](../../cpp/41-dynamic-memory/).
   check `malloc`'s return.
 
 ## Compared to C++
-C++ uses `new`/`delete`, but in practice you use smart pointers (lesson 42) and
+C++ uses `new`/`delete`, but in practice you use smart pointers (lesson 41) and
 containers that free automatically via RAII — you almost never call `free`/
 `delete` by hand. See the [C++ version](../../cpp/41-dynamic-memory/).
 

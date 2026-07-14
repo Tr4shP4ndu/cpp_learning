@@ -25,7 +25,7 @@ See `src/main.cpp`.
 - The `::name` form (leading `::`) refers to the global namespace explicitly.
 
 ## Handy features (for later)
-- Namespace alias: `namespace fs = std::filesystem;` (used in lesson 24).
+- Namespace alias: `namespace fs = std::filesystem;` (used in lesson 23).
 - Nested shorthand (C++17): `namespace company::util { ... }`.
 - Anonymous namespace `namespace { ... }` — makes names file-local.
 

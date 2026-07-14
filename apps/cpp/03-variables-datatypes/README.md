@@ -35,7 +35,7 @@ See `src/main.cpp`. The C version of this lesson lives in [`apps/c/03-variables-
 
 The core numeric types (`int`, `long`, `float`, `double`, `char`) are the same
 in both languages. The big difference is text: C strings are raw `char` arrays
-you manage by hand (lesson 21), while C++ gives you `std::string`.
+you manage by hand (lesson 20), while C++ gives you `std::string`.
 
 ## Build & run
 ```sh

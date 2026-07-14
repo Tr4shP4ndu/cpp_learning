@@ -15,7 +15,7 @@ native C; the syntax is identical to C++.
 
 ## Compared to C++
 Identical mechanics; C++ adds `nullptr` (type-safe) and smart pointers
-(lesson 42) so you rarely manage raw owning pointers. See the
+(lesson 41) so you rarely manage raw owning pointers. See the
 [C++ version](../../cpp/39-pointers/).
 
 ## Build & run
