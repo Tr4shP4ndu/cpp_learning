@@ -1,8 +1,8 @@
 // 65-renderer-flat — the ENTIRE tinyrenderer pipeline in one C translation unit.
 //
 // A mechanical flatten of the multi-file 64-renderer-h: identical renderer,
-// single file. See apps/c/65-renderer-flat/README.md for the layout contrast
-// and references/tinyrenderer-pipeline.md for the theory. Differences from 55
+// single file. See apps/c/65-renderer-flat/README.md for the layout contrast.
+// Differences from 55
 // are organizational only: include guards and cross-file #include "..." lines
 // are gone, and every standard-library header is hoisted (deduplicated) below.
 // Order: all declarations (geometry, image, model, shader, gl) then all

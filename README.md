@@ -169,8 +169,7 @@ run it to check. The reference solution stays put for when you want to compare.
 The **same** tinyrenderer-style software renderer (framebuffer → line → triangle
 → z-buffer → OBJ mesh → texture → perspective → camera → Flat/Gouraud/Phong
 shaders → tangent-space normal mapping), written four ways so the **file layout
-itself is the lesson** (lessons 64–67). The shared theory is in
-[`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md).
+itself is the lesson** (lessons 64–67).
 
 | # | Lesson | |
 |---|--------|---|
@@ -186,10 +185,6 @@ make run app=64-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head
 
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
 with its own README; the **C** lessons also have a counterpart under `apps/c/`.
-See also the reference guides:
-- [`references/tinyrenderer-pipeline.md`](references/tinyrenderer-pipeline.md) — the renderer pipeline theory shared by lessons 64–67.
-- [`references/debugging-and-tooling.md`](references/debugging-and-tooling.md) — debuggers, sanitizers, valgrind, Compiler Explorer, clang-tidy.
-- [`references/going-further-gpu.md`](references/going-further-gpu.md) — how the capstone maps to real GPUs, and where to learn shaders/CUDA/Vulkan.
 
 ## Quick start
 

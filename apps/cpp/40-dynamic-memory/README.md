@@ -51,5 +51,4 @@ make run-c app=41-dynamic-memory    # C
 
 ## Try it yourself
 Comment out one `delete[]` and build with `BUILD_TYPE=Release` on Linux under
-`valgrind ./binary` — watch it report the leak. (See
-`references/debugging-and-tooling.md`.)
+`valgrind ./binary` — watch it report the leak.

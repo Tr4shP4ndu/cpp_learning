@@ -6,8 +6,6 @@ pipeline — collapsed into **one `main.c`**. Same code, one file. It is to 55
 what [63-renderer-flat](../../cpp/63-renderer-flat/) is to 53: the flatten is the
 lesson.
 
-The theory is in
-[`references/tinyrenderer-pipeline.md`](../../../references/tinyrenderer-pipeline.md);
 55's README covers the C port and the C-vs-C++ contrasts. This page is only about
 collapsing the `.h`/`.c` split into a single translation unit.
 

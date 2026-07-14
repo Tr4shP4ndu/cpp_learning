@@ -17,8 +17,6 @@ layouts. The others are the *same code, different organization*:
 | 64-renderer-h | C | `.h` + `.c` |
 | 65-renderer-flat | C | one `main.c` |
 
-The theory (all the math) lives once in
-[`references/tinyrenderer-pipeline.md`](../../../references/tinyrenderer-pipeline.md).
 This README is about *this layout* and how to build the renderer up stage by
 stage.
 
@@ -58,12 +56,6 @@ which is exactly *its* lesson.
 ```
 The repo's central Makefile compiles every `src/*.cpp` and links them — there are
 no per-app Makefiles.
-
-## The pipeline, stage by stage
-The full theory (framebuffer/PPM, Bresenham, barycentric, z-buffer, the
-model→world→view→clip→screen matrix chain, UV interpolation, TBN normal mapping)
-is in [`references/tinyrenderer-pipeline.md`](../../../references/tinyrenderer-pipeline.md).
-Read it alongside the code — it's shared by all four renderer lessons.
 
 ## Build it up (ten stages)
 The finished files were built one stage at a time; that's how to *read* them too.
@@ -138,8 +130,7 @@ downloaded `.tga`/`.png` first with `magick texture.png texture.ppm`.
 - **Specular** (Blinn-Phong), **shadow mapping**, **ambient occlusion** — the
   next shaders in the original tinyrenderer course.
 - **Where this maps to a real GPU** — your `fragment` is a fragment shader,
-  `vertex` a vertex shader, the z-buffer is hardware:
-  [`references/going-further-gpu.md`](../../../references/going-further-gpu.md).
+  `vertex` a vertex shader, the z-buffer is hardware.
 
 ## Attribution
 Inspired by [ssloy/tinyrenderer](https://github.com/ssloy/tinyrenderer) and the

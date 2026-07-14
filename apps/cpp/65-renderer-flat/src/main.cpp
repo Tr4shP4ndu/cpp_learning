@@ -2,7 +2,7 @@
 //
 // This is a mechanical flatten of the multi-file 62-renderer-hpp: identical
 // renderer, single file. See apps/cpp/63-renderer-flat/README.md for the
-// layout contrast, and references/tinyrenderer-pipeline.md for the theory.
+// layout contrast.
 // The only differences from 53 are organizational: #pragma once and the
 // cross-file #include "..." lines are gone, and every standard-library header
 // is hoisted (deduplicated) into the block below. Order: all declarations

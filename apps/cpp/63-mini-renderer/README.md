@@ -7,8 +7,7 @@ entirely on the CPU, with zero dependencies. This capstone ties together
 almost everything in the course: headers/sources, classes, RAII, `std::vector`,
 operator overloading, file I/O, and a real multi-file project structure.
 
-Inspired by [ssloy/tinyrenderer](https://github.com/ssloy/tinyrenderer); see
-`references/going-further-gpu.md` for where to go next (real GPUs, shaders).
+Inspired by [ssloy/tinyrenderer](https://github.com/ssloy/tinyrenderer).
 
 ## Project layout
 ```
@@ -92,5 +91,4 @@ wireframe triangle on top.
 
 ## Where this maps to a real GPU
 Your `drawTriangle` inner loop is a *fragment shader*; `toScreen` is a *vertex
-shader*; the z-buffer is hardware on a GPU. See
-`references/going-further-gpu.md`.
+shader*; the z-buffer is hardware on a GPU.

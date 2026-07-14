@@ -6,8 +6,6 @@ pipeline stage, byte-for-byte the same output — but living in **one
 translation unit**: a single `src/main.cpp`, no headers. Same code, opposite
 layout. That contrast *is* the lesson.
 
-The theory (all the math) is in
-[`references/tinyrenderer-pipeline.md`](../../../references/tinyrenderer-pipeline.md).
 Read 53's README first for the stage-by-stage build-up; this page is only about
 what changes when you collapse that project into one file.
 

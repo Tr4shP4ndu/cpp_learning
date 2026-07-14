@@ -6,8 +6,6 @@ The **same renderer as [62-renderer-hpp](../../cpp/62-renderer-hpp/)**, ported t
 it, the linker joins them. Same pipeline, same stages, same image — the
 interesting differences are what C makes you do by hand that C++ did for you.
 
-The theory (all the math) lives once in
-[`references/tinyrenderer-pipeline.md`](../../../references/tinyrenderer-pipeline.md).
 Read 53's README for the stage-by-stage build-up; this page covers the C port.
 
 ## Layout: `.h` vs no-`.h`
