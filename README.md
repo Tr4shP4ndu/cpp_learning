@@ -4,11 +4,22 @@ A tiny, vendor-free C and C++ workspace for learning the languages from your
 very first program to advanced modern C++ — one small, runnable lesson at a
 time.
 
-- A single top-level `Makefile` builds and runs every lesson — no per-lesson Makefiles.
+- A single top-level `Makefile` builds and runs every lesson — no per-lesson
+  Makefile needed (though a lesson or project can add one when it outgrows the
+  default; see below).
 - C++ lessons live under `apps/cpp/NN-name/`; C lessons under `apps/c/NN-name/`.
 - No submodules, no external build systems, no dependencies.
+- Portable: `make install` sets up a compiler *for this repo* (into a git-ignored
+  `./toolchain/`), so you can build on a fresh machine without a system-wide install.
 
 ## How to use this repo
+
+First time on a machine, get a compiler (see
+[Installing a compiler](#installing-a-compiler) below for details):
+
+```sh
+make install   # Linux/Windows: fetch clang into ./toolchain · macOS: verify Xcode CLT
+```
 
 Each numbered folder under `apps/cpp/` is one self-contained C++ lesson. Read
 its `README.md`, then build and run it:
@@ -182,6 +193,7 @@ See also the reference guides:
 
 ## Quick start
 
+- Set up a compiler for this repo — `make install`
 - List lessons — `make list`
 - Scaffold a new C++ lesson — `make app app=my-new-app`
 - Scaffold a C lesson — `make app app=my-new-app lang=c`
@@ -191,13 +203,58 @@ See also the reference guides:
 - Delete a lesson — `make delete-app app=my-new-app`
 - `make help` prints every target and variable.
 
-## Requirements
+## Your own projects
 
-- macOS: Xcode Command Line Tools (`xcode-select --install`) — gives `clang`/`clang++`.
-- Linux: `gcc`/`g++` and `clang`/`clang++`.
-- Windows: MSVC, MinGW, or Clang.
+`apps/c` and `apps/cpp` are the deliberately-uniform lesson trees. For your
+**own** work, make a sibling folder under `apps/` with **any name and any
+structure you want** — its only job is to bring its own `Makefile`:
 
-See `Guide-to-Install-C-CPP.md` for detailed setup.
+```sh
+make new-project name=my-thing     # scaffold apps/my-thing (own Makefile + src/)
+make project     name=my-thing     # build & run it
+make list-projects
+```
+
+`apps/my-thing/` can hold as many folders (`src/`, `include/`, `assets/`, …) as
+you like; the workspace hands its build off to your `Makefile` (recursive make),
+passing `CXX`/`CC`/`STD`/`CSTD`/`BUILD_TYPE` down (and `ARGS` for `run`).
+
+The same escape hatch works for a **lesson**: drop a `Makefile` into
+`apps/<tree>/<name>/` and the workspace delegates `build`/`run` to it instead of
+the default rules. Minimum by default; your own build when you need it.
+
+The repo already ships worked examples you can run and read — small apps
+(`guessing-game`, `cli-todo`, `calc`, `mandelbrot`) and from-scratch graphics
+(`tinyraytracer`, `tinyraycaster`, `tinykaboom`). List them with
+`make list-projects`, run one with `make project name=<name>`.
+
+## Installing a compiler
+
+You need a C/C++ compiler and `make`. Easiest is to let the repo set one up:
+
+```sh
+make install
+```
+
+- **Linux / Windows:** nothing pre-installed — `make install` downloads a
+  prebuilt LLVM/Clang into a git-ignored `./toolchain/` (no admin, never
+  pushed), and the workspace prefers it automatically. On Windows, run under
+  **MSYS2 / Git Bash** (that's where `make` lives). Pin a version with
+  `make install LLVM_VERSION=20.1.0`.
+- **macOS:** the compiler uses Apple's SDK, so `make install` just verifies the
+  **Xcode Command Line Tools** (`xcode-select --install`) — that one part can't
+  live in the repo.
+
+Prefer a system-wide compiler instead? Any of these work; the workspace uses
+whatever `c++`/`cc` resolve to, and an explicit `CXX=`/`CC=` always wins:
+
+- **macOS:** `xcode-select --install` (or `brew install llvm`).
+- **Linux:** `sudo apt install build-essential clang make` (or your distro's equivalent).
+- **Windows:** MSYS2 (`pacman -S make mingw-w64-ucrt-x86_64-clang`) or WSL2.
+
+Verify with `make run app=01-hello-world` → `Hello, World!`.
+
+`make` and a POSIX shell are assumed (present by default on macOS/Linux).
 
 ## Notes
 
@@ -206,5 +263,7 @@ See `Guide-to-Install-C-CPP.md` for detailed setup.
 - Binaries land centrally under `build/<cpp|c>/NN-name/<config>/bin/`, where
   `<config>` encodes the build type and standard (e.g. `Debug-c++23-c17`) so
   different standards never collide.
-- Override the compiler with `CXX=clang++` / `CC=clang` on the make command line.
+- Compiler: `make install` puts one in `./toolchain/` (git-ignored) and the
+  workspace prefers it; override anytime with `CXX=clang++` / `CC=clang` on the
+  make command line.
 - Minimal by design — focus on C/C++ concepts, not tooling.

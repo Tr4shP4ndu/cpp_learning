@@ -1,10 +1,13 @@
-# Ignore centralized build artifacts
+# Ignore centralized build artifacts (also matches apps/<project>/build/)
 build/
+
+# Self-contained toolchain installed by `make install` — never committed
+toolchain/
 
 # Learners' personal scratch copies (make practice ...)
 practice/
 
-# Rendered output from the capstone (52-mini-renderer) + the renderer lessons
+# Rendered output from the capstone (63-mini-renderer) + the renderer lessons
 *.ppm
 *.png
 # ...but the committed test textures under assets/ are the exception
