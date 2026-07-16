@@ -20,6 +20,11 @@ layouts. The others are the *same code, different organization*:
 This README is about *this layout* and how to build the renderer up stage by
 stage.
 
+> 📖 **New to the graphics pipeline? Start with [`PIPELINE.md`](PIPELINE.md)** —
+> the whole thing explained with diagrams: the coordinate-space journey, the
+> matrix chain, the z-buffer, and the four shaders. Shared by all four renderer
+> layouts.
+
 ## Layout contrast: `.hpp` vs no-`.hpp`
 The lesson of **53** is the split itself. Declarations go in headers; definitions
 go in sources; consumers `#include` the header and never see the `.cpp`.

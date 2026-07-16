@@ -9,6 +9,9 @@ layout. That contrast *is* the lesson.
 Read 53's README first for the stage-by-stage build-up; this page is only about
 what changes when you collapse that project into one file.
 
+The illustrated pipeline — coordinate spaces, the matrix chain, and the shaders,
+with diagrams — is in [`../64-renderer-hpp/PIPELINE.md`](../64-renderer-hpp/PIPELINE.md).
+
 ## Layout contrast: one file vs `.hpp` + `.cpp`
 53 splits the renderer into `geometry/image/model/gl/shader` headers and
 sources. 54 pastes them all into `main.cpp`, in dependency order, with:

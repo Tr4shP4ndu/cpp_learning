@@ -8,6 +8,9 @@ interesting differences are what C makes you do by hand that C++ did for you.
 
 Read 53's README for the stage-by-stage build-up; this page covers the C port.
 
+The illustrated pipeline (with diagrams) is in
+[`../../cpp/64-renderer-hpp/PIPELINE.md`](../../cpp/64-renderer-hpp/PIPELINE.md).
+
 ## Layout: `.h` vs no-`.h`
 Just like C++'s header/source split (lesson 31), but with C's tools:
 

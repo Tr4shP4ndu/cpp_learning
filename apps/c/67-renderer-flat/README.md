@@ -9,6 +9,9 @@ lesson.
 55's README covers the C port and the C-vs-C++ contrasts. This page is only about
 collapsing the `.h`/`.c` split into a single translation unit.
 
+The illustrated pipeline (with diagrams) is in
+[`../../cpp/64-renderer-hpp/PIPELINE.md`](../../cpp/64-renderer-hpp/PIPELINE.md).
+
 ## Layout contrast: one C file vs `.h` + `.c`
 55 splits the renderer across `geometry/image/model/gl/shader` headers and
 sources. 56 concatenates them into `main.c`, in dependency order, with:
