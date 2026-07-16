@@ -166,10 +166,10 @@ The pictures for this renderer are its own output (no external images needed):
 
 ```sh
 # default: procedural cube, checkerboard, normal-map shader
-make run app=64-renderer-hpp                 # writes render.ppm here
+make run app=63-renderer                     # writes render.ppm here
 
 # a real model + textures (see assets/tinyrenderer/README.md for the full arg list)
-make run app=64-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj phong \
+make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj phong \
   assets/tinyrenderer/african_head/african_head_diffuse.ppm \
   assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```

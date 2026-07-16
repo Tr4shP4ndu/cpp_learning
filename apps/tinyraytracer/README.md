@@ -1,7 +1,7 @@
 # tinyraytracer
 
 A from-scratch **ray tracer** — no libraries, ~200 lines, writes a PPM image.
-Where the renderer capstone (lessons 62–67) *rasterizes* triangles onto the
+Where the renderer capstone (lesson 63) *rasterizes* triangles onto the
 screen, this traces rays of light backwards from the eye into the scene. Two
 opposite ways to make the same kind of picture.
 

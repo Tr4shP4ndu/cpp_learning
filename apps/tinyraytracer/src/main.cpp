@@ -5,7 +5,7 @@
 // Idea: for every pixel, shoot a ray from the camera into the scene, find the
 // nearest surface, and compute its colour from lighting, shadows, reflection,
 // and refraction (recursively). This is the OPPOSITE of the rasterizer capstone
-// (lessons 62-67): there we projected triangles onto the screen; here we trace
+// (lesson 63): there we projected triangles onto the screen; here we trace
 // light backwards from the eye.
 #include <algorithm>
 #include <cmath>

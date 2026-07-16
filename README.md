@@ -163,24 +163,17 @@ run it to check. The reference solution stays put for when you want to compare.
 ### Capstone
 | # | Lesson | |
 |---|--------|---|
-| 63 | mini-renderer — a from-scratch software renderer (the GPU pipeline on the CPU) | H |
+| 63 | renderer — a from-scratch tinyrenderer-style software renderer (the GPU pipeline on the CPU) | H |
 
-### Renderer variants — one renderer, four layouts (64–67)
-The **same** tinyrenderer-style software renderer (framebuffer → line → triangle
-→ z-buffer → OBJ mesh → texture → perspective → camera → Flat/Gouraud/Phong
-shaders → tangent-space normal mapping), written four ways so the **file layout
-itself is the lesson** (lessons 64–67).
+The capstone ties the course together: it runs the **same pipeline a GPU does**
+(framebuffer → line → triangle → z-buffer → OBJ mesh → texture → perspective →
+camera → Flat/Gouraud/Phong shaders → tangent-space normal mapping), on the CPU
+with zero dependencies. The illustrated theory — with diagrams — is in
+[`apps/cpp/63-renderer/PIPELINE.md`](apps/cpp/63-renderer/PIPELINE.md).
 
-| # | Lesson | |
-|---|--------|---|
-| 64 | renderer-hpp — C++, `include/` + `src/` (the reference implementation) | H |
-| 65 | renderer-flat — C++, one file; byte-identical output to 64 | H |
-| 66 | renderer-h — C port, `.h` + `.c` (named funcs, `malloc`/`free`, function-pointer shaders) | C |
-| 67 | renderer-flat — C, one file; byte-identical output to 66 | C |
-
-Run any of them on a real model from [`assets/tinyrenderer/`](assets/tinyrenderer/):
+Run it on a real model from [`assets/tinyrenderer/`](assets/tinyrenderer/):
 ```sh
-make run app=64-renderer-hpp ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```
 
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)

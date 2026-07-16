@@ -199,7 +199,7 @@ int main(int argc, char** argv) {
             model.setNormalMap(Image::readPPM(argv[4]));
         }
     } catch (const std::exception& e) {
-        std::cerr << "62-renderer-hpp: " << e.what() << '\n';
+        std::cerr << "63-renderer: " << e.what() << '\n';
         return 1;
     }
     // argv[2]: shader — "flat" (facet edges), "gouraud", "phong" (smooth), or
