@@ -4,9 +4,11 @@ A tiny, vendor-free C and C++ workspace for learning the languages from your
 very first program to advanced modern C++ — one small, runnable lesson at a
 time.
 
-- A single top-level `Makefile` builds and runs every app — no per-app
-  Makefile needed (though any app can add one when it outgrows the
-  default; see below).
+- Every app has its own two-line `Makefile` (`APP := name` + an include of the
+  shared `rules.mk`), so any app builds on its own: `cd apps/cpp/calc && make run`.
+- A top-level `Makefile` is a convenience launcher — `make run app=<name>` finds
+  the app and runs its Makefile for you. See [MAKEFILE.md](MAKEFILE.md) for a
+  step-by-step guide.
 - C++ lessons live under `apps/cpp/NN-name/`; C lessons under `apps/c/NN-name/`.
 - No submodules, no external build systems, no dependencies.
 - Portable: `make install` sets up a compiler *for this repo* (into a git-ignored
@@ -206,13 +208,15 @@ make run app=my-thing                          # found by name at any depth
 ```
 
 Apps are resolved by name, so `run` / `build` / `delete-app` are the same
-wherever an app lives — groups are pure organisation, with no bookkeeping.
+wherever an app lives — groups are pure organisation, with no bookkeeping. Each
+scaffolded app gets a two-line `Makefile` that includes the shared `rules.mk`;
+you can also build it directly with `cd apps/cpp/my-thing && make run`.
 
-**Outgrew the defaults?** Drop a `Makefile` next to the app's `src/` and the
-workspace hands its build off to yours (recursive make), passing
-`CXX`/`CC`/`STD`/`CSTD`/`BUILD_TYPE` down (and `ARGS` for `run`). That app can
-then hold whatever structure you want (`include/`, `assets/`, …). Minimum by
-default; your own build when you need it.
+**Outgrew the defaults?** Replace that two-line `Makefile` with a real one of
+your own — as long as it has `build` and `run` targets, the launcher still finds
+it by name and calls it. That app can then hold whatever structure and build
+steps you want (`include/`, `assets/`, extra libraries, …). Start simple; take
+over the build only when you need to. Full walkthrough: [MAKEFILE.md](MAKEFILE.md).
 
 The repo already ships worked examples you can run and read — small C++ apps
 (`guessing-game`, `cli-todo`, `calc`, `mandelbrot`), from-scratch graphics
@@ -251,9 +255,9 @@ Verify with `make run app=01-hello-world` → `Hello, World!`.
 
 - Source lives in `apps/cpp/NN-name/src/` (and `apps/c/NN-name/src/` for C);
   multi-file lessons add an `include/` folder.
-- Binaries land centrally under `build/<cpp|c>/NN-name/<config>/bin/`, where
-  `<config>` encodes the build type and standard (e.g. `Debug-c++23-c17`) so
-  different standards never collide.
+- Each app builds into its own git-ignored `build/` folder
+  (`apps/cpp/NN-name/build/NN-name`). The shared recipe lives in `rules.mk`; see
+  [MAKEFILE.md](MAKEFILE.md).
 - Compiler: `make install` puts one in `./toolchain/` (git-ignored) and the
   workspace prefers it; override anytime with `CXX=clang++` / `CC=clang` on the
   make command line.

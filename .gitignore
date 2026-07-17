@@ -1,4 +1,4 @@
-# Ignore centralized build artifacts (also matches apps/<project>/build/)
+# Build output — each app compiles into its own build/ folder
 build/
 
 # Self-contained toolchain installed by `make install` — never committed
