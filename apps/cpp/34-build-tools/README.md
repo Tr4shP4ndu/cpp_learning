@@ -33,8 +33,8 @@ lets you read any project's build and change how yours compiles.
 
 ## Build & run
 ```sh
-make run app=34-build-tools
-make run app=34-build-tools STD=c++17   # watch __cplusplus change to 201703
+make run-cpp-app-34-build-tools
+make run-cpp-app-34-build-tools STD=c++17   # watch __cplusplus change to 201703
 ```
 
 ## Try it yourself

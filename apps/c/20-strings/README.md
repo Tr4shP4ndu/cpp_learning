@@ -22,5 +22,5 @@ preferring C++ objects; see the [C++ version](../../cpp/21-strings/).
 
 ## Build & run
 ```sh
-make run-c app=21-strings
+make run-c-app-21-strings
 ```

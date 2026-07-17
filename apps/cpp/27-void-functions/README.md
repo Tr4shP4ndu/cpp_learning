@@ -24,7 +24,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=27-void-functions
+make run-cpp-app-27-void-functions
 ```
 
 ## Try it yourself

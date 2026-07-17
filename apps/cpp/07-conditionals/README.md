@@ -28,8 +28,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=07-conditionals
-make build app=07-conditionals STD=c++14 # warns: init-if is a C++17 extension
+make run-cpp-app-07-conditionals
+make build-cpp-app-07-conditionals STD=c++14 # warns: init-if is a C++17 extension
 ```
 
 ## Try it yourself

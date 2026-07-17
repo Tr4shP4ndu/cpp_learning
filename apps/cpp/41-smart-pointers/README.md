@@ -37,7 +37,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=42-smart-pointers
+make run-cpp-app-42-smart-pointers
 ```
 `std::make_unique` was standardized in C++14 (`make_shared` in C++11). Some
 standard libraries provide `make_unique` earlier as an extension, so building

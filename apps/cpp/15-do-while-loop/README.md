@@ -28,7 +28,7 @@ again").
 
 ## Build & run
 ```sh
-make run app=15-do-while-loop
+make run-cpp-app-15-do-while-loop
 ```
 
 ## Try it yourself

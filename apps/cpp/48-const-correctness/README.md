@@ -38,7 +38,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=48-const-correctness
+make run-cpp-app-48-const-correctness
 ```
 
 ## Try it yourself

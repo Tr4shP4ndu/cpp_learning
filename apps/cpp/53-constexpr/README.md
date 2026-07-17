@@ -42,8 +42,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=53-constexpr
-make build app=53-constexpr STD=c++17   # consteval is C++20 — fails
+make run-cpp-app-53-constexpr
+make build-cpp-app-53-constexpr STD=c++17   # consteval is C++20 — fails
 ```
 
 ## Try it yourself

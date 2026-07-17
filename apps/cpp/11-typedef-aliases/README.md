@@ -31,7 +31,7 @@ They're equivalent for simple cases. Prefer `using` in modern C++:
 
 ## Build & run
 ```sh
-make run app=11-typedef-aliases
+make run-cpp-app-11-typedef-aliases
 ```
 
 ## Try it yourself

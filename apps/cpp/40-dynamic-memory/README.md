@@ -7,7 +7,7 @@ for memory from the **heap**. The catch: you must return it exactly once, or you
 leak (never freed) or crash (freed twice / used after free).
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/41-dynamic-memory`](../../c/41-dynamic-memory/) (run it with `make run-c app=41-dynamic-memory`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/41-dynamic-memory`](../../c/41-dynamic-memory/) (run it with `make run-c-app-41-dynamic-memory`).
 
 ## Line-by-line (C++)
 - `int* p = new int(42);` — allocate one int on the heap, initialized to 42.
@@ -45,8 +45,8 @@ pointers are doing for you.
 
 ## Build & run
 ```sh
-make run app=41-dynamic-memory      # C++
-make run-c app=41-dynamic-memory    # C
+make run-cpp-app-41-dynamic-memory      # C++
+make run-c-app-41-dynamic-memory    # C
 ```
 
 ## Try it yourself

@@ -7,7 +7,7 @@ Real programs read and write files. C++ uses *file streams* (`std::ofstream` /
 `fopen`/`fprintf`/`fgets` and treats paths as plain strings.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/24-files-and-filesystem`](../../c/24-files-and-filesystem/) (run it with `make run-c app=24-files-and-filesystem`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/24-files-and-filesystem`](../../c/24-files-and-filesystem/) (run it with `make run-c-app-24-files-and-filesystem`).
 
 ## Line-by-line (C++)
 - `fs::path file = fs::temp_directory_path() / "...";` — `path` joins segments
@@ -46,8 +46,8 @@ can't forget. This is the same idea you'll formalize in lesson 46.
 
 ## Build & run
 ```sh
-make run app=24-files-and-filesystem      # C++
-make run-c app=24-files-and-filesystem    # C
+make run-cpp-app-24-files-and-filesystem      # C++
+make run-c-app-24-files-and-filesystem    # C
 ```
 
 ## Try it yourself

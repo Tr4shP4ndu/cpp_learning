@@ -43,8 +43,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=56-ranges-and-algorithms
-make build app=56-ranges-and-algorithms STD=c++17   # ranges are C++20 — fails
+make run-cpp-app-56-ranges-and-algorithms
+make build-cpp-app-56-ranges-and-algorithms STD=c++17   # ranges are C++20 — fails
 ```
 
 ## Try it yourself

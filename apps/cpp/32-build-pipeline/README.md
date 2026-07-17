@@ -60,7 +60,7 @@ rm -f main.s main.o adder.o demo
 
 ## Build & run
 ```sh
-make run app=32-build-pipeline   # the Makefile runs all four stages for you
+make run-cpp-app-32-build-pipeline   # the Makefile runs all four stages for you
 ```
 
 ## Try it yourself

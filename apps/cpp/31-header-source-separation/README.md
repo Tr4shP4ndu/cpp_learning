@@ -58,7 +58,7 @@ The per-app Makefile adds `-Iinclude` so `#include "greeter.hpp"` resolves.
 
 ## Build & run
 ```sh
-make run app=31-header-source-separation
+make run-cpp-app-31-header-source-separation
 ```
 The Makefile compiles `main.cpp` and `greeter.cpp` separately, then links them.
 

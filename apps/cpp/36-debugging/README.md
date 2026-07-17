@@ -37,8 +37,8 @@ wrong — often faster than reaching for a debugger.
 
 ## Build & run
 ```sh
-make run app=36-debugging
-make run app=36-debugging BUILD_TYPE=Release   # NDEBUG: asserts compiled out
+make run-cpp-app-36-debugging
+make run-cpp-app-36-debugging BUILD_TYPE=Release   # NDEBUG: asserts compiled out
 ```
 Uncomment the `factorial(-1)` line and run the debug build to watch the assert
 fire and name the failing condition.

@@ -39,7 +39,7 @@ local, by contrast, is created once and persists across calls.
 
 ## Build & run
 ```sh
-make run app=09-scope
+make run-cpp-app-09-scope
 ```
 
 ## Try it yourself

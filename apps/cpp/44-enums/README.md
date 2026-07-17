@@ -34,8 +34,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=44-enums
-make run app=44-enums STD=c++98   # `enum class` is C++11 — fails on C++98
+make run-cpp-app-44-enums
+make run-cpp-app-44-enums STD=c++98   # `enum class` is C++11 — fails on C++98
 ```
 
 ## Try it yourself

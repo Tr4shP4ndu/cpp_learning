@@ -37,8 +37,8 @@ format string is checked against the argument types.
 
 ## Build & run
 ```sh
-make run app=58-format
-make build app=58-format STD=c++17   # <format> is C++20 — fails
+make run-cpp-app-58-format
+make build-cpp-app-58-format STD=c++17   # <format> is C++20 — fails
 ```
 
 ## Try it yourself

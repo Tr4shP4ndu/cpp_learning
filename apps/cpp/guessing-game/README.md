@@ -9,8 +9,8 @@ something interactive.
 
 ## Run
 ```sh
-make run app=guessing-game                 # interactive
-echo "50 25 37 31 34" | make run app=guessing-game ARGS=42   # scripted, fixed seed
+make run-cpp-app-guessing-game                 # interactive
+echo "50 25 37 31 34" | make run-cpp-app-guessing-game ARGS=42   # scripted, fixed seed
 ```
 Pass a seed (`ARGS=42`) to get the same secret every time — handy for practice.
 

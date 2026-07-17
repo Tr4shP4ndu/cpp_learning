@@ -15,8 +15,8 @@ ray tracer, and raycaster.
 
 ## Run
 ```sh
-make run app=tinykaboom                     # writes out.ppm (debug + sanitizers)
-make run app=tinykaboom BUILD_TYPE=Release   # much faster for the render loop
+make run-cpp-app-tinykaboom                     # writes out.ppm (debug + sanitizers)
+make run-cpp-app-tinykaboom BUILD_TYPE=Release   # much faster for the render loop
 ```
 Open `out.ppm` in a PPM-capable viewer (GIMP, or `convert out.ppm out.png`).
 `out.ppm` is git-ignored.

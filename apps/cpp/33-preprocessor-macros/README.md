@@ -34,7 +34,7 @@ you'll meet constantly. Knowing macros are *textual* explains their sharp edges.
 
 ## Build & run
 ```sh
-make run app=33-preprocessor-macros
+make run-cpp-app-33-preprocessor-macros
 ```
 
 ## Try it yourself

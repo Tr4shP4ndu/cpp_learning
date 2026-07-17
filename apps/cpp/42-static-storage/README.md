@@ -43,7 +43,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=42-static-storage
+make run-cpp-app-42-static-storage
 ```
 
 ## Try it yourself

@@ -31,7 +31,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=10-namespaces
+make run-cpp-app-10-namespaces
 ```
 
 ## Try it yourself

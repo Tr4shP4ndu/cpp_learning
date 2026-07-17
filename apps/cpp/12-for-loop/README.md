@@ -26,7 +26,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=12-for-loop
+make run-cpp-app-12-for-loop
 ```
 
 ## Try it yourself

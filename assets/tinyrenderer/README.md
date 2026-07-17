@@ -17,12 +17,12 @@ libraries in-tree). The `.obj` files are the upstream text meshes, unchanged.
 ## Using them
 
 ```sh
-# make run app=63-renderer ARGS="<model> [shader] [diffuse] [normalmap]"
-make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj phong assets/tinyrenderer/african_head/african_head_diffuse.ppm"
-make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+# make run-cpp-app-63-renderer ARGS="<model> [shader] [diffuse] [normalmap]"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj phong assets/tinyrenderer/african_head/african_head_diffuse.ppm"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 
 # another model:
-make run app=63-renderer ARGS="assets/tinyrenderer/diablo3_pose/diablo3_pose.obj phong assets/tinyrenderer/diablo3_pose/diablo3_pose_diffuse.ppm"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/diablo3_pose/diablo3_pose.obj phong assets/tinyrenderer/diablo3_pose/diablo3_pose_diffuse.ppm"
 ```
 
 `model` may also be `cube` or `sphere` for the built-in procedural meshes.

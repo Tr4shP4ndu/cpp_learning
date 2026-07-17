@@ -37,8 +37,8 @@ vanish under a debugger). Mutexes and atomics are how you make sharing correct;
 
 ## Build & run
 ```sh
-make run app=60-concurrency
-make build app=60-concurrency STD=c++11   # threads/atomics/futures exist since C++11
+make run-cpp-app-60-concurrency
+make build-cpp-app-60-concurrency STD=c++11   # threads/atomics/futures exist since C++11
 ```
 
 ## Try it yourself

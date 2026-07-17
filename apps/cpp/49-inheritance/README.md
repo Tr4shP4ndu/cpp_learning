@@ -46,7 +46,7 @@ Inheritance lets a new class (the *derived* class) build on an existing one (the
 
 ## Build & run
 ```sh
-make run app=48-inheritance
+make run-cpp-app-48-inheritance
 ```
 
 ## Try it yourself

@@ -51,7 +51,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=59-error-handling
+make run-cpp-app-59-error-handling
 ```
 
 ## Try it yourself

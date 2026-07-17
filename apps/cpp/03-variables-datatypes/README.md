@@ -6,7 +6,7 @@ are statically typed: every variable's type is fixed at compile time, and the
 type decides how many bytes it uses and what values it can hold.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/03-variables-datatypes`](../../c/03-variables-datatypes/) (run it with `make run-c app=03-variables-datatypes`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/03-variables-datatypes`](../../c/03-variables-datatypes/) (run it with `make run-c-app-03-variables-datatypes`).
 
 ## Line-by-line
 - `int signedIntVar = -10;` — declare a variable, give it a type, initialize it.
@@ -39,8 +39,8 @@ you manage by hand (lesson 20), while C++ gives you `std::string`.
 
 ## Build & run
 ```sh
-make run app=03-variables-datatypes      # C++
-make run-c app=03-variables-datatypes    # C — note the printf format specifiers
+make run-cpp-app-03-variables-datatypes      # C++
+make run-c-app-03-variables-datatypes    # C — note the printf format specifiers
 ```
 
 ## Try it yourself

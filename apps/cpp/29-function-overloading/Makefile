@@ -1,5 +1,4 @@
-# 29-function-overloading — builds with the shared rules at the repo root.
-#   make        build it        make run     build & run     make clean
-APP := 29-function-overloading
-# Find rules.mk at the repo root, however deep this app sits.
-include $(firstword $(wildcard ../../rules.mk ../../../rules.mk ../../../../rules.mk ../../../../../rules.mk))
+# Built by the workspace — from the repo root:  make run-cpp-app-<this-folder>
+# The root Makefile exports CXX/CXXFLAGS and passes BUILD_DIR + OUTPUT_NAME in.
+all:
+	$(CXX) $(CXXFLAGS) -Iinclude -Isrc src/*.cpp -o $(BUILD_DIR)/$(OUTPUT_NAME)

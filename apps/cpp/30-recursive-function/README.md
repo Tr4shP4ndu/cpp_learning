@@ -32,7 +32,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=30-recursive-function
+make run-cpp-app-30-recursive-function
 ```
 
 ## Try it yourself

@@ -27,7 +27,7 @@ until some event.
 
 ## Build & run
 ```sh
-make run app=14-while-loop
+make run-cpp-app-14-while-loop
 ```
 
 ## Try it yourself

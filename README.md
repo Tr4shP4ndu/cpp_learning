@@ -4,11 +4,11 @@ A tiny, vendor-free C and C++ workspace for learning the languages from your
 very first program to advanced modern C++ — one small, runnable lesson at a
 time.
 
-- Every app has its own two-line `Makefile` (`APP := name` + an include of the
-  shared `rules.mk`), so any app builds on its own: `cd apps/cpp/calc && make run`.
-- A top-level `Makefile` is a convenience launcher — `make run app=<name>` finds
-  the app and runs its Makefile for you. See [MAKEFILE.md](MAKEFILE.md) for a
-  step-by-step guide.
+- The app NAME is part of the command: `make run-cpp-app-01-hello-world`
+  (`run-c-app-…` for C). No `app=…` variable to remember.
+- One top-level `Makefile` owns the compiler flags and exports them; each app's
+  Makefile is a single `all:` rule that just compiles `src/`. See
+  [MAKEFILE.md](MAKEFILE.md) for a step-by-step guide.
 - C++ lessons live under `apps/cpp/NN-name/`; C lessons under `apps/c/NN-name/`.
 - No submodules, no external build systems, no dependencies.
 - Portable: `make install` sets up a compiler *for this repo* (into a git-ignored
@@ -24,49 +24,39 @@ make install   # Linux/Windows: fetch clang into ./toolchain · macOS: verify Xc
 ```
 
 Each numbered folder under `apps/cpp/` is one self-contained C++ lesson. Read
-its `README.md`, then build and run it:
+its `README.md`, then build and run it (the folder name is part of the target):
 
 ```sh
-make run app=01-hello-world
+make run-cpp-app-01-hello-world
 ```
 
 Lessons are ordered so each builds on the last. Where the C-vs-C++ contrast
 teaches something, there's a parallel C lesson in `apps/c/NN-name/` — run it
-with `run-c` (same name, C tree):
+with the `c` word (same name, C tree):
 
 ```sh
-make run-c app=01-hello-world
+make run-c-app-01-hello-world
 ```
 
 You can compile any lesson under an **older** standard to see how the language
 has changed:
 
 ```sh
-make run app=20-strings STD=c++98    # C++98 .. C++23 (default c++23)
-make run-c app=39-pointers CSTD=c99  # c99 | c11 | c17 (default c17)
+make run-cpp-app-20-strings STD=c++98   # C++98 .. C++23 (default c++23)
+make run-c-app-39-pointers CSTD=c99     # c99 | c11 | c17 (default c17)
 ```
 
 Debug builds (the default) run with AddressSanitizer + UBSan on, so memory and
 undefined-behavior mistakes are caught while you learn. Use
 `BUILD_TYPE=Release` for optimized, sanitizer-free builds.
 
-## Practice — follow along in your own copy
-
-Don't edit the reference lessons. To *type along* with a tutorial, make a
-personal scratch copy and build it with `PRACTICE=1`:
+To *type along* with a tutorial without editing the reference lesson, copy its
+folder and work in the copy:
 
 ```sh
-make practice app=01-hello-world          # -> practice/cpp/01-hello-world/ (a starter file)
-make run      app=01-hello-world PRACTICE=1   # build & run YOUR copy
-
-make practice app=05-io-basics lang=c     # -> practice/c/05-io-basics/
-make run-c    app=05-io-basics PRACTICE=1
+cp -r apps/cpp/01-hello-world apps/cpp/my-hello   # your own scratch copy
+make run-cpp-app-my-hello                          # build & run it
 ```
-
-Your copies live under `practice/` (git-ignored, so they never clutter the
-repo), and `make practice` never overwrites a file you've already started. Read
-the reference lesson's README, write your own version in your practice copy, and
-run it to check. The reference solution stays put for when you want to compare.
 
 ## Learning path
 
@@ -175,7 +165,7 @@ with zero dependencies. The illustrated theory — with diagrams — is in
 
 Run it on a real model from [`assets/tinyrenderer/`](assets/tinyrenderer/):
 ```sh
-make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```
 
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
@@ -184,44 +174,39 @@ with its own README; the **C** lessons also have a counterpart under `apps/c/`.
 ## Quick start
 
 - Set up a compiler for this repo — `make install`
-- List apps — `make list` (C++) / `make list-c` (C)
-- Scaffold a new C++ app — `make app app=my-new-app`
-- Scaffold a C app — `make app app=my-new-app lang=c`
-- …inside a named group folder — `make app app=my-new-app group=graphics`
-- Build one (or all if `app=` omitted) — `make build app=my-new-app`
-- Run — `make run app=my-new-app` (C++) / `make run-c app=my-new-app` (C)
+- List apps — `make list` (or `make list-cpp` / `make list-c`)
+- Scaffold a new C++ app — `make new-cpp-app-my-new-app`
+- Scaffold a C app — `make new-c-app-my-new-app`
+- Build one — `make build-cpp-app-my-new-app` (all apps: `make build`)
+- Run — `make run-cpp-app-my-new-app` (C++) / `make run-c-app-my-new-app` (C)
 - Clean build artifacts — `make clean`
-- Delete an app — `make delete-app app=my-new-app`
+- Delete an app — `make delete-cpp-app-my-new-app`
 - `make help` prints every target and variable.
 
-## Your own apps & groups
+## Your own apps
 
-Everything lives under `apps/cpp/` (C++) or `apps/c/` (C) and builds with the
-same rules — there's no separate "project" kind. An app is just a folder with a
-`src/`. It can sit directly under a language, or inside a **named group folder**
-you make to keep related apps together:
+Everything lives under `apps/cpp/` (C++) or `apps/c/` (C). An app is just a
+folder with a `src/` and a one-line Makefile. Scaffold one from the template:
 
 ```sh
-make app app=my-thing lang=cpp                 # apps/cpp/my-thing
-make app app=my-thing lang=cpp group=graphics  # apps/cpp/graphics/my-thing
-make run app=my-thing                          # found by name at any depth
+make new-cpp-app-my-thing     # -> apps/cpp/my-thing (main.cpp + Makefile + README)
+make run-cpp-app-my-thing     # build & run it
 ```
 
-Apps are resolved by name, so `run` / `build` / `delete-app` are the same
-wherever an app lives — groups are pure organisation, with no bookkeeping. Each
-scaffolded app gets a two-line `Makefile` that includes the shared `rules.mk`;
-you can also build it directly with `cd apps/cpp/my-thing && make run`.
+The root `Makefile` owns the compiler flags and exports them; the app's Makefile
+is a single `all:` rule that compiles `src/` with those flags (see the walkthrough
+in [MAKEFILE.md](MAKEFILE.md)).
 
-**Outgrew the defaults?** Replace that two-line `Makefile` with a real one of
-your own — as long as it has `build` and `run` targets, the launcher still finds
-it by name and calls it. That app can then hold whatever structure and build
-steps you want (`include/`, `assets/`, extra libraries, …). Start simple; take
-over the build only when you need to. Full walkthrough: [MAKEFILE.md](MAKEFILE.md).
+**Need something special** for one app — an extra library, a code generator,
+multiple build steps? Replace its one-line `all:` rule with whatever you need;
+it still receives the exported flags plus `BUILD_DIR`/`OUTPUT_NAME`, and
+`make build-cpp-app-my-thing` keeps working. Start simple; take over only when
+you need to.
 
 The repo already ships worked examples you can run and read — small C++ apps
 (`guessing-game`, `cli-todo`, `calc`, `mandelbrot`), from-scratch graphics
 (`tinyraytracer`, `tinyraycaster`, `tinykaboom`), and a tiny POSIX shell at
-`apps/c/shell`. Run one with `make run app=<name>` (or `make run-c app=shell`).
+`apps/c/shell`. Run one with `make run-cpp-app-calc` (or `make run-c-app-shell`).
 
 ## Installing a compiler
 
@@ -247,7 +232,7 @@ whatever `c++`/`cc` resolve to, and an explicit `CXX=`/`CC=` always wins:
 - **Linux:** `sudo apt install build-essential clang make` (or your distro's equivalent).
 - **Windows:** MSYS2 (`pacman -S make mingw-w64-ucrt-x86_64-clang`) or WSL2.
 
-Verify with `make run app=01-hello-world` → `Hello, World!`.
+Verify with `make run-cpp-app-01-hello-world` → `Hello, World!`.
 
 `make` and a POSIX shell are assumed (present by default on macOS/Linux).
 
@@ -255,8 +240,8 @@ Verify with `make run app=01-hello-world` → `Hello, World!`.
 
 - Source lives in `apps/cpp/NN-name/src/` (and `apps/c/NN-name/src/` for C);
   multi-file lessons add an `include/` folder.
-- Each app builds into its own git-ignored `build/` folder
-  (`apps/cpp/NN-name/build/NN-name`). The shared recipe lives in `rules.mk`; see
+- Apps build into a git-ignored `build/apps/<lang>/NN-name/NN-name`. The flags
+  live in the root `Makefile`; each app's Makefile is one `all:` rule. See
   [MAKEFILE.md](MAKEFILE.md).
 - Compiler: `make install` puts one in `./toolchain/` (git-ignored) and the
   workspace prefers it; override anytime with `CXX=clang++` / `CC=clang` on the

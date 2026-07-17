@@ -22,5 +22,5 @@ size-aware wrappers. See the [C++ version](../../cpp/18-arrays/).
 
 ## Build & run
 ```sh
-make run-c app=18-arrays
+make run-c-app-18-arrays
 ```

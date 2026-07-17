@@ -38,8 +38,8 @@ The standard library ships many ready-made concepts in `<concepts>`
 
 ## Build & run
 ```sh
-make run app=53-concepts
-make build app=53-concepts STD=c++17   # concepts don't exist yet — fails
+make run-cpp-app-53-concepts
+make build-cpp-app-53-concepts STD=c++17   # concepts don't exist yet — fails
 ```
 
 ## Try it yourself

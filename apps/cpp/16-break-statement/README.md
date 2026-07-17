@@ -23,7 +23,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=16-break-statement
+make run-cpp-app-16-break-statement
 ```
 
 ## Try it yourself

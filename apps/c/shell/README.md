@@ -14,9 +14,9 @@ arrays (18) — plus POSIX process syscalls, which are new here.
 
 ## Run
 ```sh
-make run-c app=shell            # interactive: type commands, `help`, `exit`
-echo 'echo hello | tr a-z A-Z'  | make run-c app=shell    # scripted
-printf 'ls | wc -l\nexit\n'     | make run-c app=shell
+make run-c-app-shell            # interactive: type commands, `help`, `exit`
+echo 'echo hello | tr a-z A-Z'  | make run-c-app-shell    # scripted
+printf 'ls | wc -l\nexit\n'     | make run-c-app-shell
 ```
 (The `mysh$ ` prompt is printed to stderr, so piped output stays clean.)
 

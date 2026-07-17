@@ -20,5 +20,5 @@ Identical mechanics; C++ adds `nullptr` (type-safe) and smart pointers
 
 ## Build & run
 ```sh
-make run-c app=39-pointers
+make run-c-app-39-pointers
 ```

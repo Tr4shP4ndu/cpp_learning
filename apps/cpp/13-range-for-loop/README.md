@@ -26,8 +26,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=13-range-for-loop
-make run app=13-range-for-loop STD=c++03  # range-for didn't exist yet — fails
+make run-cpp-app-13-range-for-loop
+make run-cpp-app-13-range-for-loop STD=c++03  # range-for didn't exist yet — fails
 ```
 
 ## Try it yourself

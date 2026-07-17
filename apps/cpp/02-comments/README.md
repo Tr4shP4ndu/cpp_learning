@@ -31,7 +31,7 @@ universal today.
 
 ## Build & run
 ```sh
-make run app=02-comments
+make run-cpp-app-02-comments
 ```
 
 ## Try it yourself

@@ -10,8 +10,8 @@ to the renderer (63) and its PPM output.
 
 ## Run
 ```sh
-make run app=mandelbrot            # 78 x 28
-make run app=mandelbrot ARGS="120 40"
+make run-cpp-app-mandelbrot            # 78 x 28
+make run-cpp-app-mandelbrot ARGS="120 40"
 ```
 
 ## Try extending it

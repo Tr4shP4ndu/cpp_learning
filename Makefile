@@ -1,88 +1,148 @@
 # =============================================================
-# Launcher for the C / C++ learning apps.
+# Build launcher for the C / C++ learning apps.
 #
-# Every app has its OWN small Makefile (two lines: `APP := <name>` then an
-# include of rules.mk). So the simplest way to build anything is to go into it:
+# Each app lives in apps/<lang>/<name>/ and has a tiny Makefile with a single
+# `all:` rule. THIS Makefile owns the compiler flags, exports them, and drives
+# each app's build. You never pass app=... — the app NAME is part of the target:
 #
-#     cd apps/cpp/calc && make run
+#   make new-cpp-app-NAME      create apps/cpp/NAME from the template
+#   make build-cpp-app-NAME    build it              (…-c-app-NAME for C)
+#   make run-cpp-app-NAME      build & run it        (run-c-app-NAME for C)
+#   make delete-cpp-app-NAME   delete it (source + build)
+#   make build                 build every app
+#   make list                  list all apps         (list-cpp / list-c)
+#   make clean                 remove build output
+#   make install               set up a compiler in ./toolchain (or verify it)
 #
-# This top-level Makefile is just a convenience layer: give it an app NAME and
-# it finds the folder for you and runs that app's Makefile — plus scaffolding,
-# listing, the toolchain setup, and clean.
-#
-#   make run   app=calc              # find 'calc', build & run it
-#   make run   app=calc ARGS='1 + 2'  # pass arguments through
-#   make build app=45-classes-basics  # build one app
-#   make build                        # build every app
-#   make list / make list-c           # list C++ / C apps
-#   make app app=my-thing [lang=c] [group=graphics]   # scaffold a new app
-#   make install                      # put a compiler in ./toolchain (or verify)
-#   make clean                        # remove every app's build/ output
-#
-# Standards & build type pass straight through to the app's Makefile:
-#   make run app=20-strings STD=c++98        make run app=mandelbrot BUILD_TYPE=Release
-#
-# The full build recipe lives in ./rules.mk (documented there). An app can opt
-# out of the shared rules by writing its own real Makefile instead of the
-# two-line include — this launcher just calls whatever Makefile it finds.
-#
-# Follow a tutorial in your OWN scratch copy (never touches the reference app):
-#   make practice app=01-hello-world           # -> practice/cpp/01-hello-world
-#   make run      app=01-hello-world PRACTICE=1  # build & run YOUR copy
+# Choose a standard / build type / arguments on the command line:
+#   make run-cpp-app-20-strings STD=c++98
+#   make run-cpp-app-mandelbrot BUILD_TYPE=Release
+#   make run-cpp-app-calc ARGS='1 + 2 * 3'
 # =============================================================
+
+# --- config (override on the command line) -----------------------------------
+CXX        ?= c++
+CC         ?= cc
+STD        ?= c++23
+CSTD       ?= c17
+BUILD_TYPE ?= Debug
+
 APP_DIR      := apps
-TEMPLATE_DIR := templates/app
+BUILD_DIR    := build/apps
+TEMPLATE_DIR := templates
 LLVM_VERSION ?= 19.1.7
 
-# PRACTICE=1 operates on your scratch copies under practice/ instead of apps/.
-SEARCH_ROOT := $(if $(PRACTICE),practice,$(APP_DIR))
+# Prefer a repo-local ./toolchain (from `make install`) unless a compiler was
+# named explicitly. (CXX/CC are make built-ins, hence the $(origin ...) test.)
+ifneq ($(wildcard toolchain/bin/clang++),)
+  ifeq ($(origin CXX),default)
+    CXX := $(abspath toolchain/bin/clang++)
+  endif
+  ifeq ($(origin CC),default)
+    CC := $(abspath toolchain/bin/clang)
+  endif
+endif
 
-# Overrides we forward to an app's Makefile — but ONLY the ones you actually set
-# on the command line, so we never clobber the app's own sensible defaults.
-PASS := $(if $(STD),STD='$(STD)') $(if $(CSTD),CSTD='$(CSTD)') \
-        $(if $(BUILD_TYPE),BUILD_TYPE='$(BUILD_TYPE)') \
-        $(if $(CXX),CXX='$(CXX)') $(if $(CC),CC='$(CC)')
+# --- flags --------------------------------------------------------------------
+WARN := -Wall -Wextra -Wpedantic
+ifeq ($(BUILD_TYPE),Debug)
+  OPT := -O0 -g -fsanitize=address,undefined     # debuggable; catches memory/UB bugs
+else ifeq ($(BUILD_TYPE),Release)
+  OPT := -O2 -DNDEBUG                            # optimized; asserts compiled out
+else
+  $(error Invalid BUILD_TYPE '$(BUILD_TYPE)'. Use Debug or Release.)
+endif
 
-# Find an app folder by name, anywhere under the search root (direct or grouped).
-find_app = find "$(SEARCH_ROOT)" -type d -name '$(app)' 2>/dev/null | head -n1
+CXXFLAGS := -std=$(STD)  $(WARN) $(OPT)
+CFLAGS   := -std=$(CSTD) $(WARN) $(OPT)
 
-# Every app owns a src/ dir, so we discover apps by locating those.
+# Handed down to every app's Makefile — its `all:` rule builds with these.
+export CXX CC CXXFLAGS CFLAGS
+
+# --- app discovery (an app is any folder with a src/) -------------------------
 CPP_APPS := $(sort $(notdir $(patsubst %/src,%,$(shell find $(APP_DIR)/cpp -type d -name src 2>/dev/null))))
 C_APPS   := $(sort $(notdir $(patsubst %/src,%,$(shell find $(APP_DIR)/c   -type d -name src 2>/dev/null))))
-ALL_APP_DIRS := $(patsubst %/src,%,$(shell find $(APP_DIR) -type d -name src 2>/dev/null | sort))
 
-define require_app
-$(if $(app),,$(error Usage: make $(1) app=<name>))
-endef
-
-.PHONY: help install list list-c build build-c build-all run run-c \
-        clean delete-app app practice
+.PHONY: help install build clean list list-cpp list-c
 
 help:
-	@echo "Targets:"
-	@echo "  make install                  Put a C/C++ compiler in ./toolchain (or verify it)"
-	@echo "  make run    app=<name>        Find an app, build & run it (C or C++)"
-	@echo "  make build [app=<name>]       Build one app, or ALL apps if omitted"
-	@echo "  make list / make list-c       List C++ / C apps"
-	@echo "  make app app=<name> [lang=c] [group=<g>]  Scaffold a new app"
-	@echo "  make practice app=<name> [lang=c]  Make a scratch copy to follow a tutorial"
-	@echo "  make clean                    Remove every app's build/ output"
-	@echo "  make delete-app app=<name>    Delete an app (both trees)"
+	@echo "Targets (NAME is the app folder name):"
+	@echo "  make new-cpp-app-NAME      Create apps/cpp/NAME     (new-c-app-NAME for C)"
+	@echo "  make build-cpp-app-NAME    Build it                 (build-c-app-NAME for C)"
+	@echo "  make run-cpp-app-NAME      Build & run it           (run-c-app-NAME for C)"
+	@echo "  make delete-cpp-app-NAME   Delete it                (delete-c-app-NAME for C)"
+	@echo "  make build                 Build every app"
+	@echo "  make list                  List all apps            (list-cpp / list-c)"
+	@echo "  make clean                 Remove build/ output"
+	@echo "  make install               Put a compiler in ./toolchain (or verify it)"
 	@echo ""
-	@echo "Each app has its own two-line Makefile that includes ./rules.mk, so you"
-	@echo "can also just:  cd apps/cpp/<name> && make run"
+	@echo "Every app's Makefile is one line that compiles src/ with the flags this"
+	@echo "Makefile exports. Change how things build in ONE place: the flags below."
 	@echo ""
-	@echo "Apps live under apps/<cpp|c>/, optionally inside a named group folder"
-	@echo "(apps/cpp/graphics/<name>); they are found by name wherever they sit."
-	@echo ""
-	@echo "Variables (forwarded to the app): STD=c++98..c++23 (def c++23)  CSTD=c99|c11|c17"
-	@echo "           BUILD_TYPE=Debug|Release  CXX=g++|clang++  CC=gcc|clang"
-	@echo "           PRACTICE=1  build/run your scratch copy under practice/"
+	@echo "Variables: STD=c++98..c++23 (def c++23)  CSTD=c99|c11|c17"
+	@echo "           BUILD_TYPE=Debug|Release  CXX=g++|clang++  CC=gcc|clang  ARGS='...'"
 
-# Put a self-contained compiler in ./toolchain (git-ignored) so the workspace
-# builds without a system-wide install. macOS verifies the Xcode Command Line
-# Tools instead (the compiler needs Apple's SDK, which can't live in the repo).
-# Linux/Windows(MSYS) download a prebuilt LLVM release and extract it.
+# --- create (copy the template folder verbatim) ------------------------------
+define new_app                                       # $(1) = lang
+	@test ! -d "$(APP_DIR)/$(1)/$*" || { echo "App '$*' already exists at $(APP_DIR)/$(1)/$*"; exit 1; }
+	@mkdir -p "$(APP_DIR)/$(1)/$*"
+	@cp -R "$(TEMPLATE_DIR)/$(1)/." "$(APP_DIR)/$(1)/$*/"
+	@echo "Created $(APP_DIR)/$(1)/$*  —  build & run: make run-$(1)-app-$*"
+endef
+
+new-cpp-app-%: ; $(call new_app,cpp)
+new-c-app-%:   ; $(call new_app,c)
+
+# --- build one app: hand the compile to its Makefile, passing name + out dir --
+define build_app                                     # $(1) = lang
+	@mkdir -p "$(BUILD_DIR)/$(1)/$*"
+	@$(MAKE) --no-print-directory -C "$(APP_DIR)/$(1)/$*" \
+		BUILD_DIR="$(abspath $(BUILD_DIR)/$(1)/$*)" OUTPUT_NAME="$*"
+	@echo "Built $(BUILD_DIR)/$(1)/$*/$*"
+endef
+
+build-cpp-app-%: ; $(call build_app,cpp)
+build-c-app-%:   ; $(call build_app,c)
+
+# --- build everything ---------------------------------------------------------
+build: $(addprefix build-cpp-app-,$(CPP_APPS)) $(addprefix build-c-app-,$(C_APPS))
+	@echo "Built all apps."
+
+# --- run (builds first, then executes from the repo root so ARGS paths work) --
+define run_app                                       # $(1) = lang
+	@bin="$(BUILD_DIR)/$(1)/$*/$*"; \
+	 test -x "$$bin" || { echo "run: '$*' was not built"; exit 1; }; \
+	 "./$$bin" $(ARGS)
+endef
+
+run-cpp-app-%: build-cpp-app-% ; $(call run_app,cpp)
+run-c-app-%:   build-c-app-%   ; $(call run_app,c)
+
+# --- delete -------------------------------------------------------------------
+define delete_app                                    # $(1) = lang
+	@test -d "$(APP_DIR)/$(1)/$*" || { echo "App '$*' does not exist at $(APP_DIR)/$(1)/$*"; exit 1; }
+	@rm -rf "$(APP_DIR)/$(1)/$*" "$(BUILD_DIR)/$(1)/$*"
+	@echo "Deleted $(APP_DIR)/$(1)/$*"
+endef
+
+delete-cpp-app-%: ; $(call delete_app,cpp)
+delete-c-app-%:   ; $(call delete_app,c)
+
+# --- list ---------------------------------------------------------------------
+list: list-cpp list-c
+list-cpp:
+	@echo "C++ apps:";  printf '    %s\n' $(CPP_APPS)
+list-c:
+	@echo "C apps:";    printf '    %s\n' $(C_APPS)
+
+# --- clean --------------------------------------------------------------------
+clean:
+	@rm -rf build
+	@echo "Cleaned build/."
+
+# --- install a repo-local compiler -------------------------------------------
+# macOS verifies the Xcode Command Line Tools (the compiler needs Apple's SDK,
+# which can't live in the repo). Linux/Windows(MSYS) download a prebuilt LLVM.
 install:
 	@set -e; os="$$(uname -s)"; arch="$$(uname -m)"; dest="toolchain"; ver="$(LLVM_VERSION)"; \
 	case "$$os" in \
@@ -93,7 +153,7 @@ install:
 	      echo "Using system clang: $$(clang++ --version 2>/dev/null | head -1)"; \
 	      echo; \
 	      echo "On macOS the compiler relies on Apple's SDK, so there is nothing to"; \
-	      echo "put in ./$$dest — you are ready to build:  make run app=01-hello-world"; \
+	      echo "put in ./$$dest — you are ready to build:  make run-cpp-app-01-hello-world"; \
 	    else \
 	      echo "Xcode Command Line Tools NOT found. Install once (clang + macOS SDK):"; \
 	      echo "    xcode-select --install"; exit 1; \
@@ -121,89 +181,7 @@ install:
 	      echo "Installed: $$("$$dest/bin/clang++" --version | head -1)"; \
 	      echo "The workspace now prefers ./$$dest/bin/clang++ automatically."; \
 	    else \
-	      echo "Downloaded, but $$dest/bin/clang++ not found — asset layout may differ."; \
-	      echo "See the README (Installing a compiler) for the native-install fallback."; exit 1; \
+	      echo "Downloaded, but $$dest/bin/clang++ not found — asset layout may differ."; exit 1; \
 	    fi ;; \
-	  *) echo "Unrecognized OS '$$os'. See the README (Installing a compiler) for manual setup."; exit 1 ;; \
+	  *) echo "Unrecognized OS '$$os'. See the README (Installing a compiler)."; exit 1 ;; \
 	esac
-
-list:
-	@printf "%s\n" $(CPP_APPS)
-
-list-c:
-	@printf "%s\n" $(C_APPS)
-
-# run and run-c are the same — the app's rules.mk detects C vs C++ itself.
-# run-c is kept so the C lessons' READMEs keep working.
-run run-c:
-	$(call require_app,run)
-	@d=$$($(find_app)); \
-	 [ -n "$$d" ] || { echo "No app named '$(app)' under $(SEARCH_ROOT)/"; exit 1; }; \
-	 $(MAKE) --no-print-directory -C "$$d" run ARGS='$(ARGS)' $(PASS)
-
-# build one app; with no app=, build them all.
-build build-c:
-	@if [ -n "$(app)" ]; then \
-	   d=$$($(find_app)); \
-	   [ -n "$$d" ] || { echo "No app named '$(app)' under $(SEARCH_ROOT)/"; exit 1; }; \
-	   $(MAKE) --no-print-directory -C "$$d" build $(PASS); \
-	 else \
-	   $(MAKE) --no-print-directory build-all; \
-	 fi
-
-build-all:
-	@set -e; for d in $(ALL_APP_DIRS); do \
-	   echo "==> $$d"; $(MAKE) --no-print-directory -C "$$d" build $(PASS); \
-	 done; echo "Built all apps."
-
-clean:
-	@find $(APP_DIR) practice -type d -name build -prune -exec rm -rf {} + 2>/dev/null || true
-	@rm -rf build
-	@echo "Cleaned all build output."
-
-delete-app:
-	$(call require_app,delete-app)
-	@for t in cpp c; do \
-	  d=$$(find "$(APP_DIR)/$$t" -type d -name '$(app)' 2>/dev/null | head -n1); \
-	  if [ -n "$$d" ]; then rm -rf "$$d"; echo "Removed $$d"; fi; \
-	done
-	@echo "Deleted: $(app)"
-
-# Scaffold a new app under apps/<lang>/, or inside a named group folder when
-# group=<g> is given (apps/<lang>/<group>/<app>). Drops src/main.*, a README,
-# and the two-line Makefile that includes rules.mk.
-app:
-	$(call require_app,app)
-	$(eval T   := $(if $(filter c,$(lang)),c,cpp))
-	$(eval REL := $(if $(group),$(group)/$(app),$(app)))
-	@mkdir -p "$(APP_DIR)/$(T)/$(REL)/src"
-	@for tpl in $(wildcard $(TEMPLATE_DIR)/*.tpl); do \
-		out=$$(basename "$$tpl" .tpl); \
-		case "$$out" in \
-			main.cpp) [ "$(T)" = c ] && continue; dest="$(APP_DIR)/$(T)/$(REL)/src/main.cpp" ;; \
-			main.c)   [ "$(T)" = c ] || continue; dest="$(APP_DIR)/$(T)/$(REL)/src/main.c" ;; \
-			*)        dest="$(APP_DIR)/$(T)/$(REL)/$$out" ;; \
-		esac; \
-		sed 's/__APP_NAME__/$(app)/g' "$$tpl" > "$$dest"; \
-	done
-	@echo "Created $(APP_DIR)/$(T)/$(REL) — build & run: make run app=$(app)"
-
-# Make a personal scratch copy to follow a tutorial in. Writes a starter source
-# file ONLY if none exists (never clobbers your work) plus its Makefile.
-practice:
-	$(call require_app,practice)
-	$(eval T := $(if $(filter c,$(lang)),c,cpp))
-	$(eval E := $(if $(filter c,$(lang)),c,cpp))
-	@mkdir -p "practice/$(T)/$(app)/src"
-	@sed 's/__APP_NAME__/$(app)/g' "$(TEMPLATE_DIR)/Makefile.tpl" > "practice/$(T)/$(app)/Makefile"
-	@dest="practice/$(T)/$(app)/src/main.$(E)"; \
-	 if [ -e "$$dest" ]; then \
-		echo "Kept existing $$dest (not overwritten)"; \
-	 elif [ "$(E)" = c ]; then \
-		printf '/* Practice: %s\n   Follow the tutorial: apps/c/%s/README.md\n   Build & run YOUR copy: make run app=%s PRACTICE=1 */\n#include <stdio.h>\n\nint main(void) {\n    /* TODO: follow the README and build it up step by step. */\n    printf("practice: %s\\n");\n    return 0;\n}\n' "$(app)" "$(app)" "$(app)" "$(app)" > "$$dest"; \
-		echo "Created $$dest"; \
-	 else \
-		printf '// Practice: %s\n// Follow the tutorial: apps/cpp/%s/README.md\n// Build & run YOUR copy: make run app=%s PRACTICE=1\n#include <iostream>\n\nint main() {\n    // TODO: follow the README and build it up step by step.\n    std::cout << "practice: %s\\n";\n    return 0;\n}\n' "$(app)" "$(app)" "$(app)" "$(app)" > "$$dest"; \
-		echo "Created $$dest"; \
-	 fi
-	@echo "Now: make run app=$(app) PRACTICE=1"

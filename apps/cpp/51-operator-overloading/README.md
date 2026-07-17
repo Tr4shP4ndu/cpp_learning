@@ -48,7 +48,7 @@ naturally.
 
 ## Build & run
 ```sh
-make run app=50-operator-overloading
+make run-cpp-app-50-operator-overloading
 ```
 
 ## Try it yourself

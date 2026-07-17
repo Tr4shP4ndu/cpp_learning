@@ -20,5 +20,5 @@ for behavior, lesson 45 (classes).
 
 ## Build & run
 ```sh
-make run-c app=43-structs
+make run-c-app-43-structs
 ```

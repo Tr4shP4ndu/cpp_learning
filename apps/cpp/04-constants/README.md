@@ -34,7 +34,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=04-constants
+make run-cpp-app-04-constants
 ```
 
 ## Try it yourself

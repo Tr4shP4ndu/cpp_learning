@@ -21,5 +21,5 @@ containers that free automatically via RAII — you almost never call `free`/
 
 ## Build & run
 ```sh
-make run-c app=41-dynamic-memory
+make run-c-app-41-dynamic-memory
 ```

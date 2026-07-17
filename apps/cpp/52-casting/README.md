@@ -38,7 +38,7 @@ C-style `(T)x` hides which of these it's really doing.
 
 ## Build & run
 ```sh
-make run app=51-casting
+make run-cpp-app-51-casting
 ```
 
 ## Try it yourself

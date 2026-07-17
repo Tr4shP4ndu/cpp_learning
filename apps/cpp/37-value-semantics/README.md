@@ -30,7 +30,7 @@ big `std::vector`. That trade-off is exactly why lesson 28 introduced
 
 ## Build & run
 ```sh
-make run app=37-value-semantics
+make run-cpp-app-37-value-semantics
 ```
 
 ## Try it yourself

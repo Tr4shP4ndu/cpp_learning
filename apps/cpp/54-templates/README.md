@@ -44,7 +44,7 @@ no runtime cost. Templates are the foundation of the entire standard library
 
 ## Build & run
 ```sh
-make run app=52-templates
+make run-cpp-app-52-templates
 ```
 
 ## Try it yourself

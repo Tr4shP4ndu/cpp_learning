@@ -6,7 +6,7 @@ output* (the screen). This lesson reads a name and an age, then prints a
 greeting. It's your first *interactive* program.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/05-io-basics`](../../c/05-io-basics/) (run it with `make run-c app=05-io-basics`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/05-io-basics`](../../c/05-io-basics/) (run it with `make run-c-app-05-io-basics`).
 
 ## Line-by-line
 - `std::cout << ...` — write to the screen.
@@ -38,11 +38,11 @@ a preview of pointers (lesson 39). C++ streams handle that for you.
 ## Build & run
 This program is **interactive** — it waits for keyboard input. Run it and type:
 ```sh
-make run app=05-io-basics
+make run-cpp-app-05-io-basics
 ```
 To feed input non-interactively (e.g. for a quick test), pipe it in:
 ```sh
-printf 'Ada\n36\n' | make run app=05-io-basics
+printf 'Ada\n36\n' | make run-cpp-app-05-io-basics
 ```
 
 ## Try it yourself

@@ -23,5 +23,5 @@ C++ file streams close themselves on scope exit (RAII) and use
 
 ## Build & run
 ```sh
-make run-c app=24-files-and-filesystem
+make run-c-app-24-files-and-filesystem
 ```

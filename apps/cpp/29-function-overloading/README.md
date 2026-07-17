@@ -29,7 +29,7 @@ call `f()` gives the compiler no way to choose.
 
 ## Build & run
 ```sh
-make run app=29-function-overloading
+make run-cpp-app-29-function-overloading
 ```
 
 ## Try it yourself

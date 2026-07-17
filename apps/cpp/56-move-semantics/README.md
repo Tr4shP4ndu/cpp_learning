@@ -48,7 +48,7 @@ copy/move **for free** — the rule of *zero*.
 
 ## Build & run
 ```sh
-make run app=54-move-semantics
+make run-cpp-app-54-move-semantics
 ```
 Note "copy A (1000 elems)" for `b` vs "move A (stole the buffer)" for `c`.
 

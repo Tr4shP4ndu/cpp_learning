@@ -54,7 +54,7 @@ public interface.
 
 ## Build & run
 ```sh
-make run app=47-encapsulation
+make run-cpp-app-47-encapsulation
 ```
 
 ## Try it yourself

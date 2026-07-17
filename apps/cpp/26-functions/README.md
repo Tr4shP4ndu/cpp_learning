@@ -33,7 +33,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=26-functions
+make run-cpp-app-26-functions
 ```
 
 ## Try it yourself

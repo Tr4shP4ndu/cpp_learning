@@ -34,8 +34,8 @@ the algorithm once against a view, and callers pass whatever they have.
 
 ## Build & run
 ```sh
-make run app=25-string-view-span
-make build app=25-string-view-span STD=c++14   # span & string_view unavailable — fails
+make run-cpp-app-25-string-view-span
+make build-cpp-app-25-string-view-span STD=c++14   # span & string_view unavailable — fails
 ```
 
 ## Try it yourself

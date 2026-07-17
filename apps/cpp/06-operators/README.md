@@ -38,7 +38,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=06-operators
+make run-cpp-app-06-operators
 ```
 
 ## Try it yourself

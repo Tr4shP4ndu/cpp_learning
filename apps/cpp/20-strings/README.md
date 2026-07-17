@@ -7,7 +7,7 @@ length, and frees its own memory. In C, a "string" is just a raw array of `char`
 terminated by a `'\0'` byte that *you* manage.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/21-strings`](../../c/21-strings/) (run it with `make run-c app=21-strings`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/21-strings`](../../c/21-strings/) (run it with `make run-c-app-21-strings`).
 
 ## Line-by-line (C++)
 - `std::string full = first + " " + last;` — concatenation just works; the
@@ -39,8 +39,8 @@ C gives you raw memory."
 
 ## Build & run
 ```sh
-make run app=21-strings      # C++
-make run-c app=21-strings    # C — note the manual buffer management
+make run-cpp-app-21-strings      # C++
+make run-c-app-21-strings    # C — note the manual buffer management
 ```
 
 ## Try it yourself

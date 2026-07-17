@@ -19,5 +19,5 @@ stream). See the [C++ version](../../cpp/01-hello-world/) for the contrast.
 
 ## Build & run
 ```sh
-make run-c app=01-hello-world
+make run-c-app-01-hello-world
 ```

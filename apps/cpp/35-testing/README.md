@@ -34,7 +34,7 @@ machines.
 
 ## Build & run
 ```sh
-make run app=35-testing         # prints "3/3 checks passed", exits 0
+make run-cpp-app-35-testing         # prints "3/3 checks passed", exits 0
 echo $?                          # 0 on success; break a CHECK to see 1
 ```
 

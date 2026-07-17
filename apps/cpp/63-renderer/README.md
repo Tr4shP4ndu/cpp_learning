@@ -36,7 +36,7 @@ Makefile compiles every `src/*.cpp` and links them — no per-app Makefile.
 The finished files were built one stage at a time; that's how to *read* them too.
 Each stage compiles, runs, and shows visible progress. Run after each:
 ```sh
-make run app=63-renderer     # writes render.ppm in this folder
+make run-cpp-app-63-renderer     # writes render.ppm in this folder
 ```
 
 0. **Framebuffer + PPM** — `image.{hpp,cpp}`; `main` fills a square and saves it.
@@ -64,7 +64,7 @@ identities, normal-map decode. Break one and the program aborts; that's the
 
 ## Build & run
 ```sh
-make run app=63-renderer
+make run-cpp-app-63-renderer
 ```
 Writes `render.ppm` here. View it in a PPM-capable viewer, or convert:
 ```sh
@@ -90,10 +90,10 @@ Pass them through the Makefile with `ARGS="…"`. Sample models + textures live 
 [`assets/tinyrenderer/`](../../../assets/tinyrenderer/):
 ```sh
 # the classic african head, smooth Phong + its diffuse texture
-make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj phong assets/tinyrenderer/african_head/african_head_diffuse.ppm"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj phong assets/tinyrenderer/african_head/african_head_diffuse.ppm"
 
 # same head with tangent-space normal-mapped surface detail
-make run app=63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
+make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head.obj normal assets/tinyrenderer/african_head/african_head_diffuse.ppm assets/tinyrenderer/african_head/african_head_nm_tangent.ppm"
 ```
 The model is auto-scaled to fit the frame, so any reasonably-centered `.obj`
 works. Only **PPM (P6)** is read in-tree (no image libraries); convert a

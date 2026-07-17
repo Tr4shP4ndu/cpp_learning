@@ -23,5 +23,5 @@ for you. See the [C++ version](../../cpp/05-io-basics/).
 ## Build & run
 This program is interactive; pipe input to run it non-interactively:
 ```sh
-printf 'Ada\n35\n' | make run-c app=05-io-basics
+printf 'Ada\n35\n' | make run-c-app-05-io-basics
 ```

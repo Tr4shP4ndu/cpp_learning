@@ -42,7 +42,7 @@ use a pointer when you need "maybe nothing" or reassignment.
 
 ## Build & run
 ```sh
-make run app=38-references
+make run-cpp-app-38-references
 ```
 
 ## Try it yourself

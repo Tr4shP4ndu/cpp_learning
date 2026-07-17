@@ -19,5 +19,5 @@ C++ prints any type with `std::cout << x` (no format specifier) and gives you
 
 ## Build & run
 ```sh
-make run-c app=03-variables-datatypes
+make run-c-app-03-variables-datatypes
 ```

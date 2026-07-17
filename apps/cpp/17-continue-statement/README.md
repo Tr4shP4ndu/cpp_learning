@@ -27,7 +27,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=17-continue-statement
+make run-cpp-app-17-continue-statement
 ```
 
 ## Try it yourself

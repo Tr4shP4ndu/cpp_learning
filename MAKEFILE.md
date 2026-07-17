@@ -1,161 +1,123 @@
 # Using the Makefile — a step-by-step guide
 
-This workspace builds C and C++ apps with plain `make`. There is **no magic you
-have to memorise**: every app has its own tiny `Makefile`, and one shared file
-(`rules.mk`) holds the actual compiler command. This guide walks you through it
-by *doing* — the same steps used to set the workspace up.
+This workspace builds C and C++ apps with plain `make`. The design is simple and
+predictable:
 
-> **First time?** Set up a compiler once: `make install`. On macOS that just
-> checks you have the Xcode Command Line Tools; on Linux/Windows it downloads a
-> local Clang into `./toolchain/`.
+- **One place owns the flags** — the root `Makefile`. It sets the compiler and
+  warning/optimisation/sanitizer flags and `export`s them.
+- **Each app has a one-line Makefile** — a single `all:` rule that compiles
+  `src/` using those exported flags. Nothing to configure per app.
+- **The app's NAME is part of the command** — `make run-cpp-app-calc`. There's
+  no `app=…` variable to remember, and tab-completion works.
+
+> **First time?** Run `make install` once. On macOS it just checks you have the
+> Xcode Command Line Tools; on Linux/Windows it downloads a local Clang into
+> `./toolchain/`.
 
 ---
 
 ## 1. Create your first app
 
-From the repo root:
-
 ```sh
-make app app=hello-me
+make new-cpp-app-hello-me
 ```
 
-That scaffolds a folder under the C++ tree:
+That copies the C++ template into a new folder:
 
 ```
 apps/cpp/hello-me/
-├── Makefile        # two lines — see below
-├── README.md       # notes template
+├── Makefile      # one line — see §6
+├── README.md
 └── src/
-    └── main.cpp    # a "hello" starter
+    └── main.cpp  # prints "hello"
 ```
 
-Open `apps/cpp/hello-me/Makefile` — it is only this:
-
-```make
-APP := hello-me
-include $(firstword $(wildcard ../../rules.mk ../../../rules.mk ...))
-```
-
-It names the app and pulls in the shared build recipe. That's the whole thing.
+(For C, use `make new-c-app-hello-me` → `apps/c/hello-me/` with `main.c`.)
 
 ## 2. Build and run it
 
-Two equivalent ways. **From the repo root, by name:**
-
 ```sh
-make run app=hello-me
+make run-cpp-app-hello-me
 ```
 
-**Or go into the folder** and use its own Makefile directly:
+`run-…` builds first, then runs. To only build:
 
 ```sh
-cd apps/cpp/hello-me
-make run          # build + run
-make              # build only
-make clean        # delete this app's build/
+make build-cpp-app-hello-me
 ```
 
-The compiled program lands in the app's own `build/` folder
-(`apps/cpp/hello-me/build/hello-me`), which is git-ignored.
-
-Pass arguments to your program with `ARGS`:
+The program lands in `build/apps/cpp/hello-me/hello-me` (the whole `build/`
+folder is git-ignored). Pass arguments with `ARGS`:
 
 ```sh
-make run app=hello-me ARGS='one two three'
+make run-cpp-app-hello-me ARGS='one two three'
 ```
 
-## 3. Put related apps in a group
+## 3. C or C++ — same commands, different word
 
-Apps don't have to sit directly under `apps/cpp/`. Give `make app` a `group=`
-and it nests the app in a named folder:
+The `cpp` / `c` in the target picks the language and the tree:
 
 ```sh
-make app app=spinner lang=cpp group=graphics
-#            -> apps/cpp/graphics/spinner
+make run-cpp-app-calc      # apps/cpp/calc   (C++)
+make run-c-app-shell       # apps/c/shell    (C)
 ```
 
-Nothing else changes — apps are found by **name**, at any depth:
-
-```sh
-make run app=spinner        # still just works
-```
-
-Groups are pure organisation; use them to keep, say, all your graphics demos
-together.
+We spell out the language because the same lesson name can exist in **both**
+trees (there's an `01-hello-world` in C *and* C++), so `run-cpp-app-…` /
+`run-c-app-…` is unambiguous.
 
 ## 4. Switch the C++ standard or build type
 
-Any of these variables pass straight through to the app:
+Any of these variables pass straight through to the compile:
 
 ```sh
-make run app=hello-me STD=c++98            # compile as older C++
-make run app=hello-me BUILD_TYPE=Release   # -O2, asserts off, no sanitizers
+make run-cpp-app-hello-me STD=c++98          # older C++ standard
+make run-c-app-shell      CSTD=c99           # older C standard
+make run-cpp-app-mandelbrot BUILD_TYPE=Release   # -O2, asserts off, no sanitizers
 ```
 
 By default apps build **Debug**: `-O0 -g` plus AddressSanitizer and
-UndefinedBehaviorSanitizer, so memory bugs and undefined behaviour are caught
-while you learn. Use `BUILD_TYPE=Release` when you want speed (e.g. the
+UndefinedBehaviorSanitizer, so memory bugs and undefined behaviour surface while
+you learn. Use `BUILD_TYPE=Release` when you want speed (e.g. the
 `tinyraytracer` render loop).
 
-## 5. Write a C app
-
-Add `lang=c` and you get a `main.c` instead:
+## 5. Everyday commands
 
 ```sh
-make app app=ctool lang=c        # -> apps/c/ctool/src/main.c
-make run app=ctool               # C vs C++ is auto-detected from the sources
+make list                     # all apps (list-cpp / list-c for one language)
+make build                    # build every app
+make build-cpp-app-NAME       # build one
+make clean                    # remove all build output
+make delete-cpp-app-NAME      # delete an app (source + build)
+make help                     # this target list, from the Makefile itself
 ```
 
-(`make run-c app=ctool` also works — it's the same thing, kept so the C
-lessons' READMEs read naturally.)
+## 6. What an app's Makefile looks like
 
-## 6. When you outgrow the defaults
+Open `apps/cpp/calc/Makefile` — this is the whole file:
 
-The shared rules compile everything in `src/` (plus an optional `include/`) with
-one command. If an app needs something special — extra libraries, a code
-generator, multiple build steps — **replace its two-line Makefile with a real
-one of your own.** As long as it has `build` and `run` targets, the launcher
-still finds it by name and calls it:
-
-```sh
-make run app=my-fancy-app        # runs YOUR Makefile's `run` target
+```make
+all:
+	$(CXX) $(CXXFLAGS) -Iinclude -Isrc src/*.cpp -o $(BUILD_DIR)/$(OUTPUT_NAME)
 ```
 
-So you start simple and only take over the build when you actually need to.
+`$(CXX)` and `$(CXXFLAGS)` are **exported by the root Makefile**; `$(BUILD_DIR)`
+and `$(OUTPUT_NAME)` are **passed in** when the root runs `make -C` on the app.
+So the app never repeats the flags — it just says "compile my sources." Change
+how everything builds by editing the flags in **one** place: the root Makefile.
 
-## 7. Everyday commands
+**Need something special** for one app (an extra library, a code generator,
+several build steps)? Replace that one-line `all:` rule with whatever commands
+you need — it still receives the exported flags and `BUILD_DIR`/`OUTPUT_NAME`,
+and `make build-cpp-app-NAME` keeps working.
 
-```sh
-make list            # every C++ app
-make list-c          # every C app
-make build app=NAME  # build one app
-make build           # build ALL apps
-make clean           # remove every app's build/ output
-make delete-app app=NAME   # delete an app folder
-make help            # this list, from the Makefile itself
-```
+## 7. How it fits together
 
-## 8. How it works (the design)
+| Piece | Job |
+|-------|-----|
+| **`Makefile`** (root) | Owns & exports the flags. Turns `run-cpp-app-NAME` into "compile `apps/cpp/NAME`, then run `build/apps/cpp/NAME/NAME`." |
+| **`apps/<lang>/<name>/Makefile`** | One `all:` rule that compiles `src/` with the exported flags. |
+| **`templates/<lang>/`** | What `make new-<lang>-app-NAME` copies to start a new app. |
 
-Three small pieces, each with one job:
-
-| File | Job |
-|------|-----|
-| **`apps/<lang>/<name>/Makefile`** | Names the app (`APP := …`) and includes the shared rules. Two lines. |
-| **`rules.mk`** (repo root) | The one real build recipe: picks the compiler (C++ if there are `.cpp` files, else C), prefers `./toolchain`, sets flags, compiles `src/` → `build/<name>`. |
-| **`Makefile`** (repo root) | A convenience launcher. `make run app=X` **finds** the folder named `X` and runs *its* Makefile for you. Also does `install`, `list`, `app`, `clean`. |
-
-A few details worth knowing:
-
-- **Finding `rules.mk`.** Each app's `include` line searches a few directory
-  levels up (`../../rules.mk`, `../../../rules.mk`, …) and uses the first one
-  that exists. That's why an app works whether it sits directly under a language
-  or inside a group folder — the path to the root is found automatically.
-- **C vs C++.** `rules.mk` looks for `src/*.cpp`; if there are none it treats
-  the app as C and uses `src/*.c`. You never declare the language.
-- **The root launcher owns no build logic.** It only locates an app by name and
-  runs `make -C <that folder>`. All the compiling lives in `rules.mk`, in one
-  place, so there's a single spot to read or change how things build.
-
-That's the entire system. If you can read the two-line app Makefile and
-`rules.mk`, you understand the whole build.
+That's the whole system. If you can read the root Makefile's flags and an app's
+one-line `all:` rule, you understand the build.

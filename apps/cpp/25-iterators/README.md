@@ -39,7 +39,7 @@ requires a minimum category; that's why `std::sort` needs random access but
 
 ## Build & run
 ```sh
-make run app=25-iterators
+make run-cpp-app-25-iterators
 ```
 
 ## Try it yourself

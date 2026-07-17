@@ -38,8 +38,8 @@ lesson 59 are close cousins).
 
 ## Build & run
 ```sh
-make run app=57-variant-tuple
-make build app=57-variant-tuple STD=c++14   # variant/tuple bindings need C++17 — fails
+make run-cpp-app-57-variant-tuple
+make build-cpp-app-57-variant-tuple STD=c++14   # variant/tuple bindings need C++17 — fails
 ```
 
 ## Try it yourself

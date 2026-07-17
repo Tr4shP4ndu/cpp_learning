@@ -32,8 +32,8 @@ reallocations.
 
 ## Build & run
 ```sh
-make run app=22-vectors
-make run app=22-vectors STD=c++03   # brace-init list is C++11 — fails on older
+make run-cpp-app-22-vectors
+make run-cpp-app-22-vectors STD=c++03   # brace-init list is C++11 — fails on older
 ```
 
 ## Try it yourself

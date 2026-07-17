@@ -1,5 +1,4 @@
-# 18-arrays — builds with the shared rules at the repo root.
-#   make        build it        make run     build & run     make clean
-APP := 18-arrays
-# Find rules.mk at the repo root, however deep this app sits.
-include $(firstword $(wildcard ../../rules.mk ../../../rules.mk ../../../../rules.mk ../../../../../rules.mk))
+# Built by the workspace — from the repo root:  make run-c-app-<this-folder>
+# The root Makefile exports CC/CFLAGS and passes BUILD_DIR + OUTPUT_NAME in.
+all:
+	$(CC) $(CFLAGS) -Iinclude -Isrc src/*.c -o $(BUILD_DIR)/$(OUTPUT_NAME)

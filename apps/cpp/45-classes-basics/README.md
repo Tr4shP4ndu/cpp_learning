@@ -48,7 +48,7 @@ its own copy of the members. Two `Rectangle`s have independent `width`/`height`.
 
 ## Build & run
 ```sh
-make run app=45-classes-basics
+make run-cpp-app-45-classes-basics
 ```
 
 ## Try it yourself

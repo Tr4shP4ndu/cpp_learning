@@ -53,7 +53,7 @@ types.
 
 ## Build & run
 ```sh
-make run app=46-constructors-destructors
+make run-cpp-app-46-constructors-destructors
 ```
 Watch the order: "acquired" → usage → "released" → "left the block".
 

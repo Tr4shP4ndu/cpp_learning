@@ -41,8 +41,8 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=19-std-array
-make run app=19-std-array STD=c++03  # std::array is C++11 — fails on older
+make run-cpp-app-19-std-array
+make run-cpp-app-19-std-array STD=c++03  # std::array is C++11 — fails on older
 ```
 
 ## Try it yourself

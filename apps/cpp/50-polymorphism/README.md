@@ -51,7 +51,7 @@ object's type via a vtable lookup — a tiny runtime cost for huge flexibility.
 
 ## Build & run
 ```sh
-make run app=49-polymorphism
+make run-cpp-app-49-polymorphism
 ```
 
 ## Try it yourself

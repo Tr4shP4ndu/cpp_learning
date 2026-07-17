@@ -40,7 +40,7 @@ The return type is usually deduced, so you omit `-> ReturnType`.
 
 ## Build & run
 ```sh
-make run app=55-lambdas
+make run-cpp-app-55-lambdas
 ```
 
 ## Try it yourself

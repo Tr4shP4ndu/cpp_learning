@@ -28,7 +28,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=08-switch
+make run-cpp-app-08-switch
 ```
 
 ## Try it yourself

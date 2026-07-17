@@ -37,7 +37,7 @@ See `src/main.cpp`.
 
 ## Build & run
 ```sh
-make run app=23-containers-map-set
+make run-cpp-app-23-containers-map-set
 ```
 
 ## Try it yourself
