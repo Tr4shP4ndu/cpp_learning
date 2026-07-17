@@ -1,4 +1,4 @@
-# 43-structs (C)
+# 24-structs (C)
 
 The C version of [`apps/cpp/43-structs`](../../cpp/43-structs/). This is where C
 and C++ start to diverge.
@@ -20,5 +20,5 @@ for behavior, lesson 45 (classes).
 
 ## Build & run
 ```sh
-make run-c-app-43-structs
+make run-c-app-24-structs
 ```

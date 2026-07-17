@@ -1,4 +1,4 @@
-/* 39-pointers (C) — pointers are native C; the syntax is identical.
+/* 20-pointers (C) — pointers are native C; the syntax is identical.
    C uses NULL (from <stddef.h>/<stdio.h>) where C++ prefers nullptr. */
 #include <stdio.h>
 

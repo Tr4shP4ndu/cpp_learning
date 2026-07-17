@@ -6,7 +6,7 @@ A `struct` groups related values into one named type — a "point" is an `x` and
 toward objects, and the gateway to classes (lesson 45).
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/43-structs`](../../c/43-structs/) (run it with `make run-c-app-43-structs`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/43-structs`](../../c/43-structs/) (run it with `make run-c-app-24-structs`).
 
 ## Line-by-line
 - `struct Point { double x; double y; };` — declare a type with two fields.
@@ -35,7 +35,7 @@ data bundles, `class` when you add behavior and want members private by default.
 ## Build & run
 ```sh
 make run-cpp-app-43-structs      # C++
-make run-c-app-43-structs    # C
+make run-c-app-24-structs    # C
 ```
 
 ## Try it yourself

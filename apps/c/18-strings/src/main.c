@@ -1,4 +1,4 @@
-/* 21-strings (C) — a C string is a raw char array ending in a '\0' byte.
+/* 18-strings (C) — a C string is a raw char array ending in a '\0' byte.
    Everything std::string does for you, you do by hand with <string.h>. */
 #include <stdio.h>
 #include <string.h>

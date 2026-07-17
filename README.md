@@ -30,9 +30,9 @@ its `README.md`, then build and run it (the folder name is part of the target):
 make run-cpp-app-01-hello-world
 ```
 
-Lessons are ordered so each builds on the last. Where the C-vs-C++ contrast
-teaches something, there's a parallel C lesson in `apps/c/NN-name/` — run it
-with the `c` word (same name, C tree):
+Lessons are ordered so each builds on the last. **C is its own track** with
+independent numbering under `apps/c/` — see the [C learning path](#c-learning-path)
+below. Run a C lesson with the `c` word:
 
 ```sh
 make run-c-app-01-hello-world
@@ -43,7 +43,7 @@ has changed:
 
 ```sh
 make run-cpp-app-20-strings STD=c++98   # C++98 .. C++23 (default c++23)
-make run-c-app-39-pointers CSTD=c99     # c99 | c11 | c17 (default c17)
+make run-c-app-20-pointers CSTD=c99     # c99 | c11 | c17 (default c17)
 ```
 
 Debug builds (the default) run with AddressSanitizer + UBSan on, so memory and
@@ -169,7 +169,90 @@ make run-cpp-app-63-renderer ARGS="assets/tinyrenderer/african_head/african_head
 ```
 
 Each row above is a folder under `apps/cpp/` (e.g. `apps/cpp/01-hello-world/`)
-with its own README; the **C** lessons also have a counterpart under `apps/c/`.
+with its own README. **C** marks a topic that's also taught in the standalone
+[C track](#c-learning-path) below (numbered independently).
+
+## C learning path
+
+A standalone C course under `apps/c/NN-name/`, numbered on its own. **✓** = ready
+to run today; the rest are being filled in tier by tier.
+
+### Basics
+| # | Lesson | |
+|---|--------|---|
+| 01 | hello-world | ✓ |
+| 02 | comments | |
+| 03 | variables-datatypes | ✓ |
+| 04 | constants (`#define` / `const` / `enum`) | |
+| 05 | operators | |
+| 06 | io-basics (printf / scanf) | ✓ |
+| 07 | conditionals | |
+| 08 | switch | |
+
+### Control flow
+| # | Lesson | |
+|---|--------|---|
+| 09 | for-loop | |
+| 10 | while-loop | |
+| 11 | do-while-loop | |
+| 12 | break-continue | |
+
+### Functions
+| # | Lesson | |
+|---|--------|---|
+| 13 | functions & prototypes | |
+| 14 | function-parameters (pass-by-pointer) | |
+| 15 | recursion | |
+| 16 | scope-and-storage (`static` / `extern`) | |
+
+### Arrays & strings
+| # | Lesson | |
+|---|--------|---|
+| 17 | arrays (+ multidimensional) | ✓ |
+| 18 | strings (char arrays) | ✓ |
+| 19 | string-library (`string.h` / `ctype.h`) | |
+
+### Pointers
+| # | Lesson | |
+|---|--------|---|
+| 20 | pointers (address-of, dereference) | ✓ |
+| 21 | pointer-arithmetic (arrays ↔ pointers) | |
+| 22 | pointers-and-const (pointer-to-pointer) | |
+| 23 | function-pointers (callbacks, `qsort`) | |
+
+### Aggregates
+| # | Lesson | |
+|---|--------|---|
+| 24 | structs (`typedef`, `->`) | ✓ |
+| 25 | unions | |
+| 26 | enums | |
+| 27 | bitfields & bitwise ops | |
+
+### Preprocessor & build
+| # | Lesson | |
+|---|--------|---|
+| 28 | preprocessor-macros | |
+| 29 | header-source-separation | H |
+
+### Memory
+| # | Lesson | |
+|---|--------|---|
+| 30 | dynamic-memory (malloc/calloc/realloc/free) | ✓ |
+| 31 | const-and-volatile | |
+
+### I/O & system
+| # | Lesson | |
+|---|--------|---|
+| 32 | file-io (fopen/fread/fseek) | ✓ |
+| 33 | command-line-arguments (argc/argv) | |
+| 34 | error-handling (errno/perror) | |
+
+### Standard library & advanced
+| # | Lesson | |
+|---|--------|---|
+| 35 | variadic-functions (`stdarg`) | |
+| 36 | standard-library-tour (qsort/rand/strtol, math/time/assert) | |
+| 37 | type-conversions & casting | |
 
 ## Quick start
 

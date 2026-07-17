@@ -1,4 +1,4 @@
-/* 05-io-basics (C) — the same, using printf/scanf/fgets. */
+/* 06-io-basics (C) — the same, using printf/scanf/fgets. */
 #include <stdio.h>
 #include <string.h>  /* strcspn — used to trim the trailing newline */
 

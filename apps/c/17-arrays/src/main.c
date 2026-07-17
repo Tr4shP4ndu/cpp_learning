@@ -1,4 +1,4 @@
-/* 18-arrays (C) — the raw array is native C; C++ inherited it unchanged. */
+/* 17-arrays (C) — the raw array is native C; C++ inherited it unchanged. */
 #include <stdio.h>
 
 int main(void) {

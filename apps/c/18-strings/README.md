@@ -1,4 +1,4 @@
-# 21-strings (C)
+# 18-strings (C)
 
 The C version of [`apps/cpp/21-strings`](../../cpp/21-strings/). In C a "string"
 is a raw `char` array ending in a `'\0'` byte — everything is manual.
@@ -22,5 +22,5 @@ preferring C++ objects; see the [C++ version](../../cpp/21-strings/).
 
 ## Build & run
 ```sh
-make run-c-app-21-strings
+make run-c-app-18-strings
 ```

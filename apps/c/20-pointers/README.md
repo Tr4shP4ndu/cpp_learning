@@ -1,4 +1,4 @@
-# 39-pointers (C)
+# 20-pointers (C)
 
 The C version of [`apps/cpp/39-pointers`](../../cpp/39-pointers/). Pointers are
 native C; the syntax is identical to C++.
@@ -20,5 +20,5 @@ Identical mechanics; C++ adds `nullptr` (type-safe) and smart pointers
 
 ## Build & run
 ```sh
-make run-c-app-39-pointers
+make run-c-app-20-pointers
 ```

@@ -6,7 +6,7 @@ a zero-based index. This is the raw, C-style array — the low-level building
 block. Lesson 19 shows `std::array`, the safer C++ wrapper around it.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/18-arrays`](../../c/18-arrays/) (run it with `make run-c-app-18-arrays`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/18-arrays`](../../c/18-arrays/) (run it with `make run-c-app-17-arrays`).
 
 ## Line-by-line
 - `int scores[5] = {10, 20, 30, 40, 50};` — five ints laid out back-to-back. The
@@ -32,7 +32,7 @@ In C, the raw array is all you get built in.
 ## Build & run
 ```sh
 make run-cpp-app-18-arrays      # C++
-make run-c-app-18-arrays    # C
+make run-c-app-17-arrays    # C
 ```
 
 ## Try it yourself

@@ -1,4 +1,4 @@
-/* 43-structs (C) — the struct is where C and C++ start to diverge.
+/* 24-structs (C) — the struct is where C and C++ start to diverge.
    In C a struct holds DATA only: no member functions, and (pre-C23) you often
    wrote `struct Point` everywhere or used a typedef. */
 #include <stdio.h>

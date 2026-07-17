@@ -1,4 +1,4 @@
-# 41-dynamic-memory (C)
+# 30-dynamic-memory (C)
 
 The C version of [`apps/cpp/41-dynamic-memory`](../../cpp/41-dynamic-memory/).
 `malloc`/`free` are C's manual heap allocation.
@@ -21,5 +21,5 @@ containers that free automatically via RAII — you almost never call `free`/
 
 ## Build & run
 ```sh
-make run-c-app-41-dynamic-memory
+make run-c-app-30-dynamic-memory
 ```

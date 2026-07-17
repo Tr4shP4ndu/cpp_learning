@@ -1,4 +1,4 @@
-/* 41-dynamic-memory (C) — malloc/free are C's equivalent of new/delete. */
+/* 30-dynamic-memory (C) — malloc/free are C's equivalent of new/delete. */
 #include <stdio.h>
 #include <stdlib.h>   /* malloc, free */
 

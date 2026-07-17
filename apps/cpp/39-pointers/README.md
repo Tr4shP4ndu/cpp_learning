@@ -7,7 +7,7 @@ read or write the object itself. Pointers are the low-level tool behind arrays,
 dynamic memory, and data structures.
 
 ## Minimal example
-See `src/main.cpp`. The C version of this lesson lives in [`apps/c/39-pointers`](../../c/39-pointers/) (run it with `make run-c-app-39-pointers`).
+See `src/main.cpp`. The C version of this lesson lives in [`apps/c/39-pointers`](../../c/39-pointers/) (run it with `make run-c-app-20-pointers`).
 
 ## Line-by-line
 - `int* ptr = &value;` — `&value` is the **address-of** operator; `int*` is the
@@ -49,7 +49,7 @@ pointers* (lesson 41) so you rarely handle raw owning pointers by hand.
 ## Build & run
 ```sh
 make run-cpp-app-39-pointers      # C++
-make run-c-app-39-pointers    # C
+make run-c-app-20-pointers    # C
 ```
 
 ## Try it yourself

@@ -1,4 +1,4 @@
-/* 24-files-and-filesystem (C) — the same with FILE*, fopen/fprintf/fgets.
+/* 32-file-io (C) — the same with FILE*, fopen/fprintf/fgets.
    C has no std::filesystem; paths are just strings and you check return codes. */
 #include <stdio.h>
 

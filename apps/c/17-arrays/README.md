@@ -1,4 +1,4 @@
-# 18-arrays (C)
+# 17-arrays (C)
 
 The C version of [`apps/cpp/18-arrays`](../../cpp/18-arrays/). Raw arrays are
 native C — C++ inherited them unchanged.
@@ -22,5 +22,5 @@ size-aware wrappers. See the [C++ version](../../cpp/18-arrays/).
 
 ## Build & run
 ```sh
-make run-c-app-18-arrays
+make run-c-app-17-arrays
 ```

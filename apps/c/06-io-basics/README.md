@@ -1,4 +1,4 @@
-# 05-io-basics (C)
+# 06-io-basics (C)
 
 The C version of [`apps/cpp/05-io-basics`](../../cpp/05-io-basics/). Reads a
 name and an age, prints a greeting.
@@ -23,5 +23,5 @@ for you. See the [C++ version](../../cpp/05-io-basics/).
 ## Build & run
 This program is interactive; pipe input to run it non-interactively:
 ```sh
-printf 'Ada\n35\n' | make run-c-app-05-io-basics
+printf 'Ada\n35\n' | make run-c-app-06-io-basics
 ```

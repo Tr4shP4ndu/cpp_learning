@@ -1,4 +1,4 @@
-# 24-files-and-filesystem (C)
+# 32-file-io (C)
 
 The C version of [`apps/cpp/24-files-and-filesystem`](../../cpp/24-files-and-filesystem/).
 Writes a file, reads it back — using `FILE*` handles.
@@ -23,5 +23,5 @@ C++ file streams close themselves on scope exit (RAII) and use
 
 ## Build & run
 ```sh
-make run-c-app-24-files-and-filesystem
+make run-c-app-32-file-io
 ```
