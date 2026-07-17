@@ -1,24 +1,26 @@
 # =============================================================
 # Central build for the C / C++ learning workspace.
 #
-# Lessons under apps/c and apps/cpp build with NO per-lesson Makefile — the
-# rules below compile src/ (+ optional include/) for you. When a lesson (or a
-# project) needs more, drop a Makefile in its folder and this workspace hands
-# the build off to it. Minimum by default; your own build when you outgrow it.
+# Apps under apps/c and apps/cpp build with NO per-app Makefile — the rules
+# below compile src/ (+ optional include/) for you. When an app needs more,
+# drop a Makefile next to its src/ and this workspace hands the build off to
+# it. Minimum by default; your own build when you outgrow it.
 #
 #   make run    app=01-hello-world      # C++  (apps/cpp/01-hello-world)
 #   make run-c  app=01-hello-world      # C    (apps/c/01-hello-world)
-#   make build  app=45-classes-basics   # build one C++ lesson
-#   make build                          # build every lesson (both languages)
-#   make list / make list-c             # list C++ / C lessons
+#   make build  app=45-classes-basics   # build one C++ app
+#   make build                          # build every app (both languages)
+#   make list / make list-c             # list C++ / C apps
 #
 # Switch standards to compare old vs modern:
 #   make run app=20-strings STD=c++98      make run-c app=39-pointers CSTD=c99
 #
-# Your own projects (own folder name, own structure, own Makefile):
-#   make new-project name=my-thing            # scaffold apps/my-thing
-#   make project     name=my-thing            # build & run it
-#   make list-projects
+# An app can sit directly under a language, OR inside a named group folder —
+# both are found by name, so the run/build commands don't change:
+#   apps/cpp/mandelbrot                 apps/cpp/graphics/mandelbrot
+#   make app app=my-thing lang=cpp                 # apps/cpp/my-thing
+#   make app app=my-thing lang=cpp group=graphics  # apps/cpp/graphics/my-thing
+#   make run app=my-thing                          # resolves it at any depth
 #
 # Follow a tutorial in your OWN scratch copy (never touches the reference):
 #   make practice app=01-hello-world          # -> practice/cpp/01-hello-world
@@ -71,13 +73,11 @@ SIG := $(BUILD_TYPE)-$(STD)-$(CSTD)
 # inherits the same compiler/standard/build type but can override them.
 DELEGATE_VARS := CXX='$(CXX)' CC='$(CC)' STD='$(STD)' CSTD='$(CSTD)' BUILD_TYPE='$(BUILD_TYPE)'
 
-CPP_APPS := $(notdir $(wildcard $(APP_DIR)/cpp/*))
-C_APPS   := $(notdir $(wildcard $(APP_DIR)/c/*))
-# Your own projects live under apps/ next to the c/ and cpp/ lesson trees: any
-# folder name except 'c'/'cpp', any structure, its own Makefile. They are the
-# apps/ subdirs that aren't the two lesson trees. (Shell listing because GNU
-# make 3.81's $(wildcard */) doesn't filter to directories reliably.)
-PROJECTS := $(filter-out c cpp,$(shell ls -d $(APP_DIR)/*/ 2>/dev/null | sed 's:/*$$::;s:.*/::'))
+# Every app owns a src/ dir. Apps live directly under a language (apps/cpp/foo)
+# or nested one level in a named group (apps/cpp/graphics/foo); either way we
+# find them by locating their src/ dir, so groups need no bookkeeping here.
+CPP_APPS := $(sort $(notdir $(patsubst %/src,%,$(shell find $(APP_DIR)/cpp -type d -name src 2>/dev/null))))
+C_APPS   := $(sort $(notdir $(patsubst %/src,%,$(shell find $(APP_DIR)/c   -type d -name src 2>/dev/null))))
 
 # Resolve the language from the goal: run-c/build-c build C, everything else C++.
 ifneq ($(filter run-c build-c,$(MAKECMDGOALS)),)
@@ -96,34 +96,28 @@ define require_app
 $(if $(app),,$(error Usage: make $(1) app=<name>))
 endef
 
-define require_name
-$(if $(name),,$(error Usage: make $(1) name=<project>))
-endef
-
-.PHONY: help install list list-c list-projects build build-c build-all run run-c \
-        clean delete-app app practice project project-build new-project
+.PHONY: help install list list-c build build-c build-all run run-c \
+        clean delete-app app practice
 
 help:
 	@echo "Targets:"
 	@echo "  make install                  Put a C/C++ compiler in ./toolchain (or verify it)"
-	@echo "  make run    app=<name>        Build & run a C++ lesson (apps/cpp/<name>)"
-	@echo "  make run-c  app=<name>        Build & run a C lesson   (apps/c/<name>)"
-	@echo "  make build [app=<name>]       Build one C++ lesson, or ALL lessons if omitted"
-	@echo "  make build-c app=<name>       Build one C lesson"
-	@echo "  make list / make list-c       List C++ / C lessons"
-	@echo "  make app app=<name> [lang=c]  Scaffold a new lesson"
+	@echo "  make run    app=<name>        Build & run a C++ app (apps/cpp/<name>)"
+	@echo "  make run-c  app=<name>        Build & run a C app   (apps/c/<name>)"
+	@echo "  make build [app=<name>]       Build one C++ app, or ALL apps if omitted"
+	@echo "  make build-c app=<name>       Build one C app"
+	@echo "  make list / make list-c       List C++ / C apps"
+	@echo "  make app app=<name> [lang=c] [group=<g>]  Scaffold a new app"
 	@echo "  make practice app=<name> [lang=c]  Make a scratch copy to follow a tutorial"
 	@echo "  make clean                    Remove all build output"
-	@echo "  make delete-app app=<name>    Delete a lesson (both trees)"
+	@echo "  make delete-app app=<name>    Delete an app (both trees)"
 	@echo ""
-	@echo "Your own projects (own name, own structure, own Makefile):"
-	@echo "  make new-project name=<name>  Scaffold apps/<name> (own Makefile + src/)"
-	@echo "  make project     name=<name>  Build & run a project"
-	@echo "  make project-build name=<name>  Build a project"
-	@echo "  make list-projects            List your projects"
+	@echo "Apps sit under apps/<cpp|c>/, optionally inside a named group folder"
+	@echo "(apps/cpp/graphics/<name>). They are found by name at any depth, so the"
+	@echo "run/build commands are the same wherever an app lives."
 	@echo ""
-	@echo "A lesson may ALSO carry its own Makefile (apps/<tree>/<name>/Makefile);"
-	@echo "if present, the workspace delegates build/run to it (needs build + run targets)."
+	@echo "An app may ALSO carry its own Makefile (next to its src/); if present,"
+	@echo "the workspace delegates build/run to it (needs build + run targets)."
 	@echo ""
 	@echo "Variables: STD=c++98..c++23 (def c++23)  CSTD=c99|c11|c17"
 	@echo "           BUILD_TYPE=Debug|Release  CXX=g++|clang++  CC=gcc|clang"
@@ -183,33 +177,36 @@ list:
 list-c:
 	@printf "%s\n" $(C_APPS)
 
-list-projects:
-	@printf "%s\n" $(PROJECTS)
-
 clean:
 	@echo "Cleaning $(BUILD_DIR)/*"
 	@rm -rf "$(BUILD_DIR)"/* 2>/dev/null || true
 
 delete-app:
 	$(call require_app,delete-app)
-	@rm -rf "$(APP_DIR)/cpp/$(app)" "$(APP_DIR)/c/$(app)" \
-	        "$(BUILD_DIR)/$(APP_DIR)/cpp/$(app)" "$(BUILD_DIR)/$(APP_DIR)/c/$(app)" 2>/dev/null || true
+	@for t in cpp c; do \
+	  d=$$(find "$(APP_DIR)/$$t" -type d -name '$(app)' 2>/dev/null | head -n1); \
+	  if [ -n "$$d" ]; then rm -rf "$$d"; echo "Removed $$d"; fi; \
+	  rm -rf "$(BUILD_DIR)/$(APP_DIR)/$$t/$(app)"; \
+	done
 	@echo "Deleted: $(app)"
 
+# Scaffold a new app under apps/<lang>/, or inside a named group folder when
+# group=<g> is given (apps/<lang>/<group>/<app>).
 app:
 	$(call require_app,app)
-	$(eval T := $(if $(filter c,$(lang)),c,cpp))
-	@mkdir -p "$(APP_DIR)/$(T)/$(app)/src"
+	$(eval T   := $(if $(filter c,$(lang)),c,cpp))
+	$(eval REL := $(if $(group),$(group)/$(app),$(app)))
+	@mkdir -p "$(APP_DIR)/$(T)/$(REL)/src"
 	@for tpl in $(wildcard $(TEMPLATE_DIR)/*.tpl); do \
 		out=$$(basename "$$tpl" .tpl); \
 		case "$$out" in \
-			main.cpp) [ "$(T)" = c ] && continue; dest="$(APP_DIR)/$(T)/$(app)/src/main.cpp" ;; \
-			main.c)   [ "$(T)" = c ] || continue; dest="$(APP_DIR)/$(T)/$(app)/src/main.c" ;; \
-			*)        dest="$(APP_DIR)/$(T)/$(app)/$$out" ;; \
+			main.cpp) [ "$(T)" = c ] && continue; dest="$(APP_DIR)/$(T)/$(REL)/src/main.cpp" ;; \
+			main.c)   [ "$(T)" = c ] || continue; dest="$(APP_DIR)/$(T)/$(REL)/src/main.c" ;; \
+			*)        dest="$(APP_DIR)/$(T)/$(REL)/$$out" ;; \
 		esac; \
 		sed 's/__APP_NAME__/$(app)/g' "$$tpl" > "$$dest"; \
 	done
-	@echo "Created $(APP_DIR)/$(T)/$(app)"
+	@echo "Created $(APP_DIR)/$(T)/$(REL) — build & run: make run$(if $(filter c,$(lang)),-c,) app=$(app)"
 
 # Make a personal scratch copy to follow a tutorial in. Writes a starter file
 # ONLY if one isn't there yet, so re-running never clobbers your work.
@@ -230,35 +227,19 @@ practice:
 	 fi
 	@echo "Now: make run$(if $(filter c,$(lang)),-c,) app=$(app) PRACTICE=1"
 
-# --- your own projects: each owns its Makefile; we just delegate ---
-new-project:
-	$(call require_name,new-project)
-	@if [ "$(name)" = "c" ] || [ "$(name)" = "cpp" ]; then echo "'c' and 'cpp' are the lesson trees — choose another project name"; exit 1; fi
-	@if [ -e "$(APP_DIR)/$(name)" ]; then echo "$(APP_DIR)/$(name) already exists — not overwritten"; exit 1; fi
-	@mkdir -p "$(APP_DIR)/$(name)/src"
-	@sed 's/__PROJECT_NAME__/$(name)/g' templates/project/Makefile.tpl  > "$(APP_DIR)/$(name)/Makefile"
-	@sed 's/__PROJECT_NAME__/$(name)/g' templates/project/main.cpp.tpl  > "$(APP_DIR)/$(name)/src/main.cpp"
-	@sed 's/__PROJECT_NAME__/$(name)/g' templates/project/README.md.tpl > "$(APP_DIR)/$(name)/README.md"
-	@echo "Created $(APP_DIR)/$(name) — build & run: make project name=$(name)"
-
-project:
-	$(call require_name,project)
-	@test -f "$(APP_DIR)/$(name)/Makefile" || { echo "No $(APP_DIR)/$(name)/Makefile — a project owns its build. Scaffold one: make new-project name=$(name)"; exit 1; }
-	@$(MAKE) --no-print-directory -C "$(APP_DIR)/$(name)" run $(DELEGATE_VARS) ARGS='$(ARGS)'
-
-project-build:
-	$(call require_name,project-build)
-	@test -f "$(APP_DIR)/$(name)/Makefile" || { echo "No $(APP_DIR)/$(name)/Makefile — a project owns its build. Scaffold one: make new-project name=$(name)"; exit 1; }
-	@$(MAKE) --no-print-directory -C "$(APP_DIR)/$(name)" build $(DELEGATE_VARS)
-
 build-all:
 	@for a in $(CPP_APPS); do $(MAKE) --no-print-directory build   app=$$a || exit 1; done
 	@for a in $(C_APPS);   do $(MAKE) --no-print-directory build-c app=$$a || exit 1; done
-	@echo "Built all lessons."
+	@echo "Built all apps."
 
-# --- single-lesson build (only when app= is set) ---
+# --- single-app build (only when app= is set) ---
 ifdef app
+# Prefer the direct path (apps/<tree>/<app>); if it isn't there, the app lives
+# in a group folder (apps/<tree>/<group>/<app>) — find it by name.
 LDIR := $(SRC_ROOT)/$(TREE)/$(app)
+ifeq ($(wildcard $(LDIR)),)
+LDIR := $(shell find "$(SRC_ROOT)/$(TREE)" -type d -name '$(app)' 2>/dev/null | head -n1)
+endif
 
 ifeq ($(wildcard $(LDIR)/Makefile),)
 # Default built-in build: compile src/ (+ optional include/).
@@ -290,7 +271,7 @@ run-c: $(BIN)
 
 -include $(OBJS:.o=.d)
 else
-# This lesson brings its own Makefile — hand the build off to it (recursive
+# This app brings its own Makefile — hand the build off to it (recursive
 # make). Contract: that Makefile provides `build` and `run` targets.
 build build-c:
 	@$(MAKE) --no-print-directory -C "$(LDIR)" build $(DELEGATE_VARS)

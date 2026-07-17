@@ -9,10 +9,10 @@ survives between runs.
 
 ## Run
 ```sh
-make project name=cli-todo ARGS='add "buy milk"'
-make project name=cli-todo ARGS='add "write C++"'
-make project name=cli-todo ARGS=list
-make project name=cli-todo ARGS='done 1'
+make run app=cli-todo ARGS='add "buy milk"'
+make run app=cli-todo ARGS='add "write C++"'
+make run app=cli-todo ARGS=list
+make run app=cli-todo ARGS='done 1'
 ```
 The list is stored in `build/todo.txt` (git-ignored).
 

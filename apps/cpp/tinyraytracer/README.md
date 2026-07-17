@@ -13,7 +13,8 @@ Inspired by Dmitry Sokolov's tutorial:
 
 ## Run
 ```sh
-make project name=tinyraytracer     # writes out.ppm
+make run app=tinyraytracer                     # writes out.ppm (debug + sanitizers)
+make run app=tinyraytracer BUILD_TYPE=Release   # much faster for the render loop
 ```
 Open `out.ppm` in an image viewer that supports PPM (GIMP, or convert with
 ImageMagick: `convert out.ppm out.png`). `out.ppm` is git-ignored.

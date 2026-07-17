@@ -14,7 +14,8 @@ rasterizing renderer capstone (62).
 
 ## Run
 ```sh
-make project name=tinyraycaster     # writes out.ppm
+make run app=tinyraycaster                     # writes out.ppm (debug + sanitizers)
+make run app=tinyraycaster BUILD_TYPE=Release   # much faster for the render loop
 ```
 Open `out.ppm` in a PPM-capable viewer (GIMP, or `convert out.ppm out.png`).
 `out.ppm` is git-ignored.

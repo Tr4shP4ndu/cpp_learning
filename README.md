@@ -4,8 +4,8 @@ A tiny, vendor-free C and C++ workspace for learning the languages from your
 very first program to advanced modern C++ — one small, runnable lesson at a
 time.
 
-- A single top-level `Makefile` builds and runs every lesson — no per-lesson
-  Makefile needed (though a lesson or project can add one when it outgrows the
+- A single top-level `Makefile` builds and runs every app — no per-app
+  Makefile needed (though any app can add one when it outgrows the
   default; see below).
 - C++ lessons live under `apps/cpp/NN-name/`; C lessons under `apps/c/NN-name/`.
 - No submodules, no external build systems, no dependencies.
@@ -182,39 +182,42 @@ with its own README; the **C** lessons also have a counterpart under `apps/c/`.
 ## Quick start
 
 - Set up a compiler for this repo — `make install`
-- List lessons — `make list`
-- Scaffold a new C++ lesson — `make app app=my-new-app`
-- Scaffold a C lesson — `make app app=my-new-app lang=c`
+- List apps — `make list` (C++) / `make list-c` (C)
+- Scaffold a new C++ app — `make app app=my-new-app`
+- Scaffold a C app — `make app app=my-new-app lang=c`
+- …inside a named group folder — `make app app=my-new-app group=graphics`
 - Build one (or all if `app=` omitted) — `make build app=my-new-app`
 - Run — `make run app=my-new-app` (C++) / `make run-c app=my-new-app` (C)
 - Clean build artifacts — `make clean`
-- Delete a lesson — `make delete-app app=my-new-app`
+- Delete an app — `make delete-app app=my-new-app`
 - `make help` prints every target and variable.
 
-## Your own projects
+## Your own apps & groups
 
-`apps/c` and `apps/cpp` are the deliberately-uniform lesson trees. For your
-**own** work, make a sibling folder under `apps/` with **any name and any
-structure you want** — its only job is to bring its own `Makefile`:
+Everything lives under `apps/cpp/` (C++) or `apps/c/` (C) and builds with the
+same rules — there's no separate "project" kind. An app is just a folder with a
+`src/`. It can sit directly under a language, or inside a **named group folder**
+you make to keep related apps together:
 
 ```sh
-make new-project name=my-thing     # scaffold apps/my-thing (own Makefile + src/)
-make project     name=my-thing     # build & run it
-make list-projects
+make app app=my-thing lang=cpp                 # apps/cpp/my-thing
+make app app=my-thing lang=cpp group=graphics  # apps/cpp/graphics/my-thing
+make run app=my-thing                          # found by name at any depth
 ```
 
-`apps/my-thing/` can hold as many folders (`src/`, `include/`, `assets/`, …) as
-you like; the workspace hands its build off to your `Makefile` (recursive make),
-passing `CXX`/`CC`/`STD`/`CSTD`/`BUILD_TYPE` down (and `ARGS` for `run`).
+Apps are resolved by name, so `run` / `build` / `delete-app` are the same
+wherever an app lives — groups are pure organisation, with no bookkeeping.
 
-The same escape hatch works for a **lesson**: drop a `Makefile` into
-`apps/<tree>/<name>/` and the workspace delegates `build`/`run` to it instead of
-the default rules. Minimum by default; your own build when you need it.
+**Outgrew the defaults?** Drop a `Makefile` next to the app's `src/` and the
+workspace hands its build off to yours (recursive make), passing
+`CXX`/`CC`/`STD`/`CSTD`/`BUILD_TYPE` down (and `ARGS` for `run`). That app can
+then hold whatever structure you want (`include/`, `assets/`, …). Minimum by
+default; your own build when you need it.
 
-The repo already ships worked examples you can run and read — small apps
-(`guessing-game`, `cli-todo`, `calc`, `mandelbrot`) and from-scratch graphics
-(`tinyraytracer`, `tinyraycaster`, `tinykaboom`). List them with
-`make list-projects`, run one with `make project name=<name>`.
+The repo already ships worked examples you can run and read — small C++ apps
+(`guessing-game`, `cli-todo`, `calc`, `mandelbrot`), from-scratch graphics
+(`tinyraytracer`, `tinyraycaster`, `tinykaboom`), and a tiny POSIX shell at
+`apps/c/shell`. Run one with `make run app=<name>` (or `make run-c app=shell`).
 
 ## Installing a compiler
 

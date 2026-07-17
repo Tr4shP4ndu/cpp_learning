@@ -11,15 +11,15 @@ real example of why recursion matters.
 Pipe the expression on stdin — cleanest, since the shell won't split it or
 expand `*` as a glob:
 ```sh
-echo '1 + 2 * 3'    | make project name=calc   # 7
-echo '(1 + 2) * 3'  | make project name=calc   # 9
-echo '2 * -3.5'     | make project name=calc   # -7
-echo '10 / (2 - 2)' | make project name=calc   # error: division by zero
+echo '1 + 2 * 3'    | make run app=calc   # 7
+echo '(1 + 2) * 3'  | make run app=calc   # 9
+echo '2 * -3.5'     | make run app=calc   # -7
+echo '10 / (2 - 2)' | make run app=calc   # error: division by zero
 ```
 Passing it as an argument also works if you **quote it as one string** (so `*`
 and spaces survive the shell):
 ```sh
-make project name=calc ARGS='"1 + 2 * 3"'      # 7
+make run app=calc ARGS='"1 + 2 * 3"'      # 7
 ```
 
 ## Try extending it
