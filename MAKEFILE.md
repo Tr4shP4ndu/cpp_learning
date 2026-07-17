@@ -13,6 +13,9 @@ predictable:
 > **First time?** Run `make install` once. On macOS it just checks you have the
 > Xcode Command Line Tools; on Linux/Windows it downloads a local Clang into
 > `./toolchain/`.
+>
+> **Want to build this yourself?** [WRITING-THE-MAKEFILE.md](WRITING-THE-MAKEFILE.md)
+> reconstructs this whole Makefile from scratch, one `make` concept at a time.
 
 ---
 

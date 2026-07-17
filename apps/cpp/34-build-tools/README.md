@@ -19,9 +19,12 @@ See `src/main.cpp`.
   off `assert()` (see lesson 36). Its presence is a proxy for "release build".
 
 ## Why this matters
-This repo is built by one top-level `Makefile` with no per-lesson build files.
-Understanding the flags behind `make run` — standard, warnings, sanitizers —
-lets you read any project's build and change how yours compiles.
+This repo's compiler flags all live in one place — the top-level `Makefile` —
+and each app's Makefile is a single `all:` rule that uses them. Understanding
+the flags behind `make run-…` — standard, warnings, sanitizers — lets you read
+any project's build and change how yours compiles. To learn how that Makefile is
+*written*, step by step, see
+[WRITING-THE-MAKEFILE.md](../../../WRITING-THE-MAKEFILE.md).
 
 ## Common pitfalls
 - Different `-std` values genuinely change what compiles: try `STD=c++14` on a

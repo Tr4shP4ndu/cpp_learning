@@ -241,8 +241,10 @@ Verify with `make run-cpp-app-01-hello-world` → `Hello, World!`.
 - Source lives in `apps/cpp/NN-name/src/` (and `apps/c/NN-name/src/` for C);
   multi-file lessons add an `include/` folder.
 - Apps build into a git-ignored `build/apps/<lang>/NN-name/NN-name`. The flags
-  live in the root `Makefile`; each app's Makefile is one `all:` rule. See
-  [MAKEFILE.md](MAKEFILE.md).
+  live in the root `Makefile`; each app's Makefile is one `all:` rule.
+- Two build guides: [MAKEFILE.md](MAKEFILE.md) — how to *use* the build;
+  [WRITING-THE-MAKEFILE.md](WRITING-THE-MAKEFILE.md) — how to *write* it, step by
+  step (a `make` tutorial that rebuilds this repo's Makefile).
 - Compiler: `make install` puts one in `./toolchain/` (git-ignored) and the
   workspace prefers it; override anytime with `CXX=clang++` / `CC=clang` on the
   make command line.
